@@ -1,0 +1,627 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		05464ADF80CE49E3AE14FA09 /* BeVietnamPro-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 205F1F83257B48EA807B1674 /* BeVietnamPro-ExtraLight.ttf */; };
+		095CBA4638B34FDE848A530C /* BeVietnamPro-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9B816E42DC2D4169AB5EFD27 /* BeVietnamPro-Thin.ttf */; };
+		0A4B283C2E5B4CEFBE71DDF4 /* BeVietnamPro-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F0B45B6D933A4084AC48FF9E /* BeVietnamPro-Italic.ttf */; };
+		0C80B921A6F3F58F76C31292 /* libPods-FLPropertyAppNew.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-FLPropertyAppNew.a */; };
+		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		19A6E7000C534D088E153565 /* PlusJakartaSans-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C71BA36F6D53491F95E87038 /* PlusJakartaSans-MediumItalic.ttf */; };
+		2B6C8AAFA5D345E29D0CB7E0 /* PlusJakartaSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 17825246BD8B4314BC7FB1D0 /* PlusJakartaSans-Regular.ttf */; };
+		395665331288432684CD827E /* BeVietnamPro-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9F499005C4C542759CF1A06B /* BeVietnamPro-SemiBoldItalic.ttf */; };
+		39796E18D58B444ABA5AD7BC /* BeVietnamPro-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C42BF0A38BFE48C584525FDB /* BeVietnamPro-ExtraBoldItalic.ttf */; };
+		4111DBF40E8E416DA0AFDF3E /* BeVietnamPro-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FDD26A0EDAB3431891B403AE /* BeVietnamPro-BoldItalic.ttf */; };
+		431DCA388E5A487892DB350B /* PlusJakartaSans-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7662EA9BB0504AF3A78E7DD2 /* PlusJakartaSans-ExtraBold.ttf */; };
+		4700B188B22242C29DFB21D8 /* BeVietnamPro-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 11349794630942C48798C8D0 /* BeVietnamPro-LightItalic.ttf */; };
+		47F712D397FF495A8C7BA0BE /* PlusJakartaSans-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 637E1E5D52DD408EBB7743D1 /* PlusJakartaSans-BoldItalic.ttf */; };
+		50981F6978EF44DEBB4EA0DF /* PlusJakartaSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CE84D420B3E7404AA9A1BEF1 /* PlusJakartaSans-SemiBold.ttf */; };
+		5119C20B0DF04C5683E23BD8 /* BeVietnamPro-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B00CE65812A4727A8F4C8A3 /* BeVietnamPro-SemiBold.ttf */; };
+		6BCA6B9A36424004A6995F16 /* PlusJakartaSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C137992248FD4412A74565B8 /* PlusJakartaSans-Light.ttf */; };
+		6DDDC9F3429C471583AD0DA8 /* BeVietnamPro-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 211B1643E4F94AFB83B92DA8 /* BeVietnamPro-Medium.ttf */; };
+		6FCD97A2EEE24E57A63F9BF9 /* PlusJakartaSans-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 497AAEE36B2C47D2B879C521 /* PlusJakartaSans-ExtraBoldItalic.ttf */; };
+		74FF9A9BB31446CE90277D55 /* BeVietnamPro-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4FADE9921FCC44ECB33501DE /* BeVietnamPro-Black.ttf */; };
+		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
+		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		B1EF0C2944EC4EF9A16B89D6 /* BeVietnamPro-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 21B83263DA60401D89D5A6B3 /* BeVietnamPro-ThinItalic.ttf */; };
+		B36E4EE0BC7447DF8FAECE80 /* PlusJakartaSans-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0885180941714262BBCB40C5 /* PlusJakartaSans-ExtraLight.ttf */; };
+		BCA1462069B341A3B53F1A20 /* PlusJakartaSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 05D0F25B224A4BFF87A2BD89 /* PlusJakartaSans-Medium.ttf */; };
+		BD90CFF507024C6FA32CDFFE /* BeVietnamPro-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 59F7FEBA775B474F89911195 /* BeVietnamPro-BlackItalic.ttf */; };
+		C391742D451EAECF99EE6138 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		CFBD7DE8BE1B46D5BFFD167A /* PlusJakartaSans-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0BEE4A1663864BB8BB162529 /* PlusJakartaSans-Italic.ttf */; };
+		D7EE7C6C032B4099812A9B9C /* BeVietnamPro-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8BF5B686B82646FCA105C882 /* BeVietnamPro-Regular.ttf */; };
+		DEF2ABC005C94CC28D7604D5 /* PlusJakartaSans-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 842159A83A4A41C7AAEF16BB /* PlusJakartaSans-ExtraLightItalic.ttf */; };
+		E78334CDB854430D86E30CE8 /* BeVietnamPro-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EB7701CDED064085AF4773BE /* BeVietnamPro-Light.ttf */; };
+		E87F07EC6448413EB00DE69A /* BeVietnamPro-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C86F779A1F974307BBF0F7CC /* BeVietnamPro-ExtraBold.ttf */; };
+		E917410E1218417AAAA3CA45 /* PlusJakartaSans-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84BAC5D372BF426E9D269165 /* PlusJakartaSans-SemiBoldItalic.ttf */; };
+		EBCE6C48B9574F9886EBC5E2 /* PlusJakartaSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A87299A376F04B35BDB3C8F5 /* PlusJakartaSans-Bold.ttf */; };
+		EDE48027F66E47B389CFE44E /* BeVietnamPro-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A627005218374CAEB173888C /* BeVietnamPro-Bold.ttf */; };
+		F6787DFB7DE14E0D80A82F7F /* Bodoni-Cyrillic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 76DD2002FDAF493989A97A85 /* Bodoni-Cyrillic.ttf */; };
+		F99947CBC5AE4ADD95292153 /* BeVietnamPro-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 253224ACCC5745A49926DB24 /* BeVietnamPro-MediumItalic.ttf */; };
+		FD40F62A52FD4B58BD11C928 /* PlusJakartaSans-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CDBE843FF8D64145A8344491 /* PlusJakartaSans-LightItalic.ttf */; };
+		FE26349C698C487FB6D22DB0 /* BeVietnamPro-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D158AECF2D204983A43B30BF /* BeVietnamPro-ExtraLightItalic.ttf */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		05D0F25B224A4BFF87A2BD89 /* PlusJakartaSans-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-Medium.ttf"; path = "../assets/fonts/PlusJakartaSans-Medium.ttf"; sourceTree = "<group>"; };
+		0885180941714262BBCB40C5 /* PlusJakartaSans-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-ExtraLight.ttf"; path = "../assets/fonts/PlusJakartaSans-ExtraLight.ttf"; sourceTree = "<group>"; };
+		0BEE4A1663864BB8BB162529 /* PlusJakartaSans-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-Italic.ttf"; path = "../assets/fonts/PlusJakartaSans-Italic.ttf"; sourceTree = "<group>"; };
+		11349794630942C48798C8D0 /* BeVietnamPro-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-LightItalic.ttf"; path = "../assets/fonts/BeVietnamPro-LightItalic.ttf"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* FLPropertyAppNew.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FLPropertyAppNew.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = FLPropertyAppNew/Images.xcassets; sourceTree = "<group>"; };
+		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = FLPropertyAppNew/Info.plist; sourceTree = "<group>"; };
+		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = FLPropertyAppNew/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		17825246BD8B4314BC7FB1D0 /* PlusJakartaSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-Regular.ttf"; path = "../assets/fonts/PlusJakartaSans-Regular.ttf"; sourceTree = "<group>"; };
+		1B00CE65812A4727A8F4C8A3 /* BeVietnamPro-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-SemiBold.ttf"; path = "../assets/fonts/BeVietnamPro-SemiBold.ttf"; sourceTree = "<group>"; };
+		205F1F83257B48EA807B1674 /* BeVietnamPro-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-ExtraLight.ttf"; path = "../assets/fonts/BeVietnamPro-ExtraLight.ttf"; sourceTree = "<group>"; };
+		211B1643E4F94AFB83B92DA8 /* BeVietnamPro-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-Medium.ttf"; path = "../assets/fonts/BeVietnamPro-Medium.ttf"; sourceTree = "<group>"; };
+		21B83263DA60401D89D5A6B3 /* BeVietnamPro-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-ThinItalic.ttf"; path = "../assets/fonts/BeVietnamPro-ThinItalic.ttf"; sourceTree = "<group>"; };
+		253224ACCC5745A49926DB24 /* BeVietnamPro-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-MediumItalic.ttf"; path = "../assets/fonts/BeVietnamPro-MediumItalic.ttf"; sourceTree = "<group>"; };
+		3B4392A12AC88292D35C810B /* Pods-FLPropertyAppNew.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FLPropertyAppNew.debug.xcconfig"; path = "Target Support Files/Pods-FLPropertyAppNew/Pods-FLPropertyAppNew.debug.xcconfig"; sourceTree = "<group>"; };
+		497AAEE36B2C47D2B879C521 /* PlusJakartaSans-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-ExtraBoldItalic.ttf"; path = "../assets/fonts/PlusJakartaSans-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		4FADE9921FCC44ECB33501DE /* BeVietnamPro-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-Black.ttf"; path = "../assets/fonts/BeVietnamPro-Black.ttf"; sourceTree = "<group>"; };
+		5709B34CF0A7D63546082F79 /* Pods-FLPropertyAppNew.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FLPropertyAppNew.release.xcconfig"; path = "Target Support Files/Pods-FLPropertyAppNew/Pods-FLPropertyAppNew.release.xcconfig"; sourceTree = "<group>"; };
+		59F7FEBA775B474F89911195 /* BeVietnamPro-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-BlackItalic.ttf"; path = "../assets/fonts/BeVietnamPro-BlackItalic.ttf"; sourceTree = "<group>"; };
+		5DCACB8F33CDC322A6C60F78 /* libPods-FLPropertyAppNew.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FLPropertyAppNew.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		637E1E5D52DD408EBB7743D1 /* PlusJakartaSans-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-BoldItalic.ttf"; path = "../assets/fonts/PlusJakartaSans-BoldItalic.ttf"; sourceTree = "<group>"; };
+		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = FLPropertyAppNew/AppDelegate.swift; sourceTree = "<group>"; };
+		7662EA9BB0504AF3A78E7DD2 /* PlusJakartaSans-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-ExtraBold.ttf"; path = "../assets/fonts/PlusJakartaSans-ExtraBold.ttf"; sourceTree = "<group>"; };
+		76DD2002FDAF493989A97A85 /* Bodoni-Cyrillic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Bodoni-Cyrillic.ttf"; path = "../assets/fonts/Bodoni-Cyrillic.ttf"; sourceTree = "<group>"; };
+		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = FLPropertyAppNew/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		842159A83A4A41C7AAEF16BB /* PlusJakartaSans-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-ExtraLightItalic.ttf"; path = "../assets/fonts/PlusJakartaSans-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		84BAC5D372BF426E9D269165 /* PlusJakartaSans-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-SemiBoldItalic.ttf"; path = "../assets/fonts/PlusJakartaSans-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		8BF5B686B82646FCA105C882 /* BeVietnamPro-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-Regular.ttf"; path = "../assets/fonts/BeVietnamPro-Regular.ttf"; sourceTree = "<group>"; };
+		9B816E42DC2D4169AB5EFD27 /* BeVietnamPro-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-Thin.ttf"; path = "../assets/fonts/BeVietnamPro-Thin.ttf"; sourceTree = "<group>"; };
+		9F499005C4C542759CF1A06B /* BeVietnamPro-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-SemiBoldItalic.ttf"; path = "../assets/fonts/BeVietnamPro-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		A627005218374CAEB173888C /* BeVietnamPro-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-Bold.ttf"; path = "../assets/fonts/BeVietnamPro-Bold.ttf"; sourceTree = "<group>"; };
+		A87299A376F04B35BDB3C8F5 /* PlusJakartaSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-Bold.ttf"; path = "../assets/fonts/PlusJakartaSans-Bold.ttf"; sourceTree = "<group>"; };
+		C137992248FD4412A74565B8 /* PlusJakartaSans-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-Light.ttf"; path = "../assets/fonts/PlusJakartaSans-Light.ttf"; sourceTree = "<group>"; };
+		C42BF0A38BFE48C584525FDB /* BeVietnamPro-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-ExtraBoldItalic.ttf"; path = "../assets/fonts/BeVietnamPro-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		C71BA36F6D53491F95E87038 /* PlusJakartaSans-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-MediumItalic.ttf"; path = "../assets/fonts/PlusJakartaSans-MediumItalic.ttf"; sourceTree = "<group>"; };
+		C86F779A1F974307BBF0F7CC /* BeVietnamPro-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-ExtraBold.ttf"; path = "../assets/fonts/BeVietnamPro-ExtraBold.ttf"; sourceTree = "<group>"; };
+		CDBE843FF8D64145A8344491 /* PlusJakartaSans-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-LightItalic.ttf"; path = "../assets/fonts/PlusJakartaSans-LightItalic.ttf"; sourceTree = "<group>"; };
+		CE84D420B3E7404AA9A1BEF1 /* PlusJakartaSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlusJakartaSans-SemiBold.ttf"; path = "../assets/fonts/PlusJakartaSans-SemiBold.ttf"; sourceTree = "<group>"; };
+		D158AECF2D204983A43B30BF /* BeVietnamPro-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-ExtraLightItalic.ttf"; path = "../assets/fonts/BeVietnamPro-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		EB7701CDED064085AF4773BE /* BeVietnamPro-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-Light.ttf"; path = "../assets/fonts/BeVietnamPro-Light.ttf"; sourceTree = "<group>"; };
+		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F0B45B6D933A4084AC48FF9E /* BeVietnamPro-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-Italic.ttf"; path = "../assets/fonts/BeVietnamPro-Italic.ttf"; sourceTree = "<group>"; };
+		FDD26A0EDAB3431891B403AE /* BeVietnamPro-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "BeVietnamPro-BoldItalic.ttf"; path = "../assets/fonts/BeVietnamPro-BoldItalic.ttf"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0C80B921A6F3F58F76C31292 /* libPods-FLPropertyAppNew.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		13B07FAE1A68108700A75B9A /* FLPropertyAppNew */ = {
+			isa = PBXGroup;
+			children = (
+				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				761780EC2CA45674006654EE /* AppDelegate.swift */,
+				13B07FB61A68108700A75B9A /* Info.plist */,
+				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
+				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+			);
+			name = FLPropertyAppNew;
+			sourceTree = "<group>";
+		};
+		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
+				5DCACB8F33CDC322A6C60F78 /* libPods-FLPropertyAppNew.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		83CBB9F61A601CBA00E9B192 = {
+			isa = PBXGroup;
+			children = (
+				13B07FAE1A68108700A75B9A /* FLPropertyAppNew */,
+				832341AE1AAA6A7D00B99B32 /* Libraries */,
+				83CBBA001A601CBA00E9B192 /* Products */,
+				2D16E6871FA4F8E400B85C8A /* Frameworks */,
+				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				85D3EAEE14BB436494048A60 /* Resources */,
+			);
+			indentWidth = 2;
+			sourceTree = "<group>";
+			tabWidth = 2;
+			usesTabs = 0;
+		};
+		83CBBA001A601CBA00E9B192 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				13B07F961A680F5B00A75B9A /* FLPropertyAppNew.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		85D3EAEE14BB436494048A60 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4FADE9921FCC44ECB33501DE /* BeVietnamPro-Black.ttf */,
+				59F7FEBA775B474F89911195 /* BeVietnamPro-BlackItalic.ttf */,
+				A627005218374CAEB173888C /* BeVietnamPro-Bold.ttf */,
+				FDD26A0EDAB3431891B403AE /* BeVietnamPro-BoldItalic.ttf */,
+				C86F779A1F974307BBF0F7CC /* BeVietnamPro-ExtraBold.ttf */,
+				C42BF0A38BFE48C584525FDB /* BeVietnamPro-ExtraBoldItalic.ttf */,
+				205F1F83257B48EA807B1674 /* BeVietnamPro-ExtraLight.ttf */,
+				D158AECF2D204983A43B30BF /* BeVietnamPro-ExtraLightItalic.ttf */,
+				F0B45B6D933A4084AC48FF9E /* BeVietnamPro-Italic.ttf */,
+				EB7701CDED064085AF4773BE /* BeVietnamPro-Light.ttf */,
+				11349794630942C48798C8D0 /* BeVietnamPro-LightItalic.ttf */,
+				211B1643E4F94AFB83B92DA8 /* BeVietnamPro-Medium.ttf */,
+				253224ACCC5745A49926DB24 /* BeVietnamPro-MediumItalic.ttf */,
+				8BF5B686B82646FCA105C882 /* BeVietnamPro-Regular.ttf */,
+				1B00CE65812A4727A8F4C8A3 /* BeVietnamPro-SemiBold.ttf */,
+				9F499005C4C542759CF1A06B /* BeVietnamPro-SemiBoldItalic.ttf */,
+				9B816E42DC2D4169AB5EFD27 /* BeVietnamPro-Thin.ttf */,
+				21B83263DA60401D89D5A6B3 /* BeVietnamPro-ThinItalic.ttf */,
+				76DD2002FDAF493989A97A85 /* Bodoni-Cyrillic.ttf */,
+				A87299A376F04B35BDB3C8F5 /* PlusJakartaSans-Bold.ttf */,
+				637E1E5D52DD408EBB7743D1 /* PlusJakartaSans-BoldItalic.ttf */,
+				7662EA9BB0504AF3A78E7DD2 /* PlusJakartaSans-ExtraBold.ttf */,
+				497AAEE36B2C47D2B879C521 /* PlusJakartaSans-ExtraBoldItalic.ttf */,
+				0885180941714262BBCB40C5 /* PlusJakartaSans-ExtraLight.ttf */,
+				842159A83A4A41C7AAEF16BB /* PlusJakartaSans-ExtraLightItalic.ttf */,
+				0BEE4A1663864BB8BB162529 /* PlusJakartaSans-Italic.ttf */,
+				C137992248FD4412A74565B8 /* PlusJakartaSans-Light.ttf */,
+				CDBE843FF8D64145A8344491 /* PlusJakartaSans-LightItalic.ttf */,
+				05D0F25B224A4BFF87A2BD89 /* PlusJakartaSans-Medium.ttf */,
+				C71BA36F6D53491F95E87038 /* PlusJakartaSans-MediumItalic.ttf */,
+				17825246BD8B4314BC7FB1D0 /* PlusJakartaSans-Regular.ttf */,
+				CE84D420B3E7404AA9A1BEF1 /* PlusJakartaSans-SemiBold.ttf */,
+				84BAC5D372BF426E9D269165 /* PlusJakartaSans-SemiBoldItalic.ttf */,
+			);
+			name = Resources;
+			path = "";
+			sourceTree = "<group>";
+		};
+		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3B4392A12AC88292D35C810B /* Pods-FLPropertyAppNew.debug.xcconfig */,
+				5709B34CF0A7D63546082F79 /* Pods-FLPropertyAppNew.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		13B07F861A680F5B00A75B9A /* FLPropertyAppNew */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "FLPropertyAppNew" */;
+			buildPhases = (
+				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
+				13B07F871A680F5B00A75B9A /* Sources */,
+				13B07F8C1A680F5B00A75B9A /* Frameworks */,
+				13B07F8E1A680F5B00A75B9A /* Resources */,
+				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
+				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FLPropertyAppNew;
+			productName = FLPropertyAppNew;
+			productReference = 13B07F961A680F5B00A75B9A /* FLPropertyAppNew.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		83CBB9F71A601CBA00E9B192 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1210;
+				TargetAttributes = {
+					13B07F861A680F5B00A75B9A = {
+						LastSwiftMigration = 1120;
+					};
+				};
+			};
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "FLPropertyAppNew" */;
+			compatibilityVersion = "Xcode 12.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 83CBB9F61A601CBA00E9B192;
+			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				13B07F861A680F5B00A75B9A /* FLPropertyAppNew */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		13B07F8E1A680F5B00A75B9A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
+				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				74FF9A9BB31446CE90277D55 /* BeVietnamPro-Black.ttf in Resources */,
+				BD90CFF507024C6FA32CDFFE /* BeVietnamPro-BlackItalic.ttf in Resources */,
+				EDE48027F66E47B389CFE44E /* BeVietnamPro-Bold.ttf in Resources */,
+				4111DBF40E8E416DA0AFDF3E /* BeVietnamPro-BoldItalic.ttf in Resources */,
+				E87F07EC6448413EB00DE69A /* BeVietnamPro-ExtraBold.ttf in Resources */,
+				39796E18D58B444ABA5AD7BC /* BeVietnamPro-ExtraBoldItalic.ttf in Resources */,
+				05464ADF80CE49E3AE14FA09 /* BeVietnamPro-ExtraLight.ttf in Resources */,
+				FE26349C698C487FB6D22DB0 /* BeVietnamPro-ExtraLightItalic.ttf in Resources */,
+				0A4B283C2E5B4CEFBE71DDF4 /* BeVietnamPro-Italic.ttf in Resources */,
+				E78334CDB854430D86E30CE8 /* BeVietnamPro-Light.ttf in Resources */,
+				4700B188B22242C29DFB21D8 /* BeVietnamPro-LightItalic.ttf in Resources */,
+				6DDDC9F3429C471583AD0DA8 /* BeVietnamPro-Medium.ttf in Resources */,
+				F99947CBC5AE4ADD95292153 /* BeVietnamPro-MediumItalic.ttf in Resources */,
+				D7EE7C6C032B4099812A9B9C /* BeVietnamPro-Regular.ttf in Resources */,
+				5119C20B0DF04C5683E23BD8 /* BeVietnamPro-SemiBold.ttf in Resources */,
+				395665331288432684CD827E /* BeVietnamPro-SemiBoldItalic.ttf in Resources */,
+				095CBA4638B34FDE848A530C /* BeVietnamPro-Thin.ttf in Resources */,
+				B1EF0C2944EC4EF9A16B89D6 /* BeVietnamPro-ThinItalic.ttf in Resources */,
+				F6787DFB7DE14E0D80A82F7F /* Bodoni-Cyrillic.ttf in Resources */,
+				EBCE6C48B9574F9886EBC5E2 /* PlusJakartaSans-Bold.ttf in Resources */,
+				47F712D397FF495A8C7BA0BE /* PlusJakartaSans-BoldItalic.ttf in Resources */,
+				431DCA388E5A487892DB350B /* PlusJakartaSans-ExtraBold.ttf in Resources */,
+				6FCD97A2EEE24E57A63F9BF9 /* PlusJakartaSans-ExtraBoldItalic.ttf in Resources */,
+				B36E4EE0BC7447DF8FAECE80 /* PlusJakartaSans-ExtraLight.ttf in Resources */,
+				DEF2ABC005C94CC28D7604D5 /* PlusJakartaSans-ExtraLightItalic.ttf in Resources */,
+				CFBD7DE8BE1B46D5BFFD167A /* PlusJakartaSans-Italic.ttf in Resources */,
+				6BCA6B9A36424004A6995F16 /* PlusJakartaSans-Light.ttf in Resources */,
+				FD40F62A52FD4B58BD11C928 /* PlusJakartaSans-LightItalic.ttf in Resources */,
+				BCA1462069B341A3B53F1A20 /* PlusJakartaSans-Medium.ttf in Resources */,
+				19A6E7000C534D088E153565 /* PlusJakartaSans-MediumItalic.ttf in Resources */,
+				2B6C8AAFA5D345E29D0CB7E0 /* PlusJakartaSans-Regular.ttf in Resources */,
+				50981F6978EF44DEBB4EA0DF /* PlusJakartaSans-SemiBold.ttf in Resources */,
+				E917410E1218417AAAA3CA45 /* PlusJakartaSans-SemiBoldItalic.ttf in Resources */,
+				C391742D451EAECF99EE6138 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/.xcode.env",
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"$REACT_NATIVE_PATH/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"$REACT_NATIVE_PATH/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
+		};
+		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FLPropertyAppNew/Pods-FLPropertyAppNew-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FLPropertyAppNew/Pods-FLPropertyAppNew-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FLPropertyAppNew/Pods-FLPropertyAppNew-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FLPropertyAppNew-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FLPropertyAppNew/Pods-FLPropertyAppNew-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FLPropertyAppNew/Pods-FLPropertyAppNew-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FLPropertyAppNew/Pods-FLPropertyAppNew-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		13B07F871A680F5B00A75B9A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				761780ED2CA45674006654EE /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		13B07F941A680F5B00A75B9A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-FLPropertyAppNew.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = FLPropertyAppNew/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = FLPropertyAppNew;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		13B07F951A680F5B00A75B9A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-FLPropertyAppNew.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = FLPropertyAppNew/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-lc++",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = FLPropertyAppNew;
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		83CBBA201A601CBA00E9B192 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/lib/swift\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-DFOLLY_CFG_NO_COROUTINES=1",
+					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				USE_HERMES = true;
+			};
+			name = Debug;
+		};
+		83CBBA211A601CBA00E9B192 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					/usr/lib/swift,
+					"$(inherited)",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(SDKROOT)/usr/lib/swift\"",
+					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
+					"\"$(inherited)\"",
+				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DFOLLY_NO_CONFIG",
+					"-DFOLLY_MOBILE=1",
+					"-DFOLLY_USE_LIBCPP=1",
+					"-DFOLLY_CFG_NO_COROUTINES=1",
+					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
+				SDKROOT = iphoneos;
+				USE_HERMES = true;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "FLPropertyAppNew" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				13B07F941A680F5B00A75B9A /* Debug */,
+				13B07F951A680F5B00A75B9A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "FLPropertyAppNew" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83CBBA201A601CBA00E9B192 /* Debug */,
+				83CBBA211A601CBA00E9B192 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
+}

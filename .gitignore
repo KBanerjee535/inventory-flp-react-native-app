@@ -1,0 +1,23 @@
+# dependencies
+node_modules/
+
+# android
+android/.gradle/
+android/build/
+android/app/build/
+
+# ios
+ios/build/
+
+# metro
+.metro-health-check*
+
+# logs
+npm-debug.log
+yarn-error.log
+
+# local env
+.env
+
+# macOS
+.DS_Store

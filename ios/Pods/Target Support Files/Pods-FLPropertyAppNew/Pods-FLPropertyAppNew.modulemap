@@ -1,0 +1,6 @@
+module Pods_FLPropertyAppNew {
+  umbrella header "Pods-FLPropertyAppNew-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,288 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9
+					],
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.13"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "rnasyncstorage_autolinked_build",
+					"jsonFile" : "directory-rnasyncstorage_autolinked_build-Debug-5775a2f57c1374767889.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.13"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/Users/pwp/FLProperty/node_modules/@react-native-async-storage/async-storage/android/build/generated/source/codegen/jni",
+					"targetIndexes" : 
+					[
+						4
+					]
+				},
+				{
+					"build" : "RNDatePickerSpecs_autolinked_build",
+					"jsonFile" : "directory-RNDatePickerSpecs_autolinked_build-Debug-6fbab8a1dff11a473c32.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.13"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/Users/pwp/FLProperty/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni",
+					"targetIndexes" : 
+					[
+						1
+					]
+				},
+				{
+					"build" : "rngesturehandler_codegen_autolinked_build",
+					"jsonFile" : "directory-rngesturehandler_codegen_autolinked_build-Debug-9fe6b5f972d4e662de86.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.13"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/Users/pwp/FLProperty/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni",
+					"targetIndexes" : 
+					[
+						5
+					]
+				},
+				{
+					"build" : "RNImagePickerSpec_autolinked_build",
+					"jsonFile" : "directory-RNImagePickerSpec_autolinked_build-Debug-c30cb154a03ee1ac21d0.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.13"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/Users/pwp/FLProperty/node_modules/react-native-image-picker/android/build/generated/source/codegen/jni",
+					"targetIndexes" : 
+					[
+						2
+					]
+				},
+				{
+					"build" : "rnreanimated_autolinked_build",
+					"jsonFile" : "directory-rnreanimated_autolinked_build-Debug-5c3689fbffe723b984f1.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.13"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/Users/pwp/FLProperty/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni",
+					"targetIndexes" : 
+					[
+						6
+					]
+				},
+				{
+					"build" : "safeareacontext_autolinked_build",
+					"jsonFile" : "directory-safeareacontext_autolinked_build-Debug-82237f76ed38ad45184a.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.13"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/Users/pwp/FLProperty/node_modules/react-native-safe-area-context/android/src/main/jni",
+					"targetIndexes" : 
+					[
+						9
+					]
+				},
+				{
+					"build" : "rnscreens_autolinked_build",
+					"jsonFile" : "directory-rnscreens_autolinked_build-Debug-5ca1bdc5f25e42413808.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.13"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/Users/pwp/FLProperty/node_modules/react-native-screens/android/src/main/jni",
+					"targetIndexes" : 
+					[
+						7
+					]
+				},
+				{
+					"build" : "rnsvg_autolinked_build",
+					"jsonFile" : "directory-rnsvg_autolinked_build-Debug-ca8cc6ad252bd5842993.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.13"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/Users/pwp/FLProperty/node_modules/react-native-svg/android/src/main/jni",
+					"targetIndexes" : 
+					[
+						8
+					]
+				},
+				{
+					"build" : "RNVectorIconsSpec_autolinked_build",
+					"jsonFile" : "directory-RNVectorIconsSpec_autolinked_build-Debug-6c45acfba2ea5172df78.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.13"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/Users/pwp/FLProperty/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni",
+					"targetIndexes" : 
+					[
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9
+					],
+					"name" : "appmodules",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "appmodules::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appmodules-Debug-643f126c8a86ce188391.json",
+					"name" : "appmodules",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "react_codegen_RNDatePickerSpecs::@c00f981c6e74346c63d4",
+					"jsonFile" : "target-react_codegen_RNDatePickerSpecs-Debug-9f48c4e9bb090b8cde54.json",
+					"name" : "react_codegen_RNDatePickerSpecs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "react_codegen_RNImagePickerSpec::@f66ee9a2efecfb28bee4",
+					"jsonFile" : "target-react_codegen_RNImagePickerSpec-Debug-ebe5b71874a079ed5c7c.json",
+					"name" : "react_codegen_RNImagePickerSpec",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 9,
+					"id" : "react_codegen_RNVectorIconsSpec::@479809fae146501fd34d",
+					"jsonFile" : "target-react_codegen_RNVectorIconsSpec-Debug-10b5562b45ad742904d6.json",
+					"name" : "react_codegen_RNVectorIconsSpec",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "react_codegen_rnasyncstorage::@1596841e19ec5b9eeffe",
+					"jsonFile" : "target-react_codegen_rnasyncstorage-Debug-ecef55328b5235af9ec3.json",
+					"name" : "react_codegen_rnasyncstorage",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "react_codegen_rngesturehandler_codegen::@39f233abcd2c728bc6ec",
+					"jsonFile" : "target-react_codegen_rngesturehandler_codegen-Debug-cf91bbcefa6378f69eb9.json",
+					"name" : "react_codegen_rngesturehandler_codegen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "react_codegen_rnreanimated::@8afabad14bfffa3f8b9a",
+					"jsonFile" : "target-react_codegen_rnreanimated-Debug-2d34c542a28b5a70614b.json",
+					"name" : "react_codegen_rnreanimated",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 7,
+					"id" : "react_codegen_rnscreens::@25bcbd507e98d3a854ad",
+					"jsonFile" : "target-react_codegen_rnscreens-Debug-4043f08d01fd59b0281e.json",
+					"name" : "react_codegen_rnscreens",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "react_codegen_rnsvg::@4f40eb209d0c0b4a3b65",
+					"jsonFile" : "target-react_codegen_rnsvg-Debug-1dc8b99b9748f28aa35a.json",
+					"name" : "react_codegen_rnsvg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "react_codegen_safeareacontext::@7984cd80db47aa7b952a",
+					"jsonFile" : "target-react_codegen_safeareacontext-Debug-2065e727aea8ee98caaa.json",
+					"name" : "react_codegen_safeareacontext",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/pwp/FLProperty/android/app/.cxx/Debug/a124w3t2/x86",
+		"source" : "/Users/pwp/FLProperty/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

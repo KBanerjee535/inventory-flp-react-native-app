@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "prefabPath": "/Users/pwp/.gradle/caches/modules-2/files-2.1/com.google.prefab/cli/2.1.0/aa32fec809c44fa531f01dcfb739b5b3304d3050/cli-2.1.0-all.jar",
+  "packages": [
+    "/Users/pwp/.gradle/caches/8.11.1/transforms/2c4c43e0c937da09ff5378541bf58190/transformed/jetified-react-android-0.77.0-release/prefab",
+    "/Users/pwp/FLProperty/node_modules/react-native-reanimated/android/build/intermediates/prefab_package/release/prefab",
+    "/Users/pwp/.gradle/caches/8.11.1/transforms/a35c3a1e57c1819ea4c0e55a43cb25d7/transformed/jetified-hermes-android-0.77.0-release/prefab",
+    "/Users/pwp/.gradle/caches/8.11.1/transforms/4974e0a20889c3b8306f96a5b19fe144/transformed/jetified-fbjni-0.7.0/prefab"
+  ]
+}
