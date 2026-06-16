@@ -9,6 +9,6 @@
 	"paths" : 
 	{
 		"build" : "RNImagePickerSpec_autolinked_build",
-		"source" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-image-picker/android/build/generated/source/codegen/jni"
+		"source" : "C:/project/React-Native/FLPI/node_modules/react-native-image-picker/android/build/generated/source/codegen/jni"
 	}
 }

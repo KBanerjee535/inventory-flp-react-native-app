@@ -7,27 +7,26 @@ import {
   ScrollView,
   Text,
   TextInput,
-  Modal,
-  Image,
   Animated,
+  Platform,
+  PermissionsAndroid,
+  Alert,
 } from 'react-native';
+
 import React, {useEffect, useRef, useState} from 'react';
+
 import Icon from 'react-native-vector-icons/Entypo';
 import Arrow from 'react-native-vector-icons/Ionicons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+
 import ItemIcon1 from '../assets/images/ItemIcon1.svg';
 import ItemIcon2 from '../assets/images/ItemIcon2.svg';
 import ItemIcon3 from '../assets/images/ItemIcon3.svg';
 import ItemIcon4 from '../assets/images/ItemIcon4.svg';
 import ItemIcon5 from '../assets/images/ItemIcon5.svg';
 import ItemIcon6 from '../assets/images/ItemIcon6.svg';
-import ItemIcon7 from '../assets/images/ItemIcon7.svg';
-import ItemIcon8 from '../assets/images/ItemIcon8.svg';
-import CloseIcon from '../assets/images/BlackCross.svg';
 
-import GalleryIcon from '../assets/images/GalleryIcon.svg';
-import CameraIcon from '../assets/images/CameraIcon.svg';
-
-import Trash from 'react-native-vector-icons/Ionicons';
+import Voice from '@react-native-voice/voice';
 
 const items = [
   {
@@ -66,113 +65,516 @@ const items = [
     text: 'Bedroom',
     screen: 'ClerkInventoryWaitingforApprovalReportBedroom',
   },
-  {
-    id: 7,
-    icon: <ItemIcon7 width={24} height={24} />,
-    text: 'Kitchen',
-    screen: 'ClerkInventoryWaitingforApprovalReportKitchen',
-  },
-
-  {
-    id: 8,
-    icon: <ItemIcon8 width={24} height={24} />,
-    text: 'Bathroom',
-    screen: 'ClerkInventoryWaitingforApprovalReportBathroom',
-  },
 ];
 
-const handleDeleteText = () => {
-  Animated.timing(descriptionAnim, {
-    toValue: 0,
-    duration: 300,
-    useNativeDriver: true,
-  }).start(() => {
-    setIsDeleted(true);
-  });
-};
-
-const ClientWaitingforapprovalfeedbackReportDetails = ({navigation}) => {
-  const [focusedInput, setFocusedInput] = useState(null);
+const ClientWaitingforapprovalfeedbackReportDetails = ({
+  navigation,
+}) => {
   const [showTooltip, setShowTooltip] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [isDeleted, setIsDeleted] = useState(false);
+  const [speechText, setSpeechText] = useState('');
+  const [recognitionError, setRecognitionError] =
+    useState('');
 
-  const fadeAnims = useRef(items.map(() => new Animated.Value(0))).current; // Create an array of Animated values
+  const [isRecording, setIsRecording] =
+    useState(false);
+
+  const [selectedItemId, setSelectedItemId] =
+    useState(null);
+
+  const [expandedItemId, setExpandedItemId] =
+    useState(null);
+
+  const [sectionNotes, setSectionNotes] = useState({});
+
+  const fadeAnims = useRef(
+    items.map(() => new Animated.Value(0)),
+  ).current;
+
+  /*
+  ==========================================
+  SPEECH EVENTS
+  ==========================================
+  */
+
+  const onSpeechStart = () => {
+    console.log('Speech started');
+    setIsRecording(true);
+  };
+
+  const onSpeechEnd = () => {
+    console.log('Speech ended');
+
+    setIsRecording(false);
+
+    Voice.destroy()
+      .then(Voice.removeAllListeners)
+      .catch(() => {});
+  };
+
+  const onSpeechResults = e => {
+    const text = e.value?.[0] || '';
+
+    console.log('VOICE RESULT:', text);
+
+    setSpeechText(prev => {
+      const prevTrim = prev.trim();
+      const normalizedText = text.trim();
+
+      if (!prevTrim) {
+        return normalizedText;
+      }
+
+      if (normalizedText.includes(prevTrim)) {
+        return normalizedText;
+      }
+
+      if (prevTrim.includes(normalizedText)) {
+        return prevTrim;
+      }
+
+      return `${prevTrim} ${normalizedText}`;
+    });
+  };
+
+  const onSpeechPartialResults = e => {
+    const partialText = e.value?.[0] || '';
+
+    if (partialText) {
+      setSpeechText(partialText);
+    }
+  };
+
+  const onSpeechError = e => {
+    console.log('Speech error:', e);
+
+    setIsRecording(false);
+
+    const errorCode = e.error?.code || e.code;
+
+    switch (String(errorCode)) {
+      case '2':
+        setRecognitionError(
+          'Network error. Please check internet connection.',
+        );
+        break;
+
+      case '7':
+        setRecognitionError(
+          'No speech detected. Please speak clearly.',
+        );
+        break;
+
+      case '11':
+        setRecognitionError(
+          "Didn't understand. Please try again.",
+        );
+        break;
+
+      default:
+        setRecognitionError(
+          'Speech recognition failed.',
+        );
+    }
+
+    setTimeout(() => {
+      setRecognitionError('');
+    }, 3000);
+  };
+
+  /*
+  ==========================================
+  START RECORDING
+  ==========================================
+  */
+
+  const startRecording = async () => {
+    try {
+      if (Platform.OS === 'android') {
+        const granted =
+          await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS
+              .RECORD_AUDIO,
+          );
+
+        if (
+          granted !==
+          PermissionsAndroid.RESULTS.GRANTED
+        ) {
+          Alert.alert(
+            'Permission Required',
+            'Microphone permission denied',
+          );
+
+          return;
+        }
+      }
+
+      await Voice.destroy().catch(() => {});
+      await Voice.removeAllListeners();
+
+      Voice.onSpeechStart = onSpeechStart;
+      Voice.onSpeechEnd = onSpeechEnd;
+      Voice.onSpeechResults = onSpeechResults;
+      Voice.onSpeechPartialResults = onSpeechPartialResults;
+      Voice.onSpeechError = onSpeechError;
+
+      await Voice.start('en-US');
+
+      setIsRecording(true);
+    } catch (error) {
+      console.log('START ERROR:', error);
+
+      setIsRecording(false);
+    }
+  };
+
+  /*
+  ==========================================
+  STOP RECORDING
+  ==========================================
+  */
+
+  const stopRecording = async () => {
+    try {
+      await Voice.stop();
+      await Voice.cancel();
+      await Voice.destroy();
+
+      setIsRecording(false);
+    } catch (error) {
+      console.log('STOP ERROR:', error);
+
+      setIsRecording(false);
+    }
+  };
+
+  /*
+  ==========================================
+  MIC BUTTON
+  ==========================================
+  */
+
+  const handleMicPress = async () => {
+    try {
+      if (!selectedItemId) {
+        Alert.alert(
+          'Select Section',
+          'Please select a section first.',
+        );
+
+        return;
+      }
+
+      // STOP
+      if (isRecording) {
+        console.log('Stopping recording...');
+
+        setIsRecording(false);
+
+        await stopRecording();
+
+        return;
+      }
+
+      // START
+      console.log('Starting recording...');
+
+      setRecognitionError('');
+
+      await startRecording();
+    } catch (error) {
+      console.log('MIC ERROR:', error);
+
+      setIsRecording(false);
+    }
+  };
+
+  /*
+  ==========================================
+  SAVE NOTE
+  ==========================================
+  */
+
+  const handleSubmitSpeech = () => {
+    if (!speechText.trim()) {
+      Alert.alert(
+        'Empty Note',
+        'Please record or type a note.',
+      );
+
+      return;
+    }
+
+    if (!selectedItemId) {
+      Alert.alert(
+        'No Section Selected',
+        'Please select a section first.',
+      );
+
+      return;
+    }
+
+    setSectionNotes(prev => ({
+      ...prev,
+      [selectedItemId]: speechText,
+    }));
+
+    setSpeechText('');
+
+    Alert.alert(
+      'Success',
+      'Inspection note saved successfully.',
+    );
+  };
+
+  /*
+  ==========================================
+  ANIMATION
+  ==========================================
+  */
 
   useEffect(() => {
     fadeAnims.forEach((anim, index) => {
       Animated.timing(anim, {
         toValue: 1,
         duration: 400,
-        delay: index * 200, // Staggered effect
+        delay: index * 150,
         useNativeDriver: true,
       }).start();
     });
   }, []);
 
+  /*
+  ==========================================
+  CLEANUP
+  ==========================================
+  */
+
+  useEffect(() => {
+    return () => {
+      Voice.destroy()
+        .then(Voice.removeAllListeners)
+        .catch(err => console.log(err));
+    };
+  }, []);
+
   return (
     <SafeAreaView style={styles.mainBody}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F1F2F6" />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="#F1F2F6"
+      />
 
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.Body}>
+          {/* HEADER */}
+
           <View style={styles.Header}>
             <View style={styles.HeaderLft}>
               <View style={styles.indicator}>
-                <View style={[styles.statusindicator, styles.checkIn]}></View>
-                <Text style={styles.indicatorTxt}>Check In</Text>
+                <View
+                  style={[
+                    styles.statusindicator,
+                    styles.checkIn,
+                  ]}
+                />
+
+                <Text style={styles.indicatorTxt}>
+                  Check In
+                </Text>
               </View>
-              <Text style={styles.HeaderLftTxt}>The New Rectory</Text>
+
+              <Text style={styles.HeaderLftTxt}>
+                The New Rectory
+              </Text>
             </View>
 
             <View style={styles.HeaderRgt}>
               <TouchableOpacity
                 style={styles.MoreBtn}
-                onPress={() => setShowTooltip(!showTooltip)}>
-                <Icon name="dots-three-vertical" size={28} color="#393D47" />
+                onPress={() =>
+                  setShowTooltip(!showTooltip)
+                }>
+                <Icon
+                  name="dots-three-vertical"
+                  size={26}
+                  color="#393D47"
+                />
               </TouchableOpacity>
 
               {showTooltip && (
                 <View style={styles.tooltipContainer}>
-                  {/* Arrow */}
                   <View style={styles.tooltipArrow} />
-                  {/* Tooltip Box */}
+
                   <View style={styles.tooltip}>
-                    <Text style={styles.tooltipText}>Download Report</Text>
+                    <Text style={styles.tooltipText}>
+                      Download Report
+                    </Text>
                   </View>
                 </View>
               )}
             </View>
           </View>
 
+          {/* LIST */}
+
           <View style={styles.List}>
-            <Text style={styles.ListHr}>Sections of inspection</Text>
+            <Text style={styles.ListHr}>
+              Sections of inspection
+            </Text>
 
             {items.map((item, index) => (
-              <Animated.View key={item.id} style={{opacity: fadeAnims[index]}}>
+              <Animated.View
+                key={item.id}
+                style={{
+                  opacity: fadeAnims[index],
+                }}>
+                {/* LIST ITEM */}
+
                 <TouchableOpacity
-                  style={styles.ListItem}
-                  onPress={() => navigation.navigate(item.screen)}>
-                  <View style={styles.ListItemInner}>
+                  style={[
+                    styles.ListItem,
+                    selectedItemId === item.id &&
+                      styles.ActiveListItem,
+                  ]}
+                  onPress={() => {
+                    setSelectedItemId(item.id);
+
+                    setExpandedItemId(prev =>
+                      prev === item.id
+                        ? null
+                        : item.id,
+                    );
+                  }}>
+                  <View
+                    style={styles.ListItemInner}>
                     {item.icon}
-                    <Text style={styles.ListItemTxt}>{item.text}</Text>
+
+                    <Text
+                      style={styles.ListItemTxt}>
+                      {item.text}
+                    </Text>
                   </View>
+
                   <Arrow
-                    name="chevron-forward-outline"
-                    size={28}
+                    name={
+                      expandedItemId === item.id
+                        ? 'chevron-down-outline'
+                        : 'chevron-forward-outline'
+                    }
+                    size={24}
                     color="#393D47"
                   />
                 </TouchableOpacity>
+
+                {/* TOGGLE NOTE */}
+
+                {expandedItemId === item.id && (
+                  <View
+                    style={styles.NoteContainer}>
+                    <Text
+                      style={styles.NoteTitle}>
+                      Inspection Note
+                    </Text>
+
+                    <Text style={styles.NoteText}>
+                      {sectionNotes[item.id]
+                        ? sectionNotes[item.id]
+                        : 'No note added yet'}
+                    </Text>
+                  </View>
+                )}
               </Animated.View>
             ))}
           </View>
         </View>
       </ScrollView>
+
+      {/* SPEECH SECTION */}
+
+      <View style={styles.SpeechSection}>
+        <Text style={styles.SpeechTitle}>
+          Speech Notes
+        </Text>
+
+        <Text style={styles.DynamicMessage}>
+          {selectedItemId
+            ? `Selected Section: ${
+                items.find(
+                  i => i.id === selectedItemId,
+                )?.text
+              }`
+            : 'Please select a section'}
+        </Text>
+
+        {/* MIC */}
+
+        <View style={styles.MicContainer}>
+          <TouchableOpacity
+            style={[
+              styles.MicButton,
+              isRecording &&
+                styles.MicButtonRecording,
+            ]}
+            onPress={handleMicPress}>
+            <MaterialIcon
+              name={
+                isRecording
+                  ? 'stop-circle'
+                  : 'mic'
+              }
+              size={36}
+              color="#fff"
+            />
+          </TouchableOpacity>
+
+          <Text style={styles.RecordingStatus}>
+            {isRecording
+              ? 'Recording... Tap again to stop'
+              : 'Tap microphone to record'}
+          </Text>
+
+          {recognitionError ? (
+            <Text style={styles.ErrorMessage}>
+              {recognitionError}
+            </Text>
+          ) : null}
+        </View>
+
+        {/* TEXT AREA */}
+
+        <TextInput
+          style={styles.SpeechInput}
+          placeholder="Speak or type inspection notes..."
+          placeholderTextColor="#6D7D93"
+          multiline
+          textAlignVertical="top"
+          value={speechText}
+          onChangeText={setSpeechText}
+        />
+
+        {/* SAVE BUTTON */}
+
+        <TouchableOpacity
+          style={styles.SubmitSpeechBtn}
+          onPress={handleSubmitSpeech}>
+          <Text
+            style={
+              styles.SubmitSpeechBtnText
+            }>
+            Submit Note
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* FOOTER */}
+
       <View style={styles.Footer}>
         <TouchableOpacity style={styles.NextBtn}>
-          <Text style={styles.NextBtnTxt}>Approve Edited Report</Text>
+          <Text style={styles.NextBtnTxt}>
+            Approve Edited Report
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -184,14 +586,14 @@ export default ClientWaitingforapprovalfeedbackReportDetails;
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
-    backgroundColor: '#f1f2f6',
+    backgroundColor: '#F1F2F6',
   },
+
   Body: {
     width: '100%',
-    height: '100%',
-    paddingLeft: 25,
-    paddingRight: 25,
+    paddingHorizontal: 25,
   },
+
   Header: {
     width: '100%',
     flexDirection: 'row',
@@ -199,49 +601,91 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingTop: 25,
   },
+
   indicator: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
     marginBottom: 8,
   },
+
   statusindicator: {
     width: 12,
     height: 12,
-    borderRadius: '100%',
+    borderRadius: 100,
   },
+
   checkIn: {
     backgroundColor: '#3CC6ED',
   },
+
   indicatorTxt: {
     color: '#393D47',
-    fontFamily: 'PlusJakartaSans-Regular',
     fontSize: 15,
-    fontWeight: '400',
   },
-  MoreBtn: {
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    width: 20,
-  },
+
   HeaderLftTxt: {
     color: '#151313',
-    fontFamily: 'BeVietnamPro-Medium',
     fontSize: 20,
-    fontWeight: '500',
+    fontWeight: '600',
   },
+
+  MoreBtn: {
+    width: 20,
+  },
+
+  tooltipContainer: {
+    position: 'absolute',
+    top: 40,
+    right: -7,
+    alignItems: 'flex-end',
+  },
+
+  tooltipArrow: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 8,
+    borderRightWidth: 8,
+    borderBottomWidth: 8,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#333',
+    marginRight: 5,
+    marginBottom: -1,
+  },
+
+  tooltip: {
+    backgroundColor: '#333',
+    padding: 8,
+    borderRadius: 5,
+    width: 155,
+    height: 45,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  tooltipText: {
+    color: '#fff',
+    fontSize: 14,
+  },
+
+  /*
+  ==========================================
+  LIST
+  ==========================================
+  */
+
   List: {
-    width: '100%',
     paddingTop: 35,
   },
+
   ListHr: {
     color: '#525050',
-    fontFamily: 'BeVietnamPro-Regular',
     fontSize: 14,
-    fontWeight: '400',
-    textTransform: 'uppercase',
     marginBottom: 25,
+    textTransform: 'uppercase',
   },
+
   ListItem: {
     backgroundColor: '#fff',
     borderRadius: 8,
@@ -251,266 +695,167 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+
+  ActiveListItem: {
+    borderWidth: 2,
+    borderColor: '#393D47',
+  },
+
   ListItemInner: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
     gap: 15,
   },
+
   ListItemTxt: {
     color: '#393D47',
-    fontFamily: 'BeVietnamPro-Regular',
     fontSize: 15,
-    fontWeight: '400',
   },
 
-  tooltipContainer: {
-    position: 'absolute',
-    top: 40,
-    right: -7, // Align tooltip to the right
-    alignItems: 'flex-end', // Align arrow to the right
+  /*
+  ==========================================
+  NOTE TOGGLE
+  ==========================================
+  */
+
+  NoteContainer: {
+    backgroundColor: '#fff',
+    padding: 15,
+    marginTop: -4,
+    marginBottom: 10,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E0E4EA',
   },
-  tooltipArrow: {
-    width: 0,
-    height: 0,
-    borderLeftWidth: 8,
-    borderRightWidth: 8,
-    borderBottomWidth: 8,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderBottomColor: '#333', // Same as tooltip background
-    alignSelf: 'flex-end', // Align arrow to the right
-    marginRight: 5, // Adjust arrow position
-    marginBottom: -1, // Slight overlap with tooltip
+
+  NoteTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#393D47',
+    marginBottom: 6,
   },
-  tooltip: {
-    backgroundColor: '#333',
-    padding: 8,
-    borderRadius: 5,
-    width: 155,
-    height: 45,
+
+  NoteText: {
+    fontSize: 14,
+    color: '#6D7D93',
+    lineHeight: 22,
+  },
+
+  /*
+  ==========================================
+  SPEECH SECTION
+  ==========================================
+  */
+
+  SpeechSection: {
+    paddingHorizontal: 25,
+    paddingBottom: 20,
+    backgroundColor: '#F1F2F6',
+    minHeight: 320,
+  },
+
+  SpeechTitle: {
+    color: '#151313',
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 10,
+  },
+
+  DynamicMessage: {
+    fontSize: 13,
+    color: '#6D7D93',
+    marginBottom: 15,
+    fontStyle: 'italic',
+  },
+
+  MicContainer: {
     alignItems: 'center',
+    marginBottom: 18,
   },
 
-  tooltipText: {
-    fontFamily: 'BeVietnamPro-Regular',
-    fontSize: 15,
-    fontWeight: '400',
-    color: '#fff',
+  MicButton: {
+    width: 75,
+    height: 75,
+    borderRadius: 40,
+    backgroundColor: '#393D47',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
   },
+
+  MicButtonRecording: {
+    backgroundColor: '#FF4444',
+  },
+
+  RecordingStatus: {
+    fontSize: 14,
+    color: '#6D7D93',
+  },
+
+  ErrorMessage: {
+    fontSize: 12,
+    color: '#FF4444',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+
+  /*
+  ==========================================
+  TEXT INPUT
+  ==========================================
+  */
+
+  SpeechInput: {
+    width: '100%',
+    minHeight: 140,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E0E4EA',
+    padding: 15,
+    fontSize: 14,
+    color: '#393D47',
+    textAlignVertical: 'top',
+  },
+
+  SubmitSpeechBtn: {
+    backgroundColor: '#393D47',
+    height: 50,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 15,
+  },
+
+  SubmitSpeechBtnText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+
+  /*
+  ==========================================
+  FOOTER
+  ==========================================
+  */
 
   Footer: {
     padding: 25,
   },
+
   NextBtn: {
     backgroundColor: '#393D47',
     width: '100%',
-    flexDirection: 'row',
     alignItems: 'center',
-    alignContent: 'center',
     justifyContent: 'center',
     height: 55,
-    lineHeight: 50,
-
     borderRadius: 8,
   },
+
   NextBtnTxt: {
     color: '#FFF',
     fontSize: 14,
-    fontFamily: 'BeVietnamPro-SemiBold',
     fontWeight: '600',
-  },
-  ViewBtn: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignContent: 'center',
-    justifyContent: 'center',
-    height: 55,
-    lineHeight: 50,
-    borderRadius: 8,
-    marginTop: 10,
-    borderColor: '#393D47',
-    borderWidth: 1,
-  },
-  ViewBtnTxt: {
-    color: '#393D47',
-    fontSize: 14,
-    fontFamily: 'BeVietnamPro-SemiBold',
-    fontWeight: '600',
-  },
-  /* Modal Styles */
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '95%',
-    paddingTop: 20,
-    paddingBottom: 20,
-  },
-  closeButton: {
-    alignSelf: 'flex-end',
-    cursor: 'pointer',
-    marginRight: 10,
-    marginBottom: 15,
-    zIndex: 999,
-  },
-
-  ModalContainer: {
-    backgroundColor: '#fff',
-    paddingLeft: 20,
-    paddingTop: 10,
-    paddingRight: 20,
-    paddingBottom: 20,
-  },
-  subtitel: {
-    color: '#151313',
-    fontSize: 16,
-    fontFamily: 'BeVietnamPro-Regular',
-    fontWeight: '400',
-
-    marginBottom: 15,
-  },
-  BtnGap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: 25,
-    marginBottom: 20,
-  },
-  StartBtn: {
-    width: '47%',
-    backgroundColor: '#fff',
-    height: 150,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#00218F47',
-  },
-  StartBtnTxt: {
-    color: '#151313',
-    fontSize: 19,
-    fontFamily: 'BeVietnamPro-Regular',
-    fontWeight: '400',
-    textAlign: 'center',
-    marginTop: 5,
-  },
-
-  pagetitleTxt: {
-    color: '#151313',
-    fontSize: 19,
-    fontFamily: 'BeVietnamPro-Medium',
-    fontWeight: '500',
-    textAlign: 'center',
-    position: 'absolute',
-    margin: 'auto',
-    left: 0,
-    right: 0,
-  },
-  searchInput: {
-    fontSize: 14,
-    color: '#434854',
-    fontFamily: 'BeVietnamPro-Regular',
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#00218F47',
-    marginBottom: 15,
-    height: 140,
-    textAlignVertical: 'top',
-    justifyContent: 'flex-start',
-  },
-  searchFocused: {
-    borderColor: '#FF8800', // Highlighted border when focused
-  },
-  ModalTitel: {
-    fontSize: 16,
-    color: '#000',
-    fontFamily: 'BeVietnamPro-SemiBold',
-    textAlign: 'center',
-    marginBottom: 20,
-    marginTop: -40,
-  },
-
-  searchInput2: {
-    fontWeight: '400',
-    fontSize: 13,
-    fontFamily: 'BeVietnamPro-Regular',
-    color: '#6D7D93',
-    width: '100%',
-    height: 55,
-    borderWidth: 1,
-    borderColor: '#6D7D93',
-    borderRadius: 5,
-    marginBottom: 20,
-    paddingLeft: 15,
-    paddingRight: 15,
-    backgroundColor: '#fff',
-  },
-  InfoBoxInner: {
-    width: '100%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-
-  InfoBoxLft: {
-    width: 100,
-    borderRadius: 5,
-    overflow: 'hidden',
-  },
-  image: {
-    width: '100%',
-    height: 100,
-    borderRadius: 5,
-  },
-
-  InfoBoxRgt: {
-    width: '72%',
-    paddingLeft: 20,
-  },
-  InfoTitle: {
-    color: '#000000',
-    fontSize: 16,
-    fontFamily: 'BeVietnamPro-Medium',
-    fontWeight: '500',
-    marginBottom: 5,
-  },
-  InfoTxt: {
-    fontWeight: '400',
-    fontSize: 14,
-    fontFamily: 'BeVietnamPro-Regular',
-    color: '#434854',
-    lineHeight: 20,
-  },
-  BtnGrp: {
-    width: '100%',
-    marginBottom: 20,
-  },
-
-  buttonRow: {
-    flexDirection: 'row',
-    marginBottom: 25,
-    marginTop: 15,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  buttonText: {
-    marginLeft: 5,
-    fontSize: 15,
-    color: '#434854',
-    fontFamily: 'BeVietnamPro-Regular',
-    fontWeight: '400',
   },
 });

@@ -35,7 +35,7 @@
 		],
 		"files" : 
 		[
-			"C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/CMakeLists.txt"
+			"C:/project/React-Native/FLPI/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/CMakeLists.txt"
 		],
 		"nodes" : 
 		[
@@ -133,11 +133,11 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/."
+					"path" : "C:/project/React-Native/FLPI/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/."
 				},
 				{
 					"backtrace" : 3,
-					"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec"
+					"path" : "C:/project/React-Native/FLPI/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec"
 				},
 				{
 					"backtrace" : 4,
@@ -177,7 +177,7 @@
 	"paths" : 
 	{
 		"build" : "RNVectorIconsSpec_autolinked_build",
-		"source" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni"
+		"source" : "C:/project/React-Native/FLPI/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni"
 	},
 	"sourceGroups" : 
 	[
@@ -200,43 +200,43 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/RNVectorIconsSpec-generated.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/RNVectorIconsSpec-generated.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec/ComponentDescriptors.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec/ComponentDescriptors.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec/EventEmitters.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec/EventEmitters.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec/Props.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec/Props.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec/RNVectorIconsSpecJSI-generated.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec/RNVectorIconsSpecJSI-generated.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec/ShadowNodes.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec/ShadowNodes.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec/States.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/react/renderer/components/RNVectorIconsSpec/States.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

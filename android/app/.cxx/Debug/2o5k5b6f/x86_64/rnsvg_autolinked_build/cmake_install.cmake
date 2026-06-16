@@ -1,4 +1,4 @@
-# Install script for directory: C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-svg/android/src/main/jni
+# Install script for directory: C:/project/React-Native/FLPI/node_modules/react-native-svg/android/src/main/jni
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

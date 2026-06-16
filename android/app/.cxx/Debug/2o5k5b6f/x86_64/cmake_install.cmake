@@ -1,4 +1,4 @@
-# Install script for directory: C:/project/React-Native/FLPropertyAppNew/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup
+# Install script for directory: C:/project/React-Native/FLPI/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -44,14 +44,14 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/x86_64/RNDatePickerSpecs_autolinked_build/cmake_install.cmake")
-  include("C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/x86_64/rngesturehandler_codegen_autolinked_build/cmake_install.cmake")
-  include("C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/x86_64/RNImagePickerSpec_autolinked_build/cmake_install.cmake")
-  include("C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/x86_64/rnreanimated_autolinked_build/cmake_install.cmake")
-  include("C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/x86_64/safeareacontext_autolinked_build/cmake_install.cmake")
-  include("C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/x86_64/rnscreens_autolinked_build/cmake_install.cmake")
-  include("C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/x86_64/rnsvg_autolinked_build/cmake_install.cmake")
-  include("C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/x86_64/RNVectorIconsSpec_autolinked_build/cmake_install.cmake")
+  include("C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/x86_64/RNDatePickerSpecs_autolinked_build/cmake_install.cmake")
+  include("C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/x86_64/rngesturehandler_codegen_autolinked_build/cmake_install.cmake")
+  include("C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/x86_64/RNImagePickerSpec_autolinked_build/cmake_install.cmake")
+  include("C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/x86_64/rnreanimated_autolinked_build/cmake_install.cmake")
+  include("C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/x86_64/safeareacontext_autolinked_build/cmake_install.cmake")
+  include("C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/x86_64/rnscreens_autolinked_build/cmake_install.cmake")
+  include("C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/x86_64/rnsvg_autolinked_build/cmake_install.cmake")
+  include("C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/x86_64/RNVectorIconsSpec_autolinked_build/cmake_install.cmake")
 
 endif()
 
@@ -63,5 +63,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/x86_64/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/x86_64/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

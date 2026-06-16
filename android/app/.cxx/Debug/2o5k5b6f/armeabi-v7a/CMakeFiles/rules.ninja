@@ -151,7 +151,7 @@ rule CXX_COMPILER__react_codegen_RNVectorIconsSpec_Debug
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = "C:\Users\PWT 01\AppData\Local\Android\Sdk\cmake\3.22.1\bin\cmake.exe" --regenerate-during-build -SC:\project\React-Native\FLPropertyAppNew\node_modules\react-native\ReactAndroid\cmake-utils\default-app-setup -BC:\project\React-Native\FLPropertyAppNew\android\app\.cxx\Debug\2o5k5b6f\armeabi-v7a
+  command = "C:\Users\PWT 01\AppData\Local\Android\Sdk\cmake\3.22.1\bin\cmake.exe" --regenerate-during-build -SC:\project\React-Native\FLPI\node_modules\react-native\ReactAndroid\cmake-utils\default-app-setup -BC:\project\React-Native\FLPI\android\app\.cxx\Debug\2o5k5b6f\armeabi-v7a
   description = Re-running CMake...
   generator = 1
 
@@ -160,7 +160,7 @@ rule RERUN_CMAKE
 # Rule for re-checking globbed directories.
 
 rule VERIFY_GLOBS
-  command = "C:\Users\PWT 01\AppData\Local\Android\Sdk\cmake\3.22.1\bin\cmake.exe" -P C:\project\React-Native\FLPropertyAppNew\android\app\.cxx\Debug\2o5k5b6f\armeabi-v7a\CMakeFiles\VerifyGlobs.cmake
+  command = "C:\Users\PWT 01\AppData\Local\Android\Sdk\cmake\3.22.1\bin\cmake.exe" -P C:\project\React-Native\FLPI\android\app\.cxx\Debug\2o5k5b6f\armeabi-v7a\CMakeFiles\VerifyGlobs.cmake
   description = Re-checking globbed directories...
   generator = 1
 

@@ -1,6 +1,6 @@
 rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/react/renderer/components/rngesturehandler_codegen/rngesturehandler_codegenJSI-generated.cpp.o: \
-  C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/rngesturehandler_codegenJSI-generated.cpp \
-  C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/rngesturehandler_codegenJSI.h \
+  C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/rngesturehandler_codegenJSI-generated.cpp \
+  C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/rngesturehandler_codegenJSI.h \
   C:/Users/PWT\ 01/.gradle/caches/8.11.1/transforms/b81db5fa34277d22a6a70d46ca39de9f/transformed/jetified-react-android-0.78.0-debug/prefab/modules/reactnative/include/ReactCommon/TurboModule.h \
   C:/Users/PWT\ 01/AppData/Local/Android/Sdk/ndk/28.0.13004108/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/memory \
   C:/Users/PWT\ 01/AppData/Local/Android/Sdk/ndk/28.0.13004108/toolchains/llvm/prebuilt/windows-x86_64/sysroot/usr/include/c++/v1/__config \

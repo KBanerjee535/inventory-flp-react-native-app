@@ -1,5 +1,5 @@
 // Copyright (c) Meta Platforms, Inc. and affiliates. All Rights Reserved.
-// @generated SignedSource<<1284c402aedd087ebdf70e9e76596f1c>>
+// @generated SignedSource<<c0e78c8bc8eb1a38a58038991c7b0fdf>>
 
 #pragma once
 
@@ -35,10 +35,8 @@ struct RemoveBreakpointRequest;
 struct ResumeRequest;
 struct ResumedNotification;
 struct Scope;
-using ScriptLanguage = std::string;
 struct ScriptParsedNotification;
 struct ScriptPosition;
-struct SetBlackboxPatternsRequest;
 struct SetBlackboxedRangesRequest;
 struct SetBreakpointByUrlRequest;
 struct SetBreakpointByUrlResponse;
@@ -136,7 +134,6 @@ struct RequestHandler {
   virtual void handle(const debugger::PauseRequest &req) = 0;
   virtual void handle(const debugger::RemoveBreakpointRequest &req) = 0;
   virtual void handle(const debugger::ResumeRequest &req) = 0;
-  virtual void handle(const debugger::SetBlackboxPatternsRequest &req) = 0;
   virtual void handle(const debugger::SetBlackboxedRangesRequest &req) = 0;
   virtual void handle(const debugger::SetBreakpointRequest &req) = 0;
   virtual void handle(const debugger::SetBreakpointByUrlRequest &req) = 0;
@@ -183,7 +180,6 @@ struct NoopRequestHandler : public RequestHandler {
   void handle(const debugger::PauseRequest &req) override {}
   void handle(const debugger::RemoveBreakpointRequest &req) override {}
   void handle(const debugger::ResumeRequest &req) override {}
-  void handle(const debugger::SetBlackboxPatternsRequest &req) override {}
   void handle(const debugger::SetBlackboxedRangesRequest &req) override {}
   void handle(const debugger::SetBreakpointRequest &req) override {}
   void handle(const debugger::SetBreakpointByUrlRequest &req) override {}
@@ -654,18 +650,6 @@ struct debugger::ResumeRequest : public Request {
   void accept(RequestHandler &handler) const override;
 
   std::optional<bool> terminateOnResume;
-};
-
-struct debugger::SetBlackboxPatternsRequest : public Request {
-  SetBlackboxPatternsRequest();
-  static std::unique_ptr<SetBlackboxPatternsRequest> tryMake(
-      const JSONObject *obj);
-
-  JSONValue *toJsonVal(JSONFactory &factory) const override;
-  void accept(RequestHandler &handler) const override;
-
-  std::vector<std::string> patterns;
-  std::optional<bool> skipAnonymous;
 };
 
 struct debugger::SetBlackboxedRangesRequest : public Request {
@@ -1197,7 +1181,6 @@ struct debugger::ScriptParsedNotification : public Notification {
   std::optional<bool> hasSourceURL;
   std::optional<bool> isModule;
   std::optional<long long> length;
-  std::optional<debugger::ScriptLanguage> scriptLanguage;
 };
 
 struct heapProfiler::AddHeapSnapshotChunkNotification : public Notification {

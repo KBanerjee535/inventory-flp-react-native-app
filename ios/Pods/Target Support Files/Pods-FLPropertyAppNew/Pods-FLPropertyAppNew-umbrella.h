@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double Pods_FLPropertyAppNewVersionNumber;
-FOUNDATION_EXPORT const unsigned char Pods_FLPropertyAppNewVersionString[];
+FOUNDATION_EXPORT double Pods_FLPIVersionNumber;
+FOUNDATION_EXPORT const unsigned char Pods_FLPIVersionString[];
 

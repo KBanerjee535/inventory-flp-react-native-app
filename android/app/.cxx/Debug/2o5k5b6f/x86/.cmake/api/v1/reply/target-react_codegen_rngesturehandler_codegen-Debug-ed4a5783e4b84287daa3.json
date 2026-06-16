@@ -35,7 +35,7 @@
 		],
 		"files" : 
 		[
-			"C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/CMakeLists.txt"
+			"C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/CMakeLists.txt"
 		],
 		"nodes" : 
 		[
@@ -133,11 +133,11 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/."
+					"path" : "C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/."
 				},
 				{
 					"backtrace" : 3,
-					"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen"
+					"path" : "C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen"
 				},
 				{
 					"backtrace" : 4,
@@ -177,7 +177,7 @@
 	"paths" : 
 	{
 		"build" : "rngesturehandler_codegen_autolinked_build",
-		"source" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni"
+		"source" : "C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni"
 	},
 	"sourceGroups" : 
 	[
@@ -200,43 +200,43 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/ComponentDescriptors.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/ComponentDescriptors.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/EventEmitters.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/EventEmitters.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/Props.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/Props.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/ShadowNodes.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/ShadowNodes.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/States.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/States.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/rngesturehandler_codegenJSI-generated.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/react/renderer/components/rngesturehandler_codegen/rngesturehandler_codegenJSI-generated.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/rngesturehandler_codegen-generated.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/rngesturehandler_codegen-generated.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

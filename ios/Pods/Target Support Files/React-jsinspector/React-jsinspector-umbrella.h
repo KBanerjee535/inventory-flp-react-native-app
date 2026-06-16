@@ -17,6 +17,7 @@
 #import "jsinspector-modern/ExecutionContextManager.h"
 #import "jsinspector-modern/FallbackRuntimeAgentDelegate.h"
 #import "jsinspector-modern/FallbackRuntimeTargetDelegate.h"
+#import "jsinspector-modern/ForwardingConsoleMethods.def"
 #import "jsinspector-modern/HostAgent.h"
 #import "jsinspector-modern/HostCommand.h"
 #import "jsinspector-modern/HostTarget.h"

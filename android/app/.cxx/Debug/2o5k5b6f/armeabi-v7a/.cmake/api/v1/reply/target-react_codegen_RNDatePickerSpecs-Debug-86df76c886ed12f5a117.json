@@ -35,7 +35,7 @@
 		],
 		"files" : 
 		[
-			"C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/CMakeLists.txt"
+			"C:/project/React-Native/FLPI/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/CMakeLists.txt"
 		],
 		"nodes" : 
 		[
@@ -133,11 +133,11 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/."
+					"path" : "C:/project/React-Native/FLPI/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/."
 				},
 				{
 					"backtrace" : 3,
-					"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs"
+					"path" : "C:/project/React-Native/FLPI/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs"
 				},
 				{
 					"backtrace" : 4,
@@ -177,7 +177,7 @@
 	"paths" : 
 	{
 		"build" : "RNDatePickerSpecs_autolinked_build",
-		"source" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni"
+		"source" : "C:/project/React-Native/FLPI/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni"
 	},
 	"sourceGroups" : 
 	[
@@ -200,43 +200,43 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/RNDatePickerSpecs-generated.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/RNDatePickerSpecs-generated.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs/ComponentDescriptors.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs/ComponentDescriptors.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs/EventEmitters.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs/EventEmitters.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs/Props.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs/Props.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs/RNDatePickerSpecsJSI-generated.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs/RNDatePickerSpecsJSI-generated.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs/ShadowNodes.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs/ShadowNodes.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs/States.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/react/renderer/components/RNDatePickerSpecs/States.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

@@ -92,17 +92,16 @@ const DashboardScreen = ({navigation}) => {
   setToday(new Date(seleteddate));
  //alert(seletedJobId)
   try {
-
-
-    
         setScreenLoading(true);
 
      let fd = new FormData();
-     fd.append("assign_date", seleteddate);
-    
+    //  fd.append("assign_date", seleteddate);
+    fd.append("date_from", seleteddate);
+    fd.append("date_to", seleteddate);
+
     let response = await getInventoryListByClerkIdApi(fd);
 
-  console.log(JSON.stringify(response.data.data));
+  console.log('inventorylist: ' + JSON.stringify(response.data.data));
   setInventoryList(response.data.data);
       setScreenLoading(false);
 

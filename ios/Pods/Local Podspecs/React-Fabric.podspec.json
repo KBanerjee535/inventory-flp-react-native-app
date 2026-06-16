@@ -1,6 +1,6 @@
 {
   "name": "React-Fabric",
-  "version": "0.78.0",
+  "version": "0.77.3",
   "summary": "Fabric for React Native.",
   "homepage": "https://reactnative.dev/",
   "license": "MIT",
@@ -10,7 +10,7 @@
   },
   "source": {
     "git": "https://github.com/facebook/react-native.git",
-    "tag": "v0.78.0"
+    "tag": "v0.77.3"
   },
   "source_files": "dummyFile.cpp",
   "pod_target_xcconfig": {
@@ -51,7 +51,6 @@
     {
       "name": "[RN]Check rncore",
       "execution_position": "before_compile",
-      "always_out_of_date": "1",
       "script": "echo \"Checking whether Codegen has run...\"\nrncorePath=\"$REACT_NATIVE_PATH/ReactCommon/react/renderer/components/rncore\"\n\nif [[ ! -d \"$rncorePath\" ]]; then\n  echo 'error: Codegen did not run properly in your project. Please reinstall cocoapods with `bundle exec pod install`.'\n  exit 1\nfi\n"
     }
   ],
@@ -258,17 +257,6 @@
       "source_files": "react/renderer/telemetry/**/*.{m,mm,cpp,h}",
       "exclude_files": "react/renderer/telemetry/tests",
       "header_dir": "react/renderer/telemetry"
-    },
-    {
-      "name": "consistency",
-      "dependencies": {
-        "RCT-Folly/Fabric": [
-          "2024.11.18.00"
-        ]
-      },
-      "compiler_flags": "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_CFG_NO_COROUTINES=1 -DFOLLY_HAVE_CLOCK_GETTIME=1 -Wno-comma -Wno-shorten-64-to-32",
-      "source_files": "react/renderer/consistency/**/*.{m,mm,cpp,h}",
-      "header_dir": "react/renderer/consistency"
     },
     {
       "name": "uimanager",

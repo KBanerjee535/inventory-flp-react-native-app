@@ -101,3 +101,24 @@ To learn more about React Native, take a look at the following resources:
 ./android/gradlew app:installDebug -PreactNativeDevServerPort=8081 --stacktrace; echo EXIT:$?
 ./gradlew app:installDebug -PreactNativeDevServerPort=8081 --stacktrace
 cd /Users/macbookpro/dev/flss/android && ./gradlew app:installDebug -PreactNativeDevServerPort=8081 --stacktrace
+
+# Delete the node modules folder and the package lock file
+rm -rf node_modules package-lock.json
+
+# Clean install fresh versions using the pinned rule criteria 
+npm install --legacy-peer-deps
+# Delete hidden workspace cache folders
+rm -rf android/.gradle android/build android/app/build
+rm -rf node_modules/react-native-gesture-handler/android/.cxx
+
+# Execute a native framework clean
+cd android
+./gradlew clean
+cd ..
+npx react-native start --reset-cache
+npx react-native run-android
+adb reverse tcp:9090 tcp:9090
+
+
+# Force npm to reconstruct the local bin shortcuts
+npm rebuild @react-native-community/cli

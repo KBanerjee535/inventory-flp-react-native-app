@@ -77,13 +77,22 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.flpropertyappnew"
+    externalNativeBuild {
+        cmake {
+            version rootProject.ext.cmakeVersion
+        }
+    }
+
+    namespace "com.flpi"
     defaultConfig {
-        applicationId "com.flpropertyappnew"
+        applicationId "com.flpi"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        aarMetadata {
+            minCompileSdk = 34
+        }
     }
     signingConfigs {
         debug {
@@ -92,6 +101,7 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        
     }
     buildTypes {
         debug {
@@ -103,6 +113,7 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            
         }
     }
 }
@@ -117,5 +128,37 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+subprojects { subproject ->
+    afterEvaluate {
+        // 💡 UNIFIED RULE: Safely force ALL third-party modules to compile against standard targets
+        if (subproject.hasProperty('android')) {
+            subproject.android {
+                compileSdkVersion rootProject.ext.compileSdkVersion
+                buildToolsVersion rootProject.ext.buildToolsVersion
+                
+                defaultConfig {
+                    targetSdkVersion rootProject.ext.targetSdkVersion
+                }
+
+                // Forces modern Java compilation across all third-party dependencies
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+            }
+        }
+        
+        // Forces the Kotlin compiler to output Java 17 bytecode smoothly across all modules
+        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+            kotlinOptions {
+                jvmTarget = "17" 
+                freeCompilerArgs += ["-Xskip-prerelease-check", "-Xallow-unstable-dependencies"]
+            }
+        }
+    }
+}
+
+
 
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")

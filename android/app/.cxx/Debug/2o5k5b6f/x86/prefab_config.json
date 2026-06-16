@@ -3,7 +3,7 @@
   "prefabPath": "C:\\Users\\PWT 01\\.gradle\\caches\\modules-2\\files-2.1\\com.google.prefab\\cli\\2.1.0\\aa32fec809c44fa531f01dcfb739b5b3304d3050\\cli-2.1.0-all.jar",
   "packages": [
     "C:\\Users\\PWT 01\\.gradle\\caches\\8.11.1\\transforms\\b81db5fa34277d22a6a70d46ca39de9f\\transformed\\jetified-react-android-0.78.0-debug\\prefab",
-    "C:\\project\\React-Native\\FLPropertyAppNew\\node_modules\\react-native-reanimated\\android\\build\\intermediates\\prefab_package\\debug\\prefab",
+    "C:\\project\\React-Native\\FLPI\\node_modules\\react-native-reanimated\\android\\build\\intermediates\\prefab_package\\debug\\prefab",
     "C:\\Users\\PWT 01\\.gradle\\caches\\8.11.1\\transforms\\f215980e5c99621e5a5e54e408725d41\\transformed\\jetified-hermes-android-0.78.0-debug\\prefab",
     "C:\\Users\\PWT 01\\.gradle\\caches\\8.11.1\\transforms\\48513e7067d04235eeb63599cd4cadc1\\transformed\\jetified-fbjni-0.7.0\\prefab"
   ]

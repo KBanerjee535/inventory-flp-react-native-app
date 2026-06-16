@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "C:/project/React-Native/FLPropertyAppNew/android/app/build/intermediates/cxx/Debug/2o5k5b6f/obj/arm64-v8a/libreact_codegen_safeareacontext.so"
+			"path" : "C:/project/React-Native/FLPI/android/app/build/intermediates/cxx/Debug/2o5k5b6f/obj/arm64-v8a/libreact_codegen_safeareacontext.so"
 		}
 	],
 	"backtrace" : 1,
@@ -18,7 +18,7 @@
 		],
 		"files" : 
 		[
-			"C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt"
+			"C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt"
 		],
 		"nodes" : 
 		[
@@ -140,19 +140,19 @@
 			[
 				{
 					"backtrace" : 5,
-					"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/src/main/jni/."
+					"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/src/main/jni/."
 				},
 				{
 					"backtrace" : 5,
-					"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/src/main/jni/../../../../common/cpp"
+					"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/src/main/jni/../../../../common/cpp"
 				},
 				{
 					"backtrace" : 5,
-					"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/src/main/jni/../../../build/generated/source/codegen/jni"
+					"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/src/main/jni/../../../build/generated/source/codegen/jni"
 				},
 				{
 					"backtrace" : 5,
-					"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/src/main/jni/../../../build/generated/source/codegen/jni/react/renderer/components/safeareacontext"
+					"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/src/main/jni/../../../build/generated/source/codegen/jni/react/renderer/components/safeareacontext"
 				},
 				{
 					"backtrace" : 2,
@@ -229,7 +229,7 @@
 	"paths" : 
 	{
 		"build" : "safeareacontext_autolinked_build",
-		"source" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/src/main/jni"
+		"source" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/src/main/jni"
 	},
 	"sourceGroups" : 
 	[
@@ -254,55 +254,55 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/common/cpp/react/renderer/components/safeareacontext/RNCSafeAreaViewShadowNode.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/common/cpp/react/renderer/components/safeareacontext/RNCSafeAreaViewShadowNode.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/common/cpp/react/renderer/components/safeareacontext/RNCSafeAreaViewState.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/common/cpp/react/renderer/components/safeareacontext/RNCSafeAreaViewState.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/ComponentDescriptors.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/ComponentDescriptors.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/Props.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/Props.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/ShadowNodes.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/ShadowNodes.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/States.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/States.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/safeareacontextJSI-generated.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/safeareacontextJSI-generated.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/safeareacontext-generated.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/safeareacontext-generated.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

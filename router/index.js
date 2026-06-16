@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { View, ActivityIndicator } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useUserContext } from "../context/UserContext";
+
+// Screen Imports
 import WelcomeScreen from "../screens/WelcomeScreen";
 import LoginScreen from "../screens/LoginScreen";
 import ClientTabRoutes from "./ClientTabRoutes";
@@ -79,9 +84,6 @@ import SnaggingTasksDetailsScreen from "../screens/SnaggingTasksDetailsScreen";
 import ClientInvoiceInfoScreen from "../screens/ClientInvoiceInfoScreen";
 import HistoricalTaskDetails from "../screens/HistoricalTaskDetails";
 import TabRoutes from "./TabRoutes";
-import { useUserContext } from "../context/UserContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
 import AddNewSection from "../screens/AddNewSection";
 import ClerkCleaningSummaryList from "../screens/ClerkCleaningSummaryList";
 import Addanother from "../screens/Addanother";
@@ -89,49 +91,64 @@ import AddGeneralNotes from "../screens/AddGeneralNotes";
 
 const Stack = createNativeStackNavigator();
 
-function Router() {
+export default function Router() {
   const { isLoggedIn, setIsLoggedIn, userType, setuserType } = useUserContext();
-  const [loading, setLoading] = useState(true); // Added state to handle initial check
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const checkUserInfo = async () => {
-      const userData = await AsyncStorage.getItem("flpLoginInfo");
-      setIsLoggedIn(!!userData); // Update login state
-      setuserType(JSON.parse(userData)?.user_type);
-      // alert(JSON.parse(userData).user_type);
-      //userType === '4' ? 'ClientTabRoutes' :userType === '4'?'TabRoutes':'Welcome'
-      setLoading(false); // Mark loading as complete
+      try {
+        const userData = await AsyncStorage.getItem("flpLoginInfo");
+        if (userData) {
+          const parsedData = JSON.parse(userData);
+          setIsLoggedIn(true);
+          setuserType(parsedData?.userType || ""); // Safely access userType
+        } else {
+          setIsLoggedIn(false);
+          setuserType("");
+        }
+      } catch (error) {
+        console.error("Failed to read user authentication info", error);
+      } finally {
+        setLoading(false); // Stop loading layout rendering sequence
+      }
     };
 
     checkUserInfo();
-  }, []);
+  }, [setIsLoggedIn, setuserType]);
 
-  const parsedUserType = parseInt(userType, 10);
-
-  if (loading) return null;
+  // Prevent React Navigation 7 from evaluating stack trees with undefined parameters
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
-    <Stack.Navigator
-      initialRouteName={
-        parsedUserType === 4
-          ? "ClientTabRoutes"
-          : parsedUserType === 6
-          ? "TabRoutes"
-          : "Welcome"
-      }
-      screenOptions={{ headerShown: false }}
-    >
-      <Stack.Screen name="Welcome" component={WelcomeScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="TabRoutes" component={TabRoutes} />
-      <Stack.Screen name="ClerkInspection" component={ClerkInspectionScreen} />
-      <Stack.Screen
-        name="SnaggingTasksDetails"
-        component={SnaggingTasksDetailsScreen}
-      />
-      <Stack.Screen
-        name="ClerkSnaggingCTReportDetails"
-        component={ClerkSnaggingCTReportDetails}
-      />
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {!isLoggedIn ? (
+        // 🔒 Auth Stack Group
+        <Stack.Group>
+          <Stack.Screen name="Welcome" component={WelcomeScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+        </Stack.Group>
+      ) : (
+        // 🔓 Authenticated Application Group Layout
+        <Stack.Group>
+          {/* Conditional Root Views based on logged-in entity role */}
+          {userType === "client" ? (
+            <Stack.Screen name="ClientHome" component={ClientTabRoutes} />
+          ) : (
+            <Stack.Screen name="ClerkHome" component={TabRoutes} />
+          )}
+
+          {/* Shared Application Screen Tree Mapping */}
+          <Stack.Screen name="ClerkInspection" component={ClerkInspectionScreen} />
+          <Stack.Screen name="TasksDetails" component={TasksDetailsScreen} />
+          <Stack.Screen name="ClerkSnaggingCTReportDetails" component={ClerkSnaggingCTReportDetails} />
+
       <Stack.Screen
         name="ClerkSnagginginspectionrecord"
         component={ClerkSnagginginspectionrecord}
@@ -421,8 +438,8 @@ function Router() {
       <Stack.Screen name="Addanother" component={Addanother} />
 
       <Stack.Screen name="AddGeneralNotes" component={AddGeneralNotes} />
+      </Stack.Group>
+      )}
     </Stack.Navigator>
   );
 }
-
-export default Router;

@@ -7,7 +7,7 @@
 #   - $HASH is the hash value computed from this text.
 #   - $CMAKE is the path to CMake 3.22.1.
 #   - $NINJA is the path to Ninja.
--HC:/project/React-Native/FLPropertyAppNew/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup
+-HC:/project/React-Native/FLPI/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup
 -DCMAKE_SYSTEM_NAME=Android
 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 -DCMAKE_SYSTEM_VERSION=24
@@ -26,6 +26,6 @@
 -GNinja
 -DPROJECT_BUILD_DIR=$PROJECT/app/build
 -DPROJECT_ROOT_DIR=$PROJECT
--DREACT_ANDROID_DIR=C:/project/React-Native/FLPropertyAppNew/node_modules/react-native/ReactAndroid
+-DREACT_ANDROID_DIR=C:/project/React-Native/FLPI/node_modules/react-native/ReactAndroid
 -DANDROID_STL=c++_shared
 -DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON

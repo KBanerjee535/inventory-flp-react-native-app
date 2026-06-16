@@ -1,4 +1,4 @@
-# Install script for directory: C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni
+# Install script for directory: C:/project/React-Native/FLPI/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

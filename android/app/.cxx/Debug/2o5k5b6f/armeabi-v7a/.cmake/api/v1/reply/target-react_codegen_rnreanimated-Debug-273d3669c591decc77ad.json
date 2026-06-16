@@ -35,7 +35,7 @@
 		],
 		"files" : 
 		[
-			"C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/CMakeLists.txt"
+			"C:/project/React-Native/FLPI/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/CMakeLists.txt"
 		],
 		"nodes" : 
 		[
@@ -133,11 +133,11 @@
 			[
 				{
 					"backtrace" : 3,
-					"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/."
+					"path" : "C:/project/React-Native/FLPI/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/."
 				},
 				{
 					"backtrace" : 3,
-					"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated"
+					"path" : "C:/project/React-Native/FLPI/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated"
 				},
 				{
 					"backtrace" : 4,
@@ -177,7 +177,7 @@
 	"paths" : 
 	{
 		"build" : "rnreanimated_autolinked_build",
-		"source" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni"
+		"source" : "C:/project/React-Native/FLPI/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni"
 	},
 	"sourceGroups" : 
 	[
@@ -200,43 +200,43 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated/ComponentDescriptors.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated/ComponentDescriptors.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated/EventEmitters.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated/EventEmitters.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated/Props.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated/Props.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated/ShadowNodes.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated/ShadowNodes.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated/States.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated/States.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated/rnreanimatedJSI-generated.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/react/renderer/components/rnreanimated/rnreanimatedJSI-generated.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/rnreanimated-generated.cpp",
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/rnreanimated-generated.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

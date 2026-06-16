@@ -6,7 +6,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/x86/CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake"
+			"path" : "C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/x86/CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake"
 		},
 		{
 			"isExternal" : true,
@@ -40,11 +40,11 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/x86/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake"
+			"path" : "C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/x86/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake"
 		},
 		{
 			"isGenerated" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/x86/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake"
+			"path" : "C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/x86/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -175,78 +175,78 @@
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native/ReactAndroid/cmake-utils/ReactNative-application.cmake"
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native/ReactAndroid/cmake-utils/ReactNative-application.cmake"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native/ReactAndroid/cmake-utils/folly-flags.cmake"
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native/ReactAndroid/cmake-utils/folly-flags.cmake"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/prefab/x86/prefab/lib/i686-linux-android/cmake/ReactAndroid/ReactAndroidConfigVersion.cmake"
+			"path" : "C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/prefab/x86/prefab/lib/i686-linux-android/cmake/ReactAndroid/ReactAndroidConfigVersion.cmake"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/prefab/x86/prefab/lib/i686-linux-android/cmake/ReactAndroid/ReactAndroidConfig.cmake"
+			"path" : "C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/prefab/x86/prefab/lib/i686-linux-android/cmake/ReactAndroid/ReactAndroidConfig.cmake"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/prefab/x86/prefab/lib/i686-linux-android/cmake/fbjni/fbjniConfigVersion.cmake"
+			"path" : "C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/prefab/x86/prefab/lib/i686-linux-android/cmake/fbjni/fbjniConfigVersion.cmake"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/prefab/x86/prefab/lib/i686-linux-android/cmake/fbjni/fbjniConfig.cmake"
+			"path" : "C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/prefab/x86/prefab/lib/i686-linux-android/cmake/fbjni/fbjniConfig.cmake"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/android/app/build/generated/autolinking/src/main/jni/Android-autolinking.cmake"
+			"path" : "C:/project/React-Native/FLPI/android/app/build/generated/autolinking/src/main/jni/Android-autolinking.cmake"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/CMakeLists.txt"
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-date-picker/android/build/generated/source/codegen/jni/CMakeLists.txt"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/CMakeLists.txt"
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/CMakeLists.txt"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-image-picker/android/build/generated/source/codegen/jni/CMakeLists.txt"
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-image-picker/android/build/generated/source/codegen/jni/CMakeLists.txt"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/CMakeLists.txt"
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/CMakeLists.txt"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt"
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-screens/android/src/main/jni/CMakeLists.txt"
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-screens/android/src/main/jni/CMakeLists.txt"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-svg/android/src/main/jni/CMakeLists.txt"
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-svg/android/src/main/jni/CMakeLists.txt"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/prefab/x86/prefab/lib/i686-linux-android/cmake/ReactAndroid/ReactAndroidConfigVersion.cmake"
+			"path" : "C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/prefab/x86/prefab/lib/i686-linux-android/cmake/ReactAndroid/ReactAndroidConfigVersion.cmake"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/prefab/x86/prefab/lib/i686-linux-android/cmake/ReactAndroid/ReactAndroidConfig.cmake"
+			"path" : "C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/prefab/x86/prefab/lib/i686-linux-android/cmake/ReactAndroid/ReactAndroidConfig.cmake"
 		},
 		{
 			"isExternal" : true,
-			"path" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/CMakeLists.txt"
+			"path" : "C:/project/React-Native/FLPI/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/CMakeLists.txt"
 		}
 	],
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "C:/project/React-Native/FLPropertyAppNew/android/app/.cxx/Debug/2o5k5b6f/x86",
-		"source" : "C:/project/React-Native/FLPropertyAppNew/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup"
+		"build" : "C:/project/React-Native/FLPI/android/app/.cxx/Debug/2o5k5b6f/x86",
+		"source" : "C:/project/React-Native/FLPI/node_modules/react-native/ReactAndroid/cmake-utils/default-app-setup"
 	},
 	"version" : 
 	{
