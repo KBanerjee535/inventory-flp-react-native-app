@@ -64,7 +64,7 @@ const DashboardScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDate, setSelectedDate] = useState(dates[0].date);
   const [inventoryList, setInventoryList] = useState();
-  const [inventoryDetailsList, setInventoryDetailsList] = useState([]);
+  const [inventoryDetailsList, setInventoryDetailsList] = useState();
   const { setUserData, setIsLoggedIn, seletedJobId,setseletedJobId, setseletedJobDetails } = useUserContext();
   const [screenLoading, setScreenLoading] = useState(true);
 
@@ -97,10 +97,14 @@ const DashboardScreen = ({navigation}) => {
     
         setScreenLoading(true);
 
-     let fd = new FormData();
-     fd.append("assign_date", seleteddate);
+    //  let fd = new FormData();
+    //  fd.append("assign_date", seleteddate);
+    const values = {
+      date_from: seleteddate,
+      date_to: seleteddate
+    };
     
-    let response = await getInventoryListByClerkIdApi(fd);
+    let response = await getInventoryListByClerkIdApi(values);
 
   console.log(JSON.stringify(response.data.data));
   setInventoryList(response.data.data);
@@ -186,7 +190,7 @@ const convertToAmPm = (time24) => {
       <View style={styles.container}>
         {/* Left Side - Time and Vertical Line */}
         <View style={styles.timeContainer}>
-          <Text style={styles.timeText}>{convertToAmPm(item.assign_start_time)}</Text>
+          <Text style={styles.timeText}>{convertToAmPm(item.created_date_time)}</Text>
           {index !== timelineData.length - 1 && (
             <View
               style={[
@@ -209,12 +213,12 @@ const convertToAmPm = (time24) => {
               borderLeftColor: '#3CC6ED',
             },
           ]}
-          onPress={() => getInventryDetails(item.id)}>
+          onPress={() => getInventryDetails(item.inventory_id.toString())}>
           <Text style={[styles.eventTime, {color:'#0E6781'}]}>
-            {convertToAmPm(item.assign_start_time)} - {convertToAmPm(item.assign_end_time)}
+            {convertToAmPm(item.created_date_time)} - {convertToAmPm(item.schedule_date_time)}
           </Text>
           <Text style={[styles.eventTitle, {color: '#0E6781'}]}>
-            {item.property_details[0].address_1}
+            {item.property_details.address_1}
           </Text>
 
           <Text
@@ -314,7 +318,7 @@ const convertToAmPm = (time24) => {
 
      { inventoryList ? <FlatList
           data={inventoryList}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item.inventory_id.toString()}
           renderItem={({item, index}) => (
             <TimelineItem
               item={item}
@@ -325,7 +329,7 @@ const convertToAmPm = (time24) => {
           contentContainerStyle={styles.Timelinecontent}
           showsVerticalScrollIndicator={false}
         />:
-       ''}
+       <Text>No inventory found for the selected date.</Text>}
 
       </View>
  
@@ -346,19 +350,19 @@ const convertToAmPm = (time24) => {
 
             <ScrollView style={styles.ModalContainer}>
               <View style={styles.TopPart}>
-                <Text style={styles.HeaderLftTxt}>{inventoryDetailsList[0]?.property_details[0]?.name}</Text>
+                <Text style={styles.HeaderLftTxt}>{inventoryDetailsList?.property?.name || 'N/A'}</Text>
                 <View style={styles.indicator}>
-                  {inventoryDetailsList[0]?.report_type=='Check-in'&&
+                  {inventoryDetailsList?.report_type=='check-in'&&
                   <>
                   <View style={[styles.statusindicator, styles.checkIn]}></View>
                   <Text style={styles.indicatorTxt}>Check In</Text>
                   </>
-                }{inventoryDetailsList[0]?.report_type=='Check-out'&&
+                }{inventoryDetailsList?.report_type=='check-out'&&
                   <>
                   <View style={[styles.statusindicator, styles.checkOut]}></View>
                   <Text style={styles.indicatorTxt}>Check-out</Text>
                   </>
-                }{inventoryDetailsList[0]?.report_type=='Mid-term'&&
+                }{inventoryDetailsList?.report_type=='mid-term'&&
                   <>
                   <View style={[styles.statusindicator, styles.midterm]}></View>
                   <Text style={styles.indicatorTxt}>Mid-term</Text>
@@ -367,7 +371,7 @@ const convertToAmPm = (time24) => {
                 </View>
                 <View style={styles.timeBox}>
                   <Ionicons name="time-outline" size={20} color="#2D7C0B" />
-                  <Text style={styles.timeTextpopup}>{convertToAmPm(inventoryDetailsList[0]?.assign_start_time)} to {convertToAmPm(inventoryDetailsList[0]?.assign_end_time)}</Text>
+                  <Text style={styles.timeTextpopup}>{convertToAmPm(inventoryDetailsList?.schedule_start_time)} to {convertToAmPm(inventoryDetailsList?.schedule_end_time)}</Text>
                 </View>
               </View>
 
@@ -375,39 +379,39 @@ const convertToAmPm = (time24) => {
                 <Text style={styles.sectionTitel}>Task info</Text>
                 <View style={styles.row}>
                   <Text style={styles.label}>Property Name</Text>
-                  <Text style={styles.info}>{inventoryDetailsList[0]?.property_details[0]?.name}</Text>
+                  <Text style={styles.info}>{inventoryDetailsList?.property_type_name || 'N/A'}</Text>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Task Status</Text>
                   <View style={styles.info}>
-                  {inventoryDetailsList[0]?.status=='1'&&  <Text style={styles.AssignedStyle}>Assigned</Text>}
-                  {inventoryDetailsList[0]?.status=='2'&&  <Text style={styles.AssignedStyle}>Assigned</Text>}
-                  {inventoryDetailsList[0]?.status=='3'&&  <Text style={styles.AssignedStyle}>Assigned</Text>}
-
+                  {/* {inventoryDetailsList?.status=='1'&&  <Text style={styles.AssignedStyle}>Assigned</Text>}
+                  {inventoryDetailsList?.status=='2'&&  <Text style={styles.AssignedStyle}>Assigned</Text>}
+                  {inventoryDetailsList?.status=='3'&&  <Text style={styles.AssignedStyle}>Assigned</Text>} */}
+                  <Text style={styles.AssignedStyle}>{inventoryDetailsList?.status || 'N/A'}</Text>
                   </View>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Assigner</Text>
-                  <Text style={styles.info}>{inventoryDetailsList[0]?.added_by_name}</Text>
+                  <Text style={styles.info}>{inventoryDetailsList?.created_by.first_name || 'N/A'} {inventoryDetailsList?.created_by.last_name || ''}</Text>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Created on</Text>
-                  <Text style={styles.info}>{formatDate(new Date(inventoryDetailsList[0]?.created_at), "dd/MM/yyyy")}</Text>
+                  <Text style={styles.info}>{formatDate(new Date(inventoryDetailsList?.created_at), "dd/MM/yyyy")}</Text>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Report Type</Text>
                   <View style={styles.infoindicator}>
-                   {inventoryDetailsList[0]?.report_type=='Check-in'&&
+                   {inventoryDetailsList?.report_type=='check-in'&&
                   <>
                   <View style={[styles.statusindicator, styles.checkIn]}></View>
                   <Text style={styles.indicatorTxt}>Check In</Text>
                   </>
-                }{inventoryDetailsList[0]?.report_type=='Check-out'&&
+                }{inventoryDetailsList?.report_type=='check-out'&&
                   <>
                   <View style={[styles.statusindicator, styles.checkOut]}></View>
                   <Text style={styles.indicatorTxt}>Check-out</Text>
                   </>
-                }{inventoryDetailsList[0]?.report_type=='Mid-term'&&
+                }{inventoryDetailsList?.report_type=='mid-term'&&
                   <>
                   <View style={[styles.statusindicator, styles.midterm]}></View>
                   <Text style={styles.indicatorTxt}>Mid-term</Text>
@@ -417,22 +421,21 @@ const convertToAmPm = (time24) => {
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Client Name</Text>
-                  <Text style={styles.info}>{inventoryDetailsList[0]?.client_name}</Text>
+                  <Text style={styles.info}>{inventoryDetailsList?.client.first_name || 'N/A'} {inventoryDetailsList?.client.last_name || ''}</Text>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Client Approval</Text>
                   <View style={styles.info}>
-                  {inventoryDetailsList[0]?.client_approved =='0' && <Text style={styles.PendingStyle}>Pending</Text>}
-                 {inventoryDetailsList[0]?.client_approved =='1' &&<Text style={styles.PendingStyle}>Approved</Text>}
-
+                <Text style={styles.AssignedStyle}>{inventoryDetailsList?.client_status || 'N/A'}</Text>
                   </View>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Tenant</Text>
+                  <Text style={styles.info}>{inventoryDetailsList?.tenant !== null ? inventoryDetailsList?.tenant_name : "N/A"}</Text>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Tenant Status</Text>
-                  <Text style={styles.info}>{inventoryDetailsList[0]?.tenant_status}</Text>
+                  <Text style={styles.info}>{inventoryDetailsList?.tenant_status !== null ? inventoryDetailsList?.tenant_status : "N/A"}</Text>
                 </View>
               </View>
               <View style={styles.section}>
@@ -441,22 +444,22 @@ const convertToAmPm = (time24) => {
                 <View style={styles.row}>
                   <Text style={styles.label}>Property Address</Text>
                   <Text style={styles.info}>
-                    {inventoryDetailsList[0]?.property_details[0]?.address_1}
+                    {inventoryDetailsList?.property?.address_1 || 'N/A'}
                   </Text>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Property Address 2</Text>
                   <Text style={styles.info}>
-                   {inventoryDetailsList[0]?.property_details[0]?.address_2}
+                   {inventoryDetailsList?.property?.address_2 || 'N/A'}
                   </Text>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Property Type</Text>
-                  <Text style={styles.info}>{inventoryDetailsList[0]?.property_details[0]?.property_type}</Text>
+                  <Text style={styles.info}>{inventoryDetailsList?.property_type_name || 'N/A'}</Text>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Post Code</Text>
-                  <Text style={[styles.info, styles.bold]}>{inventoryDetailsList[0]?.property_details[0]?.post_code}</Text>
+                  <Text style={[styles.info, styles.bold]}>{inventoryDetailsList?.property?.postal_code || 'N/A'}</Text>
                 </View>
               </View>
 
@@ -464,49 +467,43 @@ const convertToAmPm = (time24) => {
                 <Text style={styles.sectionTitel}>Assignee</Text>
                 <View style={styles.row}>
                   <Text style={styles.label}>Clerk Name</Text>
-                  <Text style={styles.info}>{inventoryDetailsList[0]?.clerk_name}</Text>
+                  <Text style={styles.info}>{inventoryDetailsList?.clerk_name || 'N/A'}</Text>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Clerk Status</Text>
                   <View style={styles.info}>
-                   {inventoryDetailsList[0]?.clerk_status=='1' && <Text style={styles.AssignedStyle}>Assigned</Text>}
-                  {inventoryDetailsList[0]?.clerk_status=='2' && <Text style={styles.AssignedStyle}>Accepted</Text>}
-                   {inventoryDetailsList[0]?.clerk_status=='3' && <Text style={styles.PendingStyle}>Rejected</Text>}
+                   {/* {inventoryDetailsList?.clerk_status=='1' && <Text style={styles.AssignedStyle}>{inventoryDetailsList?.clerk_status}</Text>}
+                  {inventoryDetailsList?.clerk_status=='2' && <Text style={styles.AssignedStyle}>Accepted</Text>}
+                   {inventoryDetailsList?.clerk_status=='3' && <Text style={styles.PendingStyle}>Rejected</Text>} */}
+                   <Text style={styles.AssignedStyle}>{inventoryDetailsList?.clerk_status || 'N/A'}</Text>
 
                   </View>
                 </View>
-                {/* <View style={styles.row}>
-                  <Text style={styles.label}>Clerk’s Task Deadline</Text>
-                  <View style={styles.info}>
-                    <Text style={styles.bold}>06/01/2025</Text>
-                    <Text style={styles.bold}>8:15am - 8:55am</Text>
-                  </View>
-                </View> */}
                 <View style={styles.row}>
                   <Text style={styles.label}>Editor Name</Text>
-                  <Text style={[styles.info, styles.bold]}>{inventoryDetailsList[0]?.editor_name}</Text>
+                  <Text style={[styles.info, styles.bold]}>{inventoryDetailsList?.editor_name || 'N/A'}</Text>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Editor Status</Text>
                   <View style={styles.info}>
-                  {inventoryDetailsList[0]?.editor_status=='1' &&   <Text style={styles.AssignedStyle}>Assigned</Text>}
-                 {inventoryDetailsList[0]?.editor_status=='2' &&   <Text style={styles.AssignedStyle}>Edited</Text>}
-                  {inventoryDetailsList[0]?.editor_status=='3' &&   <Text style={styles.AssignedStyle}>ReEdited</Text>}
+                  {/* {inventoryDetailsList?.editor_status=='1' &&   <Text style={styles.AssignedStyle}>Assigned</Text>}
+                 {inventoryDetailsList?.editor_status=='2' &&   <Text style={styles.AssignedStyle}>Edited</Text>}
+                  {inventoryDetailsList?.editor_status=='3' &&   <Text style={styles.AssignedStyle}>ReEdited</Text>} */}
+                  <Text style={styles.AssignedStyle}>{inventoryDetailsList?.editor_status || 'N/A'}</Text>
                   </View>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Editor’s Task Deadline</Text>
-                  <Text style={[styles.info, styles.bold]}>{ formatDate(new Date(inventoryDetailsList[0]?.editor_task_deadline), "dd/MM/yyyy")}</Text>
+                  <Text style={[styles.info, styles.bold]}>{ formatDate(new Date(inventoryDetailsList?.editor_task_deadline), "dd/MM/yyyy")}</Text>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Prop. Manager</Text>
-                  <Text style={[styles.info, styles.bold]}>{inventoryDetailsList[0]?.property_manage_name}</Text>
+                  <Text style={[styles.info, styles.bold]}>{inventoryDetailsList?.property_manager.first_name || 'N/A'} {inventoryDetailsList?.property_manager.last_name || ''}</Text>
                 </View>
                 <View style={styles.row}>
                   <Text style={styles.label}>Prop. Manager Status</Text>
                   <View style={styles.info}>
-                {inventoryDetailsList[0]?.property_manager_status =='1'&& <Text style={styles.AssignedStyle}>Assigned</Text>
-              }
+                <Text style={styles.AssignedStyle}>{inventoryDetailsList?.property_manager_status || 'N/A'}</Text>
                   </View>
                 </View>
               </View>
@@ -515,7 +512,8 @@ const convertToAmPm = (time24) => {
                 <Text style={styles.sectionTitel}>Supporting Documents</Text>
 
                 <View style={styles.sectionDoc}>
-          {inventoryDetailsList[0]?.inventory_document?.map((doc) => {
+                  {!inventoryDetailsList?.files?.length && <Text>No supporting document found.</Text>}
+          {inventoryDetailsList?.files?.map((doc) => {
   const filePath = doc.file_with_path;
   
   // Function to get the file extension
@@ -581,7 +579,7 @@ const convertToAmPm = (time24) => {
               </View>
 
               <View style={styles.BtnGrp}>
-              {inventoryDetailsList[0]?.clerk_status=='2'&&  <TouchableOpacity
+              {inventoryDetailsList?.clerk_status=='2'&&  <TouchableOpacity
                   style={styles.NextBtn}
                   onPress={() => GoToClerkInspection()}>
                   <Text style={styles.NextBtnTxt}>Start Inspection</Text>
@@ -589,7 +587,7 @@ const convertToAmPm = (time24) => {
 }
             
               </View>
-              {inventoryDetailsList[0]?.clerk_status=='1' && 
+              {inventoryDetailsList?.clerk_status=='1' && 
 <View style={styles.BtnGrp}>
             <TouchableOpacity
                   style={styles.NextBtn}

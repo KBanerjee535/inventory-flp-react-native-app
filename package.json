@@ -26,7 +26,7 @@
     "react-native-date-picker": "5.0.10",
     "react-native-element-dropdown": "2.12.4",
     "react-native-fs": "2.20.0",
-    "react-native-gesture-handler": "^2.22.0",
+    "react-native-gesture-handler": "2.23.0",
     "react-native-image-crop-picker": "0.50.1",
     "react-native-image-picker": "8.2.0",
     "react-native-linear-gradient": "2.8.3",
@@ -34,7 +34,7 @@
     "react-native-permissions": "5.4.1",
     "react-native-reanimated": "3.16.7",
     "react-native-safe-area-context": "^5.5.0",
-    "react-native-screens": "^4.8.0",
+    "react-native-screens": "4.5.0",
     "react-native-simple-toast": "3.3.2",
     "react-native-splash-screen": "3.3.0",
     "react-native-svg": "15.11.2",
@@ -61,6 +61,7 @@
     "metro-react-native-babel-preset": "0.77.0",
     "prettier": "2.8.8",
     "react-test-renderer": "18.2.0",
+    "reactotron-react-native": "^5.2.0",
     "typescript": "5.0.4"
   },
   "engines": {

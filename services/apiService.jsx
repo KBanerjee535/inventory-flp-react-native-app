@@ -63,7 +63,8 @@ export const loginApi = async (values) => {
 };
 
 export const getInventoryListByClerkIdApi = async (values) => {
-  return await axios.post(API_BASE_URL + `clerk/InventoryListByClerkId`, values, await getHeader(true));
+  // return await axios.post(API_BASE_URL + `clerk/InventoryListByClerkId`, values, await getHeader(true));
+  return await axios.get(API_BASE_URL + `inventory/inventories/?date_from=${values.date_from}&date_to=${values.date_to}`, await getHeader(true));
 };
 
 export const InventoryListByClientIdApi = async (values) => {
