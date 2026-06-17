@@ -9,6 +9,7 @@ import {
   Animated,
   Modal,
   TextInput,
+  ActivityIndicator
 } from "react-native";
 import { TouchableWithoutFeedback, Keyboard } from "react-native";
 
@@ -36,6 +37,8 @@ import Toast from "react-native-simple-toast";
 import { format } from "date-fns";
 
 import AddPlus from "../assets/images/AddPlus.svg";
+import Voice from '@react-native-voice/voice';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const staticItems = [
   {
@@ -89,6 +92,8 @@ const ClerkInspectionScreen = ({ navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newSectionName, setNewSectionName] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recognizedText, setRecognizedText] = useState('');
 
   const getSectionsList = async () => {
     try {
@@ -212,6 +217,98 @@ const ClerkInspectionScreen = ({ navigation }) => {
     });
   }, [fadeAnims]);
 
+  useEffect(() => {
+    // Bind Voice Events
+    Voice.onSpeechStart = () => setIsRecording(true);
+    Voice.onSpeechEnd = () => setIsRecording(false);
+    Voice.onSpeechError = (e) => {
+      console.log('Voice Error: ', e.error);
+      setIsRecording(false);
+    };
+    
+    // Live results
+    Voice.onSpeechResults = (e) => {
+      if (e.value && e.value.length > 0) {
+        // Option A: Overwrite text area with voice input
+        // setRecognizedText(e.value[0]);
+        
+        // Option B: Append to existing text instead (uncomment below if preferred)
+        setRecognizedText((prevText) => prevText + " " + e.value[0]);
+        setIsDisabled(false);
+      }
+    };
+
+    // Clean up listeners on unmount
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
+  // Handler functions
+  // const onSpeechStart = (e) => {
+  //   console.log('Speech started', e);
+  //   setIsRecording(true);
+  // };
+
+  // const onSpeechEnd = (e) => {
+  //   console.log('Speech ended', e);
+  //   setIsRecording(false);
+  // };
+
+  // const onSpeechResults = (e) => {
+  //   console.log('Speech results: ', e.value);
+  //   // e.value returns an array of speech alternatives. The first element is the most accurate.
+  //   if (e.value && e.value.length > 0) {
+  //     setRecognizedText(e.value[0]);
+  //   }
+  // };
+
+  // const onSpeechError = (e) => {
+  //   console.log('Speech error: ', e.error);
+  //   setIsRecording(false);
+  // };
+
+  // UI Control Functions
+  const startRecording = async () => {
+    try {
+      setRecognizedText('');
+      // Use 'en-US' or any locale code like 'es-ES', 'fr-FR', etc.
+      await Voice.start('en-US'); 
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const stopRecording = async () => {
+    try {
+      await Voice.stop();
+      setIsRecording(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleMicPress = async () => {
+    if (isRecording) {
+      // "Pause" or Stop listening
+      try {
+        await Voice.stop();
+        setIsRecording(false);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      // Start listening
+      try {
+        Keyboard.dismiss(); // Close keyboard so user can focus on speaking
+        setIsRecording(true);
+        await Voice.start('en-US'); 
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
   return (
     <SafeAreaView style={styles.mainBody}>
       <StatusBar barStyle="dark-content" backgroundColor="#F1F2F6" />
@@ -329,6 +426,46 @@ const ClerkInspectionScreen = ({ navigation }) => {
           >
             <Text style={styles.NextBtnTxt}>Add Another</Text>
           </TouchableOpacity> */}
+          <Text style={styles.title}>Voice Note Editor</Text>
+      
+      {/* Container for Editable TextArea & Controls */}
+      <View style={styles.editorContainer}>
+        <TextInput
+          style={styles.textArea}
+          multiline={true}
+          numberOfLines={10}
+          placeholder="Type something here or tap the mic to speak..."
+          placeholderTextColor="#999"
+          value={recognizedText}
+          onChangeText={(newText) => setRecognizedText(newText)} // Keeps it fully editable
+          textAlignVertical="top"
+        />
+        
+        {/* Toolbar below the textarea */}
+        <View style={styles.toolbar}>
+          {isRecording ? (
+            <View style={styles.recordingStatus}>
+              <ActivityIndicator size="small" color="#FF3B30" />
+              <Text style={styles.recordingText}>Listening...</Text>
+            </View>
+          ) : (
+            <View />
+          )}
+
+          {/* Speak / Pause Toggle Button */}
+          <TouchableOpacity 
+            style={[styles.micButton, isRecording ? styles.micActive : styles.micInactive]} 
+            onPress={handleMicPress}
+            activeOpacity={0.7}
+          >
+            <Ionicons 
+              name={isRecording ? "pause" : "mic"} 
+              size={24} 
+              color="#FFF" 
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
 
           <TouchableOpacity
             //style={styles.StartBtn}
@@ -353,7 +490,6 @@ const ClerkInspectionScreen = ({ navigation }) => {
           visible={isModalVisible}
           animationType="slide"
           onRequestClose={() => setIsModalVisible(false)}
-          transparent
         >
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.modalContainer}>
@@ -677,5 +813,70 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 20,
+  },
+  editorContainer: {
+    width: '90%',
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
+    elevation: 3,
+    overflow: 'hidden',
+  },
+  textArea: {
+    width: '100%',
+    height: 250,
+    padding: 16,
+    fontSize: 16,
+    color: '#374151',
+    lineHeight: 24,
+  },
+  toolbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderColor: '#F3F4F6',
+    backgroundColor: '#FAFAFA',
+  },
+  micButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+  micInactive: {
+    backgroundColor: '#007AFF', // Blue when idle
+  },
+  micActive: {
+    backgroundColor: '#FF3B30', // Red when listening (acting as pause option)
+  },
+  recordingStatus: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  recordingText: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: '#FF3B30',
+    fontWeight: '600',
   },
 });

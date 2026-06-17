@@ -141,7 +141,9 @@ setseletedJobDetails(inventoryDetailsList[0]);
   setInventoryDetailsList(response.data.data);
       setScreenLoading(false);
 
-     inventoryDetailsList ? setModalVisible(true):'';
+     if (inventoryDetailsList) {
+      setModalVisible(true)
+     }
 
   } catch (error) {
  Toast.show(error.response?.data?.errors || 'Something went wrong, please try again.');
@@ -316,6 +318,9 @@ const convertToAmPm = (time24) => {
 
 
 
+        {inventoryList?.length === 0 && <Text style={{
+textAlign: 'center', marginTop: 20, fontSize: 16, color: '#555'
+        }}>No inventory found for the selected date.</Text>}
      { inventoryList ? <FlatList
           data={inventoryList}
           keyExtractor={item => item.inventory_id.toString()}
@@ -329,7 +334,7 @@ const convertToAmPm = (time24) => {
           contentContainerStyle={styles.Timelinecontent}
           showsVerticalScrollIndicator={false}
         />:
-       <Text>No inventory found for the selected date.</Text>}
+       ''}
 
       </View>
  
@@ -348,7 +353,7 @@ const convertToAmPm = (time24) => {
               <CloseIcon width={30} height={30} />
             </TouchableOpacity>
 
-            <ScrollView style={styles.ModalContainer}>
+            <ScrollView style={styles.ModalScrollContainer}>
               <View style={styles.TopPart}>
                 <Text style={styles.HeaderLftTxt}>{inventoryDetailsList?.property?.name || 'N/A'}</Text>
                 <View style={styles.indicator}>
@@ -405,16 +410,19 @@ const convertToAmPm = (time24) => {
                   <>
                   <View style={[styles.statusindicator, styles.checkIn]}></View>
                   <Text style={styles.indicatorTxt}>Check In</Text>
+                  
                   </>
                 }{inventoryDetailsList?.report_type=='check-out'&&
                   <>
                   <View style={[styles.statusindicator, styles.checkOut]}></View>
                   <Text style={styles.indicatorTxt}>Check-out</Text>
+                  
                   </>
                 }{inventoryDetailsList?.report_type=='mid-term'&&
                   <>
                   <View style={[styles.statusindicator, styles.midterm]}></View>
                   <Text style={styles.indicatorTxt}>Mid-term</Text>
+                  
                   </>
                 }
                   </View>
@@ -512,8 +520,8 @@ const convertToAmPm = (time24) => {
                 <Text style={styles.sectionTitel}>Supporting Documents</Text>
 
                 <View style={styles.sectionDoc}>
-                  {!inventoryDetailsList?.files?.length && <Text>No supporting document found.</Text>}
-          {inventoryDetailsList?.files?.map((doc) => {
+                  
+          {inventoryDetailsList?.files?.length ? inventoryDetailsList?.files?.map((doc) => {
   const filePath = doc.file_with_path;
   
   // Function to get the file extension
@@ -573,13 +581,13 @@ const convertToAmPm = (time24) => {
      </TouchableOpacity>
     </View>
   );
-})}
+}) : <Text style={styles.noDocText}>No supporting document found.</Text>}
                
                 </View>
               </View>
 
               <View style={styles.BtnGrp}>
-              {inventoryDetailsList?.clerk_status=='2'&&  <TouchableOpacity
+              {inventoryDetailsList?.clerk_status=='assigned'&&  <TouchableOpacity
                   style={styles.NextBtn}
                   onPress={() => GoToClerkInspection()}>
                   <Text style={styles.NextBtnTxt}>Start Inspection</Text>
@@ -587,7 +595,7 @@ const convertToAmPm = (time24) => {
 }
             
               </View>
-              {inventoryDetailsList?.clerk_status=='1' && 
+              {inventoryDetailsList?.clerk_status=='pending' && 
 <View style={styles.BtnGrp}>
             <TouchableOpacity
                   style={styles.NextBtn}
@@ -819,12 +827,13 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
 
-  ModalContainer: {
+  ModalScrollContainer: {
     backgroundColor: '#fff',
     paddingLeft: 20,
     paddingTop: 10,
     paddingRight: 20,
     paddingBottom: 20,
+    width: '100%',
   },
   title: {
     color: '#000',

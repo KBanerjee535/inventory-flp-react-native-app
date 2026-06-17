@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1f2f6',
     paddingLeft: 24,
     paddingRight: 24,
-    paddingTop: 20,
+    paddingTop: 50,
     paddingBottom: 10,
     width: '100%',
     flexDirection: 'row',
