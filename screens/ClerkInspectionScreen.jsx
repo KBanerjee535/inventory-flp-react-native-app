@@ -94,6 +94,9 @@ const ClerkInspectionScreen = ({ navigation }) => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
   const [recognizedText, setRecognizedText] = useState('');
+const [sectionNotesState, setSectionNotesState] = React.useState({});
+
+
 
   const getSectionsList = async () => {
     try {
@@ -234,7 +237,6 @@ const ClerkInspectionScreen = ({ navigation }) => {
         
         // Option B: Append to existing text instead (uncomment below if preferred)
         setRecognizedText((prevText) => prevText + " " + e.value[0]);
-        setIsDisabled(false);
       }
     };
 
@@ -243,30 +245,6 @@ const ClerkInspectionScreen = ({ navigation }) => {
       Voice.destroy().then(Voice.removeAllListeners);
     };
   }, []);
-
-  // Handler functions
-  // const onSpeechStart = (e) => {
-  //   console.log('Speech started', e);
-  //   setIsRecording(true);
-  // };
-
-  // const onSpeechEnd = (e) => {
-  //   console.log('Speech ended', e);
-  //   setIsRecording(false);
-  // };
-
-  // const onSpeechResults = (e) => {
-  //   console.log('Speech results: ', e.value);
-  //   // e.value returns an array of speech alternatives. The first element is the most accurate.
-  //   if (e.value && e.value.length > 0) {
-  //     setRecognizedText(e.value[0]);
-  //   }
-  // };
-
-  // const onSpeechError = (e) => {
-  //   console.log('Speech error: ', e.error);
-  //   setIsRecording(false);
-  // };
 
   // UI Control Functions
   const startRecording = async () => {
@@ -308,6 +286,82 @@ const ClerkInspectionScreen = ({ navigation }) => {
       }
     }
   };
+
+const handleTextAppend = () => {
+  const fullSpokenText = recognizedText.trim();
+  if (!fullSpokenText) return;
+
+  // 1. Split the spoken text into individual sentences/lines 
+  // This matches split parameters by line breaks, periods, or commas
+  const sentences = fullSpokenText.split(/\n|\.|\,+/);
+
+  // Create a temporary object to stage state updates before mutating React state
+  const updatedNotesMap = {};
+
+  sentences.forEach((sentence) => {
+    const cleanSentence = sentence.trim();
+    if (!cleanSentence) return; // Skip empty chunks
+
+    let matchedId = null;
+    let matchedType = null;
+    let categoryName = "";
+
+    // 2. Check Dynamic API items first for a match inside this single sentence
+    const dynamicMatch = SectionListByInventoryId?.find(section => 
+      cleanSentence.toLowerCase().includes(section.name.toLowerCase())
+    );
+
+    // 3. Check Static items second inside this single sentence
+    const staticMatch = staticItems.find(item => 
+      cleanSentence.toLowerCase().includes(item.text.toLowerCase())
+    );
+
+    if (dynamicMatch) {
+      matchedId = dynamicMatch.id;
+      matchedType = 'dynamic';
+      categoryName = dynamicMatch.name;
+    } else if (staticMatch) {
+      matchedId = staticMatch.id;
+      matchedType = 'static';
+      categoryName = staticMatch.text;
+    }
+
+    // 4. If a match is found for this specific sentence, prepare the update entry
+    if (matchedId) {
+      const stateKey = `${matchedType}-${matchedId}`;
+      
+      // Clean up the text sentence by stripping away its matching category name prefix if desired
+      // E.g., turning "Meter box is broken" into "is broken" or keep it as is.
+      // To keep the full phrase, leave 'textToSave = cleanSentence'.
+      const textToSave = cleanSentence; 
+
+      if (!updatedNotesMap[stateKey]) {
+        updatedNotesMap[stateKey] = [];
+      }
+      updatedNotesMap[stateKey].push(textToSave);
+    }
+  });
+
+  // 5. Batch update your React Native state dictionary safely in one operational hook loop
+  setSectionNotesState((prevState) => {
+    const newState = { ...prevState };
+
+    Object.keys(updatedNotesMap).forEach((key) => {
+      const existingNotes = newState[key];
+      const newSentencesString = updatedNotesMap[key].join('\n');
+
+      newState[key] = existingNotes 
+        ? `${existingNotes}\n${newSentencesString}` 
+        : newSentencesString;
+    });
+
+    return newState;
+  });
+
+  // Clear your voice entry box smoothly
+  setRecognizedText('');
+};
+
 
   return (
     <SafeAreaView style={styles.mainBody}>
@@ -373,51 +427,76 @@ const ClerkInspectionScreen = ({ navigation }) => {
           <View style={styles.List}>
             <Text style={styles.ListHr}>Sections of inspection</Text>
 
-            {/* Static items */}
-            {staticItems.map((item, index) => (
-              <Animated.View
-                key={`static-${item.id}`}
-                style={{ opacity: fadeAnims[index] }}
-              >
-                <TouchableOpacity
-                  style={styles.ListItem}
-                  onPress={() => navigation.navigate(item.screen)}
-                >
-                  <View style={styles.ListItemInner}>
-                    {item.icon}
-                    <Text style={styles.ListItemTxt}>{item.text}</Text>
-                  </View>
-                  <Arrow
-                    name="chevron-forward-outline"
-                    size={28}
-                    color="#393D47"
-                  />
-                </TouchableOpacity>
-              </Animated.View>
-            ))}
+            {/* 1. Static items loop */}
+{staticItems.map((item, index) => {
+  // Safe layout key generation ensures React keeps nodes isolated
+  const layoutKey = `static-entity-row-${item.id}`;
+  const animationOpacity = fadeAnims && fadeAnims[index] ? fadeAnims[index] : 1;
 
-            {/* Dynamic API items */}
-            {SectionListByInventoryId?.map((section, index) => (
-              <Animated.View
-                key={`dynamic-${section.id}`}
-                style={{ opacity: fadeAnims[staticItems.length + index] }} // use correct fadeAnim
-              >
-                <TouchableOpacity
-                  style={styles.ListItem}
-                  onPress={() => goToSectionDetailsPage(section)}
-                >
-                  <View style={styles.ListItemInner}>
-                    <ItemIcon8 width={24} height={24} />
-                    <Text style={styles.ListItemTxt}>{section.name}</Text>
-                  </View>
-                  <Arrow
-                    name="chevron-forward-outline"
-                    size={28}
-                    color="#393D47"
-                  />
-                </TouchableOpacity>
-              </Animated.View>
-            ))}
+  return (
+    <Animated.View
+      key={layoutKey}
+      style={{ opacity: animationOpacity }}
+    >
+      <TouchableOpacity
+        style={styles.ListItem}
+        onPress={() => navigation.navigate(item.screen)}
+      >
+        <View style={styles.ListItemInnerContainer}>
+          <View style={styles.ListItemInner}>
+            {item.icon}
+            <Text style={styles.ListItemTxt}>{item.text}</Text>
+          </View>
+          
+          {/* Render Speech-to-text added notes safely */}
+          {sectionNotesState && sectionNotesState[`static-${item.id}`] && (
+            <Text style={styles.appendedNotesText}>
+              {sectionNotesState[`static-${item.id}`]}
+            </Text>
+          )}
+        </View>
+        <Arrow name="chevron-forward-outline" size={28} color="#393D47" />
+      </TouchableOpacity>
+    </Animated.View>
+  );
+})}
+
+{/* 2. Dynamic API items loop */}
+{SectionListByInventoryId?.map((section, index) => {
+  const layoutKey = `dynamic-entity-row-${section.id}`;
+  
+  // Calculate dynamic animation index offsets safely outside the style object
+  const targetAnimIndex = staticItems.length + index;
+  const animationOpacity = fadeAnims && fadeAnims[targetAnimIndex] ? fadeAnims[targetAnimIndex] : 1;
+
+  return (
+    <Animated.View
+      key={layoutKey}
+      style={{ opacity: animationOpacity }}
+    >
+      <TouchableOpacity
+        style={styles.ListItem}
+        onPress={() => goToSectionDetailsPage(section)}
+      >
+        <View style={styles.ListItemInnerContainer}>
+          <View style={styles.ListItemInner}>
+            <ItemIcon8 width={24} height={24} />
+            <Text style={styles.ListItemTxt}>{section.name}</Text>
+          </View>
+
+          {/* Render Speech-to-text added notes safely */}
+          {sectionNotesState && sectionNotesState[`dynamic-${section.id}`] && (
+            <Text style={styles.appendedNotesText}>
+              {sectionNotesState[`dynamic-${section.id}`]}
+            </Text>
+          )}
+        </View>
+        <Arrow name="chevron-forward-outline" size={28} color="#393D47" />
+      </TouchableOpacity>
+    </Animated.View>
+  );
+})}
+
           </View>
 
           {/* <TouchableOpacity
@@ -427,45 +506,64 @@ const ClerkInspectionScreen = ({ navigation }) => {
             <Text style={styles.NextBtnTxt}>Add Another</Text>
           </TouchableOpacity> */}
           <Text style={styles.title}>Voice Note Editor</Text>
-      
-      {/* Container for Editable TextArea & Controls */}
-      <View style={styles.editorContainer}>
-        <TextInput
-          style={styles.textArea}
-          multiline={true}
-          numberOfLines={10}
-          placeholder="Type something here or tap the mic to speak..."
-          placeholderTextColor="#999"
-          value={recognizedText}
-          onChangeText={(newText) => setRecognizedText(newText)} // Keeps it fully editable
-          textAlignVertical="top"
-        />
-        
-        {/* Toolbar below the textarea */}
-        <View style={styles.toolbar}>
-          {isRecording ? (
-            <View style={styles.recordingStatus}>
-              <ActivityIndicator size="small" color="#FF3B30" />
-              <Text style={styles.recordingText}>Listening...</Text>
-            </View>
-          ) : (
-            <View />
-          )}
-
           {/* Speak / Pause Toggle Button */}
-          <TouchableOpacity 
-            style={[styles.micButton, isRecording ? styles.micActive : styles.micInactive]} 
-            onPress={handleMicPress}
-            activeOpacity={0.7}
-          >
-            <Ionicons 
-              name={isRecording ? "pause" : "mic"} 
-              size={24} 
-              color="#FFF" 
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
+          <View style={{ alignItems: 'center', width: '90%', marginBottom: 8 }}>
+  <TouchableOpacity 
+    style={[styles.micButton, isRecording ? styles.micActive : styles.micInactive]} 
+    onPress={handleMicPress}
+    activeOpacity={0.7}
+  >
+    <Ionicons 
+      name={isRecording ? "pause" : "mic"} 
+      size={24} 
+      color="#FFF" 
+    />
+  </TouchableOpacity>
+</View>
+{/* Container for Editable TextArea & Controls */}
+<View style={styles.editorContainer}>
+  <TextInput
+    style={styles.textArea}
+    multiline={true}
+    numberOfLines={10}
+    placeholder="Type something here or tap the mic to speak..."
+    placeholderTextColor="#999"
+    value={recognizedText}
+    onChangeText={(newText) => setRecognizedText(newText)}
+    textAlignVertical="top"
+  />
+  
+  {/* Toolbar below the textarea */}
+<View style={styles.toolbar}>
+  {isRecording ? (
+    <View style={styles.recordingStatus}>
+      <ActivityIndicator size="small" color="#FF3B30" />
+      <Text style={styles.recordingText}>Listening...</Text>
+    </View>
+  ) : (
+    <View />
+  )}
+
+  {/* Button Container grouping Add and Mic buttons horizontally */}
+<View style={styles.actionButtonsContainer}>
+  
+  {/* Conditionally render the Add Button only if recognizedText has content */}
+  {recognizedText.trim().length > 0 && (
+    <TouchableOpacity 
+      style={styles.fullWidthAddButton} 
+      onPress={handleTextAppend}
+      activeOpacity={0.8}
+    >
+      <Text style={styles.fullWidthAddButtonLabel}>Add Text to Sections</Text>
+    </TouchableOpacity>
+  )}
+
+  
+</View>
+</View>
+
+</View>
+
 
           <TouchableOpacity
             //style={styles.StartBtn}
@@ -879,4 +977,42 @@ const styles = StyleSheet.create({
     color: '#FF3B30',
     fontWeight: '600',
   },
+  toolbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  actionButtonsContainer: {
+    flexDirection: 'row', 
+    alignItems: 'center', 
+  },
+  fullWidthAddButton: {
+    width: '100%',             // Direct full width structural stretching
+    backgroundColor: '#007AFF', // Solid block color accent background
+    paddingVertical: 14,       // Comfortable internal padding thickness
+    borderRadius: 8,           // Smoothly matches text area radius cuts
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,             // Even distribution margins between components
+    marginBottom: 4,
+  },
+  fullWidthAddButtonLabel: {
+    color: '#FFFFFF',           // Crisp white label contrast over theme fill
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  micButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  appendedNotesText: {
+    fontSize: 13,
+    color: '#666',
+    marginTop: 4,
+    paddingLeft: 32, // Indents the voice notes beautifully right underneath the item label row
+  }
 });

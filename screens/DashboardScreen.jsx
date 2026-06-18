@@ -500,10 +500,10 @@ textAlign: 'center', marginTop: 20, fontSize: 16, color: '#555'
                   <Text style={styles.AssignedStyle}>{inventoryDetailsList?.editor_status || 'N/A'}</Text>
                   </View>
                 </View>
-                <View style={styles.row}>
+                {/* <View style={styles.row}>
                   <Text style={styles.label}>Editor’s Task Deadline</Text>
                   <Text style={[styles.info, styles.bold]}>{ formatDate(new Date(inventoryDetailsList?.editor_task_deadline), "dd/MM/yyyy")}</Text>
-                </View>
+                </View> */}
                 <View style={styles.row}>
                   <Text style={styles.label}>Prop. Manager</Text>
                   <Text style={[styles.info, styles.bold]}>{inventoryDetailsList?.property_manager.first_name || 'N/A'} {inventoryDetailsList?.property_manager.last_name || ''}</Text>
@@ -593,7 +593,6 @@ textAlign: 'center', marginTop: 20, fontSize: 16, color: '#555'
                   <Text style={styles.NextBtnTxt}>Start Inspection</Text>
                 </TouchableOpacity>
 }
-            
               </View>
               {inventoryDetailsList?.clerk_status=='pending' && 
 <View style={styles.BtnGrp}>
@@ -860,7 +859,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 55,
     lineHeight: 50,
-
     borderRadius: 8,
   },
   NextBtnTxt: {
