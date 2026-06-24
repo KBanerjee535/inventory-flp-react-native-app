@@ -12,7 +12,7 @@ import {
   FlatList,
     PermissionsAndroid,
   Platform,
-  ActivityIndicator
+  ActivityIndicator, Keyboard
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import PrevPageArrow from '../assets/images/BackArrow.svg';
@@ -22,14 +22,35 @@ import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import RNFS from 'react-native-fs'; // File system for storage paths
 import { useUserContext } from '../context/UserContext';
 import {SectionUpdateAudioApi} from '../services/apiService';
+import Voice from '@react-native-voice/voice';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { punctuateTextWithAI } from "../utils/punctuateTextModel";
+
+
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 const ClerkAddBedroomDetailsAddAudio = ({navigation}) => {
-  const { setRecordingPath ,recordingPath, sectionDetails} = useUserContext();
+  const { setRecordingPath ,recordingPath, sectionDetails, setVoiceNoteText, setCategorizedNotes } = useUserContext();
   const [screenLoading, setScreenLoading] = useState(false);
 
   const [isRecording, setIsRecording] = useState(false);
-  const [buttonsEnabled, setButtonsEnabled] = useState(false);
+  const [isAddingText, setIsAddingText] = useState(false);
+    const [recognizedText, setRecognizedText] = useState('');
+  const [appendedText, setAppendedText] = useState('');
+  const isListeningRef = useRef(false);   // true = user wants continuous listening
+  const isRestartingRef = useRef(false);  // prevents overlapping Voice.start() calls
+  const committedTextRef = useRef('');    // text from all completed sessions
+const restartTimeoutRef = useRef(null); // holds the pending setTimeout id, so it can be canceled
+const sessionIdRef = useRef(0); 
+
+const cancelPendingRestart = () => {
+  if (restartTimeoutRef.current) {
+    clearTimeout(restartTimeoutRef.current);
+    restartTimeoutRef.current = null;
+  }
+  isRestartingRef.current = false;
+};
+
 
   // 🔹 REQUEST MICROPHONE PERMISSION
   const requestMicrophonePermission = async () => {
@@ -52,68 +73,98 @@ const ClerkAddBedroomDetailsAddAudio = ({navigation}) => {
     return true; // iOS handles permissions automatically
   };
 
-  // 🔹 START RECORDING FUNCTION
-  const startRecording = async () => {
-        setRecordingPath('');
+useEffect(() => {
+  Voice.onSpeechResults = (event) => {
+    if (event.value?.length) {
+      setRecognizedText(event.value[0]);
+    }
+  };
 
-    const hasPermission = await requestMicrophonePermission();
-    if (!hasPermission) {
-      console.log('Microphone permission denied');
+  Voice.onSpeechPartialResults = (event) => {
+    if (event.value?.length) {
+      setRecognizedText(event.value[0]);
+    }
+  };
+
+  Voice.onSpeechEnd = () => {
+    setIsRecording(false);
+  };
+
+  Voice.onSpeechError = (e) => {
+    console.log(e);
+    setIsRecording(false);
+  };
+
+  return () => {
+    Voice.destroy().then(Voice.removeAllListeners);
+  };
+}, []);
+
+  // UI Control Functions
+  const startRecording = async () => {
+    try {
+    const granted = await requestMicrophonePermission();
+
+    if (!granted) {
+      alert('Microphone permission denied');
       return;
     }
 
-    try {
-      // Correct writable path for both Android & iOS
-      const path = `${RNFS.DocumentDirectoryPath}/recorded_audio.mp3`;
-
-      const uri = await audioRecorderPlayer.startRecorder(path);
-      setRecordingPath(uri);
-      setIsRecording(true);
-      setButtonsEnabled(true);
-      console.log('Recording started at:', uri);
-    } catch (error) {
-      console.log('Recording error:', error);
-    }
+    await Voice.start();
+    setIsRecording(true);
+  } catch (error) {
+    console.error(error);
+  }
   };
 
-  // 🔹 STOP RECORDING FUNCTION
   const stopRecording = async () => {
     try {
-      const result = await audioRecorderPlayer.stopRecorder();
+      await Voice.stop();
       setIsRecording(false);
-      setRecordingPath(result);
     } catch (error) {
-      console.log('Stop recording error:', error);
+      console.error(error);
     }
   };
 
-    // 🔹 Save RECORDING FUNCTION
-  const saveRecording = async () => {
-    try {
-      setScreenLoading(true);
-  const fileName = `recorded_audio_${Date.now()}.mp3`;
-  const fd = new FormData();
-       fd.append("section_id",sectionDetails?.id);
-       fd.append('audio', {
-     uri: Platform.OS === 'android' ? `${recordingPath}` : recordingPath,
-    type: 'audio/mpeg',
-    name: fileName, // 🔹 Add dynamic file name
-  });
+ const handleMicPress = async () => {
+  if (!isRecording) {
+    await startRecording();
+  } else {
+    await stopRecording();
+  }
+}; 
 
-console.log(JSON.stringify(fd));
-    let response = await SectionUpdateAudioApi(fd);
-setScreenLoading(false);
+const handleTextAppend = async () => {
+  if (!recognizedText.trim()) return;
 
-navigation.navigate('ClerkAddBedroomDetails');
-    } catch (error) {
-            setScreenLoading(false);
+  setIsAddingText(true);
 
-    alert(JSON.stringify(error));
-      console.log('Stop recording error:', error);
+  try {
+    const cleanedText = await punctuateTextWithAI(
+      recognizedText.trim()
+    );
+
+    setAppendedText(prev =>
+      prev
+        ? `${prev}\n${cleanedText}`
+        : cleanedText
+    );
+
+    if (typeof setVoiceNoteText === 'function') {
+      setVoiceNoteText(prev =>
+        prev
+          ? `${prev}\n${cleanedText}`
+          : cleanedText
+      );
     }
-  };
 
-
+    setRecognizedText('');
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setIsAddingText(false);
+  }
+};
 
   return (
     <SafeAreaView style={styles.mainBody}>
@@ -122,61 +173,83 @@ navigation.navigate('ClerkAddBedroomDetails');
         <View style={styles.Header}>
           <TouchableOpacity
             style={styles.BackBtn}
-            onPress={() => navigation.navigate('ClerkAddBedroomDetails')}>
+            onPress={() => {
+            if (typeof setVoiceNoteText === 'function') {
+              setVoiceNoteText(appendedText);
+            }
+            navigation.navigate('ClerkAddBedroomDetails');
+          }}>
             <PrevPageArrow style={styles.backIcon} />
           </TouchableOpacity>
           <Text style={styles.pagetitleTxt}>Record Audio</Text>
         </View>
 
-        <View style={styles.container}>
-          <View style={styles.buttoninner}>
-            <View style={styles.buttonRow}>
-
-              {/* Stop Button */}
-              <TouchableOpacity
-                style={[styles.button, !isRecording && styles.disabledButton]}
-                onPress={stopRecording}
-                disabled={!isRecording}>
-                <Icon name="stop" size={24} color="black" />
-              </TouchableOpacity>
-
-              {/* Mic Button */}
-              <View style={styles.recordButtongrp}>
-                <TouchableOpacity
-                  style={styles.recordButton}
-                  onPress={isRecording ? stopRecording : startRecording}>
-                  <Icon
-                    name={isRecording ? 'pause' : 'mic'}
-                    size={35}
-                    color="black"
-                  />
-                </TouchableOpacity>
-              </View>
-
-              {/* Check Button */}
-              <TouchableOpacity
-                style={[styles.button, !buttonsEnabled && styles.disabledButton]}
-                disabled={!buttonsEnabled}  onPress={isRecording ? stopRecording : startRecording}>
-                <Tick name="check" size={24} color="black" />
-              </TouchableOpacity>
-            </View>
-
-            {/* Recording Status */}
-            {isRecording && <Text style={styles.recordingText}>Recording...</Text>}
-          </View>
+        <View style={{ paddingLeft: 20, paddingRight: 20 }} >
+        <View style={{ alignItems: 'center', width: '100%', marginBottom: 18 }}>
+          <TouchableOpacity 
+            style={[styles.micButton, isRecording ? styles.micActive : styles.micInactive]} 
+            onPress={handleMicPress}
+            activeOpacity={0.7}
+          >
+            <Ionicons 
+              name={isRecording ? "pause" : "mic"} 
+              size={24} 
+              color="#FFF" 
+            />
+          </TouchableOpacity>
         </View>
-                             {screenLoading ? <ActivityIndicator size="large" color="#0000ff" />:
-                           recordingPath && recordingPath !== '' && !isRecording && (
-  <View style={styles.Footer}>
-    <TouchableOpacity
-      style={styles.NextBtn}
-      onPress={saveRecording}>
-      <Text style={styles.NextBtnTxt}>Save</Text>
-    </TouchableOpacity>
-  </View>
-)}
-
-      
+        {/* Container for Editable TextArea & Controls */}
+        <View style={styles.editorContainer}>
+          <TextInput
+            style={styles.textArea}
+            multiline={true}
+            numberOfLines={10}
+            placeholder="Type something here or tap the mic to speak..."
+            placeholderTextColor="#999"
+            value={recognizedText}
+            onChangeText={(newText) => setRecognizedText(newText)}
+            textAlignVertical="top"
+          />
+          
+          {/* Toolbar below the textarea */}
+        <View style={styles.toolbar}>
+          {isRecording ? (
+            <View style={styles.recordingStatus}>
+              <ActivityIndicator size="small" color="#FF3B30" />
+              <Text style={styles.recordingText}>Listening...</Text>
+            </View>
+          ) : (
+            <View />
+          )}
+        
+          {/* Button Container grouping Add and Mic buttons horizontally */}
+        <View style={styles.actionButtonsContainer}>
+          
+          {/* Conditionally render the Add Button only if recognizedText has content */}
+          {recognizedText.trim().length > 0 && (
+            <TouchableOpacity 
+              style={[
+                styles.fullWidthAddButton,
+                isAddingText && styles.fullWidthAddButtonDisabled
+              ]} 
+              onPress={handleTextAppend}
+              activeOpacity={0.8}
+              disabled={isAddingText}
+            >
+              {isAddingText ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <Text style={styles.fullWidthAddButtonLabel}>Add Text to Sections</Text>
+              )}
+            </TouchableOpacity>
+          )}
+        
+          
+        </View>
+        </View>
+        {recognizedText && <Text style={styles.appendedNotesText}>{recognizedText}</Text>}
+        </View>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -303,4 +376,114 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
   },
+  editorContainer: {
+    width: '100%',
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
+    elevation: 3,
+    overflow: 'hidden',
+  },
+  textArea: {
+    width: '100%',
+    height: 250,
+    padding: 16,
+    fontSize: 16,
+    color: '#374151',
+    lineHeight: 24,
+  },
+  toolbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderColor: '#F3F4F6',
+    backgroundColor: '#FAFAFA',
+  },
+  micButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+  },
+  micInactive: {
+    backgroundColor: '#007AFF', // Blue when idle
+  },
+  micActive: {
+    backgroundColor: '#FF3B30', // Red when listening (acting as pause option)
+  },
+  recordingStatus: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  recordingText: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: '#FF3B30',
+    fontWeight: '600',
+  },
+  toolbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+  },
+  actionButtonsContainer: {
+    flexDirection: 'row', 
+    alignItems: 'center', 
+  },
+  fullWidthAddButton: {
+    width: '100%',             // Direct full width structural stretching
+    backgroundColor: '#007AFF', // Solid block color accent background
+    paddingVertical: 14,       // Comfortable internal padding thickness
+    borderRadius: 8,           // Smoothly matches text area radius cuts
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,             // Even distribution margins between components
+    marginBottom: 4,
+  },
+  fullWidthAddButtonLabel: {
+    color: '#FFFFFF',           // Crisp white label contrast over theme fill
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  micButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  appendedNotesText: {
+    fontSize: 15,
+    color: '#666',
+    marginTop: 4,
+    paddingLeft: 32, // Indents the voice notes beautifully right underneath the item label row
+  },
+  fullWidthAddButton: {
+  width: '100%',
+  backgroundColor: '#007AFF',
+  paddingVertical: 14,
+  borderRadius: 8,
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginTop: 10,
+  marginBottom: 4,
+},
+fullWidthAddButtonDisabled: {
+  backgroundColor: '#90C2FF', // lighter/dimmed blue while loading
+},
 });

@@ -14,7 +14,7 @@ const [seletedJobId, setseletedJobId] = useState();
 const [seletedJobDetails, setseletedJobDetails] = useState();
 const [scheduleConditions, setScheduleConditions] = useState();
 const [SelectedSection, setSelectedSection] = useState();
-const [sectionDetails, setsectionDetails] = useState();
+const [sectionDetails, setsectionDetails] = useState(null);
 const [sectionItems,setsectionItems] = useState();
 const [keylist,setKeylist] =useState([]);
 const [keysData, setKeysData] =useState();
@@ -24,6 +24,8 @@ const [meterlist, setMeterlist] = useState([]);
   const [address, setAddress] = useState('Fetching location...');
     const [recordingPath, setRecordingPath] = useState(null);
 const [alarmlist, setAlarmlist] = useState([]);
+const [voiceNoteText, setVoiceNoteText] = useState('');
+const [categorizedNotes, setCategorizedNotes] = useState({});
 
   // Load data from AsyncStorage when the component mounts
   useEffect(() => {
@@ -65,6 +67,7 @@ const [alarmlist, setAlarmlist] = useState([]);
     saveData();
   }, [userData, searchValuesContext]);
 
+
   return (
     <UserContext.Provider
       value={{
@@ -101,7 +104,9 @@ const [alarmlist, setAlarmlist] = useState([]);
         alarmlist, setAlarmlist,
         alarmsData, setAlarmsData,
         metersData, setMetersData,
-        meterlist, setMeterlist
+        meterlist, setMeterlist,
+        voiceNoteText, setVoiceNoteText,
+        categorizedNotes, setCategorizedNotes
       }}
     >
       {children}

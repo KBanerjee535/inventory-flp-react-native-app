@@ -8,12 +8,12 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  Modal,
   Pressable,
   ScrollView,
   Linking,
   ActivityIndicator
 } from 'react-native'; 
+import Modal from 'react-native-modal';
 
 import NotificationBell from '../assets/images/bell-icon.svg';
 import CloseIcon from '../assets/images/BlackCross.svg';
@@ -67,6 +67,7 @@ const DashboardScreen = ({navigation}) => {
   const [inventoryDetailsList, setInventoryDetailsList] = useState();
   const { setUserData, setIsLoggedIn, seletedJobId,setseletedJobId, setseletedJobDetails } = useUserContext();
   const [screenLoading, setScreenLoading] = useState(true);
+  const [showContent, setShowContent] = useState(false);
 
   // Function to get dynamic styles for different colors
   const getColorClass = color => {
@@ -139,10 +140,11 @@ setseletedJobDetails(inventoryDetailsList[0]);
     let response = await getInventoryDetailsApi(fd);
 //alert(JSON.stringify(response));
   setInventoryDetailsList(response.data.data);
-      setScreenLoading(false);
+      
 
-     if (inventoryDetailsList) {
-      setModalVisible(true)
+     if (response.data.status) {
+      setModalVisible(true);
+      setScreenLoading(false);
      }
 
   } catch (error) {
@@ -186,51 +188,56 @@ const convertToAmPm = (time24) => {
   }, []);
   // Timeline Item Component
   const TimelineItem = ({item, index, timelineData}) => {
-    const [eventBoxHeight, setEventBoxHeight] = useState(40); // Default height
+  const [eventBoxHeight, setEventBoxHeight] = useState(40);
 
-    return (
-      <View style={styles.container}>
-        {/* Left Side - Time and Vertical Line */}
-        <View style={styles.timeContainer}>
-          <Text style={styles.timeText}>{convertToAmPm(item.created_date_time)}</Text>
-          {index !== timelineData.length - 1 && (
-            <View
-              style={[
-                styles.verticalLine,
-                {backgroundColor: '#cbeffa', height: eventBoxHeight},
-              ]}
-            />
-          )}
-        </View>
- 
-        {/* Right Side - Event Box with Left Border */}
-        <TouchableOpacity
-          onLayout={event => {
-            setEventBoxHeight(event.nativeEvent.layout.height); // Set dynamic height
-          }}
-          style={[
+  return (
+    <View style={styles.container}>
+      <View style={styles.timeContainer}>
+        <Text style={styles.timeText}>{convertToAmPm(item.created_date_time)}</Text>
+        {index !== timelineData.length - 1 && (
+          <View
+            style={[
+              styles.verticalLine,
+              {backgroundColor: '#cbeffa', height: eventBoxHeight},
+            ]}
+          />
+        )}
+      </View>
+
+      {/* Wrap content in a plain View that measures layout, NOT the touchable itself */}
+      <View
+        onLayout={event => {
+          const height = event.nativeEvent.layout.height;
+          if (height !== eventBoxHeight) {
+            setEventBoxHeight(height);
+          }
+        }}
+        style={[
             styles.eventBox,
             {
               backgroundColor: '#cbeffa',
               borderLeftColor: '#3CC6ED',
+              width: '70%',
             },
           ]}
+      >
+        <TouchableOpacity
+          
           onPress={() => getInventryDetails(item.inventory_id.toString())}>
-          <Text style={[styles.eventTime, {color:'#0E6781'}]}>
+          <Text style={[styles.eventTime, {color: '#0E6781'}]}>
             {convertToAmPm(item.created_date_time)} - {convertToAmPm(item.schedule_date_time)}
           </Text>
           <Text style={[styles.eventTitle, {color: '#0E6781'}]}>
             {item.property_details.address_1}
           </Text>
-
-          <Text
-            style={[styles.eventDescription, {color: '#0E6781'}]}>
+          <Text style={[styles.eventDescription, {color: '#0E6781'}]}>
             ({item.report_type})
           </Text>
         </TouchableOpacity>
       </View>
-    );
-  };
+    </View>
+  );
+};
 
   // Document Item Component
   const DocumentItem = ({item}) => (
@@ -249,6 +256,20 @@ const convertToAmPm = (time24) => {
     lastDate.setDate(lastDate.getDate() + 1); // Start from the next day
     setDates([...dates, ...getNext7Days(lastDate)]);
   };
+
+  
+
+useEffect(() => {
+  if (modalVisible) {
+    const timer = setTimeout(() => {
+      setShowContent(true);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  } else {
+    setShowContent(false);
+  }
+}, [modalVisible]);
 
   return (
     <SafeAreaView style={styles.mainBody}>
@@ -343,6 +364,8 @@ textAlign: 'center', marginTop: 20, fontSize: 16, color: '#555'
         animationType="slide"
         transparent={true}
         visible={modalVisible}
+        hardwareAccelerated={true}
+        statusBarTranslucent={true}
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -353,7 +376,16 @@ textAlign: 'center', marginTop: 20, fontSize: 16, color: '#555'
               <CloseIcon width={30} height={30} />
             </TouchableOpacity>
 
-            <ScrollView style={styles.ModalScrollContainer}>
+          { showContent && (
+            <ScrollView key={modalVisible ? 'open' : 'closed'}
+            style={styles.ModalScrollContainer}
+            contentContainerStyle={{
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    flexGrow: 1,
+  }}
+  nestedScrollEnabled={true}
+        showsVerticalScrollIndicator={false}>
               <View style={styles.TopPart}>
                 <Text style={styles.HeaderLftTxt}>{inventoryDetailsList?.property?.name || 'N/A'}</Text>
                 <View style={styles.indicator}>
@@ -611,6 +643,7 @@ onPress={() => acceptRejectJob('3')}>
                 
               }
             </ScrollView>
+            )}
           </View>
         </View>
       </Modal>
@@ -685,6 +718,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     width: '100%',
+    paddingRight: 15
   },
   timeContainer: {
     alignItems: 'center',
@@ -812,12 +846,13 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
-
+    // flex: 1,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    maxHeight: '95%',
+    height: '95%',
     paddingTop: 20,
     paddingBottom: 20,
+    // justifyContent: 'flex-end',
   },
   closeButton: {
     alignSelf: 'flex-end',
@@ -827,12 +862,14 @@ const styles = StyleSheet.create({
   },
 
   ModalScrollContainer: {
-    backgroundColor: '#fff',
-    paddingLeft: 20,
+    // backgroundColor: '#fff',
+    // paddingLeft: 20,
     paddingTop: 10,
-    paddingRight: 20,
+    // paddingRight: 20,
     paddingBottom: 20,
     width: '100%',
+    // height: '100%',
+    // flex: 1
   },
   title: {
     color: '#000',
@@ -1045,7 +1082,8 @@ const styles = StyleSheet.create({
   sectionDoc: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    // justifyContent: 'flex-start',
+    flexWrap: 'wrap',
     gap: 15,
   },
 

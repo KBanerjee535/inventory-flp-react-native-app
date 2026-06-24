@@ -37,8 +37,9 @@ import Toast from "react-native-simple-toast";
 import { format } from "date-fns";
 
 import AddPlus from "../assets/images/AddPlus.svg";
-import Voice from '@react-native-voice/voice';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+// import Voice from '@react-native-voice/voice';
+// import Ionicons from 'react-native-vector-icons/Ionicons';
+// import { punctuateTextWithAI } from "../utils/punctuateTextModel";
 
 const staticItems = [
   {
@@ -92,9 +93,9 @@ const ClerkInspectionScreen = ({ navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newSectionName, setNewSectionName] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
-  const [isRecording, setIsRecording] = useState(false);
-  const [recognizedText, setRecognizedText] = useState('');
-const [sectionNotesState, setSectionNotesState] = React.useState({});
+//   const [isRecording, setIsRecording] = useState(false);
+//   const [recognizedText, setRecognizedText] = useState('');
+// const [sectionNotesState, setSectionNotesState] = React.useState({});
 
 
 
@@ -106,6 +107,7 @@ const [sectionNotesState, setSectionNotesState] = React.useState({});
       fd.append("inventory_id", seletedJobId);
 
       let response = await getSectionListByInventoryIdAPI(fd);
+      console.log("sections list", response);
       const apiData = response.data.data;
       //alert(apiData);
       setSectionListByInventoryId(apiData);
@@ -220,147 +222,144 @@ const [sectionNotesState, setSectionNotesState] = React.useState({});
     });
   }, [fadeAnims]);
 
-  useEffect(() => {
-    // Bind Voice Events
-    Voice.onSpeechStart = () => setIsRecording(true);
-    Voice.onSpeechEnd = () => setIsRecording(false);
-    Voice.onSpeechError = (e) => {
-      console.log('Voice Error: ', e.error);
-      setIsRecording(false);
-    };
+  // useEffect(() => {
+  //   // Bind Voice Events
+  //   Voice.onSpeechStart = () => setIsRecording(true);
+  //   Voice.onSpeechEnd = () => setIsRecording(false);
+  //   Voice.onSpeechError = (e) => {
+  //     console.log('Voice Error: ', e.error);
+  //     setIsRecording(false);
+  //   };
     
-    // Live results
-    Voice.onSpeechResults = (e) => {
-      if (e.value && e.value.length > 0) {
-        // Option A: Overwrite text area with voice input
-        // setRecognizedText(e.value[0]);
+  //   // Live results
+  //   Voice.onSpeechResults = (e) => {
+  //     if (e.value && e.value.length > 0) {
+  //       // Option A: Overwrite text area with voice input
+  //       // setRecognizedText(e.value[0]);
         
-        // Option B: Append to existing text instead (uncomment below if preferred)
-        setRecognizedText((prevText) => prevText + " " + e.value[0]);
-      }
-    };
+  //       // Option B: Append to existing text instead (uncomment below if preferred)
+  //       setRecognizedText((prevText) => prevText + " " + e.value[0]);
+  //     }
+  //   };
 
-    // Clean up listeners on unmount
-    return () => {
-      Voice.destroy().then(Voice.removeAllListeners);
-    };
-  }, []);
+  //   // Clean up listeners on unmount
+  //   return () => {
+  //     Voice.destroy().then(Voice.removeAllListeners);
+  //   };
+  // }, []);
 
-  // UI Control Functions
-  const startRecording = async () => {
-    try {
-      setRecognizedText('');
-      // Use 'en-US' or any locale code like 'es-ES', 'fr-FR', etc.
-      await Voice.start('en-US'); 
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // // UI Control Functions
+  // const startRecording = async () => {
+  //   try {
+  //     setRecognizedText('');
+  //     // Use 'en-US' or any locale code like 'es-ES', 'fr-FR', etc.
+  //     await Voice.start('en-US'); 
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
-  const stopRecording = async () => {
-    try {
-      await Voice.stop();
-      setIsRecording(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const stopRecording = async () => {
+  //   try {
+  //     await Voice.stop();
+  //     setIsRecording(false);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
-  const handleMicPress = async () => {
-    if (isRecording) {
-      // "Pause" or Stop listening
-      try {
-        await Voice.stop();
-        setIsRecording(false);
-      } catch (error) {
-        console.error(error);
-      }
-    } else {
-      // Start listening
-      try {
-        Keyboard.dismiss(); // Close keyboard so user can focus on speaking
-        setIsRecording(true);
-        await Voice.start('en-US'); 
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
+  // const handleMicPress = async () => {
+  //   if (isRecording) {
+  //     // "Pause" or Stop listening
+  //     try {
+  //       await Voice.stop();
+  //       setIsRecording(false);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   } else {
+  //     // Start listening
+  //     try {
+  //       Keyboard.dismiss(); // Close keyboard so user can focus on speaking
+  //       setIsRecording(true);
+  //       await Voice.start('en-US'); 
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // };
 
-const handleTextAppend = () => {
-  const fullSpokenText = recognizedText.trim();
-  if (!fullSpokenText) return;
+// const handleTextAppend = async () => {
+//   let fullSpokenText = recognizedText.trim();
+//   if (!fullSpokenText) return;
+//   try {
+//   fullSpokenText = await punctuateTextWithAI(fullSpokenText);
+// } catch (e) {
+//   console.log("AI failed:", e);
+// }
 
-  // 1. Split the spoken text into individual sentences/lines 
-  // This matches split parameters by line breaks, periods, or commas
-  const sentences = fullSpokenText.split(/\n|\.|\,+/);
+//   console.log("AI text:", fullSpokenText);
+//   const sentences = fullSpokenText
+//   .split(/[.!?\n]/)
+//   .map(s => s.trim())
+//   .filter(Boolean);
 
-  // Create a temporary object to stage state updates before mutating React state
-  const updatedNotesMap = {};
+//   const updatedNotesMap = {};
 
-  sentences.forEach((sentence) => {
-    const cleanSentence = sentence.trim();
-    if (!cleanSentence) return; // Skip empty chunks
+//   sentences.forEach((sentence) => {
+//     const cleanSentence = sentence.trim();
+//     if (!cleanSentence) return; // Skip empty chunks
 
-    let matchedId = null;
-    let matchedType = null;
-    let categoryName = "";
+//     let matchedId = null;
+//     let matchedType = null;
+//     let categoryName = "";
+//     const dynamicMatch = SectionListByInventoryId?.find(section => 
+//       cleanSentence.toLowerCase().includes(section.name.toLowerCase())
+//     );
 
-    // 2. Check Dynamic API items first for a match inside this single sentence
-    const dynamicMatch = SectionListByInventoryId?.find(section => 
-      cleanSentence.toLowerCase().includes(section.name.toLowerCase())
-    );
+//     const staticMatch = staticItems.find(item => 
+//       cleanSentence.toLowerCase().includes(item.text.toLowerCase())
+//     );
 
-    // 3. Check Static items second inside this single sentence
-    const staticMatch = staticItems.find(item => 
-      cleanSentence.toLowerCase().includes(item.text.toLowerCase())
-    );
+//     if (dynamicMatch) {
+//       matchedId = dynamicMatch.id;
+//       matchedType = 'dynamic';
+//       categoryName = dynamicMatch.name;
+//     } else if (staticMatch) {
+//       matchedId = staticMatch.id;
+//       matchedType = 'static';
+//       categoryName = staticMatch.text;
+//     }
 
-    if (dynamicMatch) {
-      matchedId = dynamicMatch.id;
-      matchedType = 'dynamic';
-      categoryName = dynamicMatch.name;
-    } else if (staticMatch) {
-      matchedId = staticMatch.id;
-      matchedType = 'static';
-      categoryName = staticMatch.text;
-    }
-
-    // 4. If a match is found for this specific sentence, prepare the update entry
-    if (matchedId) {
-      const stateKey = `${matchedType}-${matchedId}`;
+//     if (matchedId) {
+//       const stateKey = `${matchedType}-${matchedId}`;
       
-      // Clean up the text sentence by stripping away its matching category name prefix if desired
-      // E.g., turning "Meter box is broken" into "is broken" or keep it as is.
-      // To keep the full phrase, leave 'textToSave = cleanSentence'.
-      const textToSave = cleanSentence; 
+//       const textToSave = cleanSentence; 
 
-      if (!updatedNotesMap[stateKey]) {
-        updatedNotesMap[stateKey] = [];
-      }
-      updatedNotesMap[stateKey].push(textToSave);
-    }
-  });
+//       if (!updatedNotesMap[stateKey]) {
+//         updatedNotesMap[stateKey] = [];
+//       }
+//       updatedNotesMap[stateKey].push(textToSave);
+//     }
+//   });
 
-  // 5. Batch update your React Native state dictionary safely in one operational hook loop
-  setSectionNotesState((prevState) => {
-    const newState = { ...prevState };
+//   setSectionNotesState((prevState) => {
+//     const newState = { ...prevState };
 
-    Object.keys(updatedNotesMap).forEach((key) => {
-      const existingNotes = newState[key];
-      const newSentencesString = updatedNotesMap[key].join('\n');
+//     Object.keys(updatedNotesMap).forEach((key) => {
+//       const existingNotes = newState[key];
+//       const newSentencesString = updatedNotesMap[key].join('\n');
 
-      newState[key] = existingNotes 
-        ? `${existingNotes}\n${newSentencesString}` 
-        : newSentencesString;
-    });
+//       newState[key] = existingNotes 
+//         ? `${existingNotes}\n${newSentencesString}` 
+//         : newSentencesString;
+//     });
 
-    return newState;
-  });
+//     return newState;
+//   });
 
-  // Clear your voice entry box smoothly
-  setRecognizedText('');
-};
+//   setRecognizedText('');
+// };
 
 
   return (
@@ -425,43 +424,18 @@ const handleTextAppend = () => {
           </View>
 
           <View style={styles.List}>
+            <View style={styles.SectionHeaderRow}>
+            <TouchableOpacity
+              style={styles.BackBtn}
+              onPress={() => {
+                navigation.navigate("TabRoutes", { screen: "Dashboard" });
+              }}
+            >
+              <Arrow name="chevron-back-outline" size={24} color="#393D47" />
+            </TouchableOpacity>
             <Text style={styles.ListHr}>Sections of inspection</Text>
-
-            {/* 1. Static items loop */}
-{staticItems.map((item, index) => {
-  // Safe layout key generation ensures React keeps nodes isolated
-  const layoutKey = `static-entity-row-${item.id}`;
-  const animationOpacity = fadeAnims && fadeAnims[index] ? fadeAnims[index] : 1;
-
-  return (
-    <Animated.View
-      key={layoutKey}
-      style={{ opacity: animationOpacity }}
-    >
-      <TouchableOpacity
-        style={styles.ListItem}
-        onPress={() => navigation.navigate(item.screen)}
-      >
-        <View style={styles.ListItemInnerContainer}>
-          <View style={styles.ListItemInner}>
-            {item.icon}
-            <Text style={styles.ListItemTxt}>{item.text}</Text>
           </View>
-          
-          {/* Render Speech-to-text added notes safely */}
-          {sectionNotesState && sectionNotesState[`static-${item.id}`] && (
-            <Text style={styles.appendedNotesText}>
-              {sectionNotesState[`static-${item.id}`]}
-            </Text>
-          )}
-        </View>
-        <Arrow name="chevron-forward-outline" size={28} color="#393D47" />
-      </TouchableOpacity>
-    </Animated.View>
-  );
-})}
 
-{/* 2. Dynamic API items loop */}
 {SectionListByInventoryId?.map((section, index) => {
   const layoutKey = `dynamic-entity-row-${section.id}`;
   
@@ -485,11 +459,11 @@ const handleTextAppend = () => {
           </View>
 
           {/* Render Speech-to-text added notes safely */}
-          {sectionNotesState && sectionNotesState[`dynamic-${section.id}`] && (
+          {/* {sectionNotesState && sectionNotesState[`dynamic-${section.id}`] && (
             <Text style={styles.appendedNotesText}>
               {sectionNotesState[`dynamic-${section.id}`]}
             </Text>
-          )}
+          )} */}
         </View>
         <Arrow name="chevron-forward-outline" size={28} color="#393D47" />
       </TouchableOpacity>
@@ -505,66 +479,9 @@ const handleTextAppend = () => {
           >
             <Text style={styles.NextBtnTxt}>Add Another</Text>
           </TouchableOpacity> */}
-          <Text style={styles.title}>Voice Note Editor</Text>
+          {/* <Text style={styles.title}>Voice Note Editor</Text> */}
           {/* Speak / Pause Toggle Button */}
-          <View style={{ alignItems: 'center', width: '90%', marginBottom: 8 }}>
-  <TouchableOpacity 
-    style={[styles.micButton, isRecording ? styles.micActive : styles.micInactive]} 
-    onPress={handleMicPress}
-    activeOpacity={0.7}
-  >
-    <Ionicons 
-      name={isRecording ? "pause" : "mic"} 
-      size={24} 
-      color="#FFF" 
-    />
-  </TouchableOpacity>
-</View>
-{/* Container for Editable TextArea & Controls */}
-<View style={styles.editorContainer}>
-  <TextInput
-    style={styles.textArea}
-    multiline={true}
-    numberOfLines={10}
-    placeholder="Type something here or tap the mic to speak..."
-    placeholderTextColor="#999"
-    value={recognizedText}
-    onChangeText={(newText) => setRecognizedText(newText)}
-    textAlignVertical="top"
-  />
-  
-  {/* Toolbar below the textarea */}
-<View style={styles.toolbar}>
-  {isRecording ? (
-    <View style={styles.recordingStatus}>
-      <ActivityIndicator size="small" color="#FF3B30" />
-      <Text style={styles.recordingText}>Listening...</Text>
-    </View>
-  ) : (
-    <View />
-  )}
-
-  {/* Button Container grouping Add and Mic buttons horizontally */}
-<View style={styles.actionButtonsContainer}>
-  
-  {/* Conditionally render the Add Button only if recognizedText has content */}
-  {recognizedText.trim().length > 0 && (
-    <TouchableOpacity 
-      style={styles.fullWidthAddButton} 
-      onPress={handleTextAppend}
-      activeOpacity={0.8}
-    >
-      <Text style={styles.fullWidthAddButtonLabel}>Add Text to Sections</Text>
-    </TouchableOpacity>
-  )}
-
-  
-</View>
-</View>
-
-</View>
-
-
+          
           <TouchableOpacity
             //style={styles.StartBtn}
             style={[styles.StartBtn, isDisabled && styles.DisabledBtn]}
@@ -708,12 +625,21 @@ const styles = StyleSheet.create({
     paddingTop: 35,
   },
   ListHr: {
-    color: "#525050",
-    fontFamily: "BeVietnamPro-Regular",
-    fontSize: 14,
-    fontWeight: "400",
-    textTransform: "uppercase",
+  color: "#525050",
+  fontFamily: "BeVietnamPro-Regular",
+  fontSize: 14,
+  fontWeight: "400",
+  textTransform: "uppercase",
+  // marginBottom moved to SectionHeaderRow below
+  },
+  SectionHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
     marginBottom: 25,
+  },
+  BackBtn: {
+    padding: 4,
   },
   ListItem: {
     backgroundColor: "#fff",
@@ -851,7 +777,7 @@ const styles = StyleSheet.create({
     height: 55,
     lineHeight: 50,
     borderRadius: 8,
-    marginBottom: 15,
+    marginBottom: 40,
     marginTop: 15,
   },
   DisabledBtn: {
@@ -863,7 +789,7 @@ const styles = StyleSheet.create({
   tooltip_container: {
     position: "absolute",
     right: 20,
-    bottom: 40,
+    bottom: 70,
     alignItems: "center",
     gap: "15",
     flexDirection: "row",
@@ -919,7 +845,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   editorContainer: {
-    width: '90%',
+    width: '100%',
     backgroundColor: '#FFF',
     borderRadius: 16,
     borderWidth: 1,
