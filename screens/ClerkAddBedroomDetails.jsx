@@ -47,7 +47,7 @@ const ClerkAddBedroomDetails = ({navigation}) => {
   const [description, setDescription] = useState();
 const [supportingMedia, setSupportingMedia] = useState([]); // holds both images & videos
 
-const { setRecordingPath, SelectedSection, sectionDetails, setsectionDetails, sectionItems, setsectionItems, voiceNoteText, categorizedNotes } = useUserContext();
+const { setRecordingPath, SelectedSection, sectionDetails, setsectionDetails, sectionItems, setsectionItems, categorizedNotes } = useUserContext();
 const [textValues, setTextValues] = useState({});
 const [isSaved, setIsSaved] = useState({}); // track save state for each item
   const [isEditing, setIsEditing] = useState(false);
@@ -496,6 +496,7 @@ const handleSaveText = async (itemId) => {
 useEffect(() => {
     getSectionDetails();
     // fetchSupportingImages();
+    console.log('categorizedNotes: ', categorizedNotes);
 }, []);
 
   return (
@@ -568,13 +569,62 @@ useEffect(() => {
               multiline
             />
           ) : ( */}
+          
             <AccordionEntity title={section?.title}>
               <>
-                {section?.subsubSection?.map((item) => (
-                  <View key={item.id} style={{ marginBottom: 4, paddingBottom: 4, marginTop: 4 }}>
-                    <Text style={{ fontSize: 16 }}>{item.title}</Text>
-                  </View>
-                ))}
+                {section?.subsubSection?.map((item) => {
+  const notes =
+    categorizedNotes?.[section.title]?.[item.title] || [];
+
+  return (
+    <View
+      key={item.id}
+      style={{
+        marginBottom: 10,
+        paddingBottom: 10,
+        marginTop: 4,
+      }}
+    >
+      <Text
+        style={{
+          fontSize: 16,
+          color: '#333',
+          fontWeight: '600',
+        }}
+      >
+        {item.title}
+      </Text>
+
+      {notes.length > 0 ? (
+        notes.map((note, index) => (
+          <Text
+            key={index}
+            style={{
+              marginLeft: 15,
+              marginTop: 4,
+              color: '#666',
+            }}
+          >
+            • {note}
+          </Text>
+        ))
+      ) : (
+        <Text
+          style={{
+            marginLeft: 15,
+            marginTop: 4,
+            color: '#999',
+          }}
+        >
+          No notes
+        </Text>
+      )}
+    </View>
+  );
+})}
+                {section?.subsubSection?.length === 0 && (
+                  <Text style={{ fontSize: 16, color: '#999' }}>No sub-sections available</Text>
+                )}
               </>
             </AccordionEntity>
           {/* )} */}

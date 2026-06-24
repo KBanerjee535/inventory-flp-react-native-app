@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#333',
   },
   icon: {
     fontSize: 20,
@@ -57,6 +58,7 @@ const styles = StyleSheet.create({
   content: {
     padding: 16,
     backgroundColor: '#fff',
+    color: '#333',
   },
 });
 

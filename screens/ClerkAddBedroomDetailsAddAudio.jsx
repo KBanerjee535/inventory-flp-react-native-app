@@ -24,13 +24,13 @@ import { useUserContext } from '../context/UserContext';
 import {SectionUpdateAudioApi} from '../services/apiService';
 import Voice from '@react-native-voice/voice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { punctuateTextWithAI } from "../utils/punctuateTextModel";
+import { punctuateTextWithAI, categorizeInspectionNotes } from "../utils/punctuateTextModel";
 
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 const ClerkAddBedroomDetailsAddAudio = ({navigation}) => {
-  const { setRecordingPath ,recordingPath, sectionDetails, setVoiceNoteText, setCategorizedNotes } = useUserContext();
+  const { setRecordingPath ,recordingPath, sectionDetails, setCategorizedNotes } = useUserContext();
   const [screenLoading, setScreenLoading] = useState(false);
 
   const [isRecording, setIsRecording] = useState(false);
@@ -40,8 +40,8 @@ const ClerkAddBedroomDetailsAddAudio = ({navigation}) => {
   const isListeningRef = useRef(false);   // true = user wants continuous listening
   const isRestartingRef = useRef(false);  // prevents overlapping Voice.start() calls
   const committedTextRef = useRef('');    // text from all completed sessions
-const restartTimeoutRef = useRef(null); // holds the pending setTimeout id, so it can be canceled
-const sessionIdRef = useRef(0); 
+const restartTimeoutRef = useRef(null);
+const [voiceError, setVoiceError] = useState('');
 
 const cancelPendingRestart = () => {
   if (restartTimeoutRef.current) {
@@ -49,6 +49,46 @@ const cancelPendingRestart = () => {
     restartTimeoutRef.current = null;
   }
   isRestartingRef.current = false;
+};
+
+const getVoiceErrorMessage = (code) => {
+  switch (String(code)) {
+    case '1':
+      return 'Network error. Please check your internet connection.';
+
+    case '2':
+      return 'Network timeout. Please try again after few minutes.';
+
+    case '3':
+      return 'Audio recording error. Please restart recording.';
+
+    case '4':
+      return 'Speech recognition service error.';
+
+    case '5':
+      return 'Speech recognition could not start. Please try again.';
+
+    case '6':
+      return 'No speech detected. Please speak louder.';
+
+    case '7':
+      return 'Could not understand what you said. Please try again after few seconds.';
+
+    case '8':
+      return 'Speech recognizer is busy. Please try again after few seconds';
+
+    case '9':
+      return 'Insufficient permissions for speech recognition.';
+
+    case '10':
+      return 'Too many requests. Please wait a few seconds.';
+
+    case '11':
+      return 'Speech service temporarily unavailable. Please try again after few minutes';
+
+    default:
+      return 'Speech recognition failed. Please try again after few seconds';
+  }
 };
 
 
@@ -87,21 +127,41 @@ useEffect(() => {
   };
 
   Voice.onSpeechEnd = () => {
+    recognitionRunningRef.current = false;
     setIsRecording(false);
   };
 
   Voice.onSpeechError = (e) => {
+    recognitionRunningRef.current = false;
     console.log(e);
     setIsRecording(false);
+    const code = e?.error?.code;
+    const message = getVoiceErrorMessage(code);
+    setVoiceError(message);
   };
 
   return () => {
-    Voice.destroy().then(Voice.removeAllListeners);
-  };
+  try {
+    Voice.stop();
+    Voice.cancel();
+    Voice.destroy();
+    Voice.removeAllListeners();
+  } catch (e) {
+    console.log(e);
+  }
+};
 }, []);
 
   // UI Control Functions
+  const recognitionRunningRef = useRef(false);
   const startRecording = async () => {
+    await Voice.stop().catch(() => {});
+    await Voice.cancel().catch(() => {});
+    await Voice.destroy().catch(() => {});
+
+    if (recognitionRunningRef.current) {
+    return;
+  }
     try {
     const granted = await requestMicrophonePermission();
 
@@ -109,8 +169,8 @@ useEffect(() => {
       alert('Microphone permission denied');
       return;
     }
-
-    await Voice.start();
+    recognitionRunningRef.current = true;
+    await Voice.start('en-US');
     setIsRecording(true);
   } catch (error) {
     console.error(error);
@@ -144,21 +204,19 @@ const handleTextAppend = async () => {
       recognizedText.trim()
     );
 
-    setAppendedText(prev =>
-      prev
-        ? `${prev}\n${cleanedText}`
-        : cleanedText
-    );
+    const categorizedData =
+    await categorizeInspectionNotes(cleanedText, sectionDetails);
 
-    if (typeof setVoiceNoteText === 'function') {
-      setVoiceNoteText(prev =>
-        prev
-          ? `${prev}\n${cleanedText}`
-          : cleanedText
-      );
-    }
+    console.log('Categorized Data:', categorizedData);
+
+    setCategorizedNotes(prev => ({
+      ...prev,
+      ...categorizedData,
+    }));
 
     setRecognizedText('');
+    
+    navigation.navigate('ClerkAddBedroomDetails');
   } catch (error) {
     console.log(error);
   } finally {
@@ -173,10 +231,14 @@ const handleTextAppend = async () => {
         <View style={styles.Header}>
           <TouchableOpacity
             style={styles.BackBtn}
-            onPress={() => {
-            if (typeof setVoiceNoteText === 'function') {
-              setVoiceNoteText(appendedText);
-            }
+            onPress={async () => {
+             try {
+    await Voice.stop();
+    await Voice.cancel();
+    await Voice.destroy();
+  } catch (e) {
+    console.log(e);
+  }
             navigation.navigate('ClerkAddBedroomDetails');
           }}>
             <PrevPageArrow style={styles.backIcon} />
@@ -247,9 +309,20 @@ const handleTextAppend = async () => {
           
         </View>
         </View>
-        {recognizedText && <Text style={styles.appendedNotesText}>{recognizedText}</Text>}
         </View>
         </View>
+        {voiceError ? (
+          <Text
+            style={{
+              color: '#FF3B30',
+              marginTop: 10,
+              textAlign: 'center',
+              fontSize: 14,
+            }}
+          >
+            {voiceError}
+          </Text>
+        ) : null}
       </View>
     </SafeAreaView>
   );

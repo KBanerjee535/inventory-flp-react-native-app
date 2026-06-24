@@ -50,3 +50,96 @@ ${text}
   }
   return text;
 };
+
+export const categorizeInspectionNotes = async (
+  text,
+  sectionDetails = []
+) => {
+  try {
+    const structure = JSON.stringify(
+      sectionDetails.map(room => ({
+        room: room.title,
+        subsections: room.subsubSection.map(
+          sub => sub.title
+        ),
+      })),
+      null,
+      2
+    );
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GOOGLE_GEMINI_FREE_KEY}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `
+You are helping a property inspector.
+
+Available inspection structure:
+
+${structure}
+
+Rules:
+- Use ONLY the room names from the structure.
+- Use ONLY the subsection names from the structure.
+- Categorize every observation under the correct room and subsection.
+- If an observation refers to the room generally, use "Room Items".
+- Return VALID JSON ONLY.
+- No markdown.
+- No explanation.
+- Do not wrap JSON in \`\`\`json.
+
+Example:
+
+{
+  "Bedroom 1": {
+    "Room Items": [
+      "The room is dirty."
+    ]
+  },
+  "Bedroom 2": {
+    "Windows": [
+      "The window handle is broken."
+    ]
+  }
+}
+
+Inspection Notes:
+
+${text}
+                  `,
+                },
+              ],
+            },
+          ],
+          generationConfig: {
+            temperature: 0,
+          },
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    let result =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+
+    // Gemini sometimes returns ```json ... ```
+    result = result
+      .replace(/```json/g, '')
+      .replace(/```/g, '')
+      .trim();
+
+    return JSON.parse(result);
+  } catch (error) {
+    console.log('Categorization error:', error);
+    return {};
+  }
+};

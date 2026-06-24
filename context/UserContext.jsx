@@ -24,8 +24,7 @@ const [meterlist, setMeterlist] = useState([]);
   const [address, setAddress] = useState('Fetching location...');
     const [recordingPath, setRecordingPath] = useState(null);
 const [alarmlist, setAlarmlist] = useState([]);
-const [voiceNoteText, setVoiceNoteText] = useState('');
-const [categorizedNotes, setCategorizedNotes] = useState({});
+const [categorizedNotes, setCategorizedNotes] = useState(null);
 
   // Load data from AsyncStorage when the component mounts
   useEffect(() => {
@@ -105,7 +104,6 @@ const [categorizedNotes, setCategorizedNotes] = useState({});
         alarmsData, setAlarmsData,
         metersData, setMetersData,
         meterlist, setMeterlist,
-        voiceNoteText, setVoiceNoteText,
         categorizedNotes, setCategorizedNotes
       }}
     >
