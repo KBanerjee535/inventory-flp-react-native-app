@@ -204,10 +204,19 @@ const handleTextAppend = async () => {
       recognizedText.trim()
     );
 
-    const categorizedData =
-    await categorizeInspectionNotes(cleanedText, sectionDetails);
+    console.log('Section Details:', sectionDetails);
+console.log('Recognized Text:', cleanedText);
 
-    console.log('Categorized Data:', categorizedData);
+const categorizedData =
+  await categorizeInspectionNotes(
+    cleanedText,
+    sectionDetails
+  );
+
+console.log(
+  'Categorized Data:',
+  JSON.stringify(categorizedData, null, 2)
+);
 
     setCategorizedNotes(prev => ({
       ...prev,

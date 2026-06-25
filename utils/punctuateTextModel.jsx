@@ -86,27 +86,42 @@ Available inspection structure:
 
 ${structure}
 
-Rules:
-- Use ONLY the room names from the structure.
-- Use ONLY the subsection names from the structure.
-- Categorize every observation under the correct room and subsection.
-- If an observation refers to the room generally, use "Room Items".
+IMPORTANT:
+
+- The JSON above contains ALL valid rooms.
+- The JSON above contains ALL valid subsections.
+- You MUST use room names exactly as provided.
+- You MUST use subsection names exactly as provided.
+- Never create a new room name.
+- Never create a new subsection name.
+- Every observation must be assigned to one room and one subsection.
+- Choose the most relevant subsection from the available subsections of that room.
 - Return VALID JSON ONLY.
 - No markdown.
 - No explanation.
-- Do not wrap JSON in \`\`\`json.
 
 Example:
 
+Input:
+"The room is dirty of bedroom 1"
+
+Output:
 {
   "Bedroom 1": {
     "Room Items": [
       "The room is dirty."
     ]
-  },
-  "Bedroom 2": {
-    "Windows": [
-      "The window handle is broken."
+  }
+}
+
+Input:
+"Check all furniture and furnishings and note their condition of bedroom 1"
+
+Output:
+{
+  "Bedroom 1": {
+    "Furniture & Furnishing": [
+      "Check all furniture and furnishings and note their condition."
     ]
   }
 }
@@ -114,6 +129,7 @@ Example:
 Inspection Notes:
 
 ${text}
+
                   `,
                 },
               ],
@@ -127,6 +143,10 @@ ${text}
     );
 
     const data = await response.json();
+    console.log(
+  'Gemini Raw Response:',
+  JSON.stringify(data, null, 2)
+);
 
     let result =
       data?.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
