@@ -1,10 +1,11 @@
 import { GOOGLE_GEMINI_FREE_KEY } from '../app_url';
+import Toast from 'react-native-simple-toast';
 
 export const punctuateTextWithAI = async (text, retries = 2) => {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GOOGLE_GEMINI_FREE_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GOOGLE_GEMINI_FREE_KEY}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -41,6 +42,10 @@ ${text}
       return data?.candidates?.[0]?.content?.parts?.[0]?.text || text;
     } catch (error) {
       console.log(`Gemini network error (attempt ${attempt + 1}):`, error);
+      Toast.show({
+        type: 'error',
+        text1: `Gemini network error (attempt ${attempt + 1}):`, error,
+      });
       if (attempt < retries) {
         await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
         continue;
@@ -68,7 +73,7 @@ export const categorizeInspectionNotes = async (
     );
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GOOGLE_GEMINI_FREE_KEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GOOGLE_GEMINI_FREE_KEY}`,
       {
         method: 'POST',
         headers: {
@@ -82,23 +87,36 @@ export const categorizeInspectionNotes = async (
                   text: `
 You are helping a property inspector.
 
-Available inspection structure:
+Available inspection sections:
 
 ${structure}
 
-IMPORTANT:
+Rules:
 
-- The JSON above contains ALL valid rooms.
-- The JSON above contains ALL valid subsections.
-- You MUST use room names exactly as provided.
-- You MUST use subsection names exactly as provided.
-- Never create a new room name.
-- Never create a new subsection name.
-- Every observation must be assigned to one room and one subsection.
-- Choose the most relevant subsection from the available subsections of that room.
-- Return VALID JSON ONLY.
-- No markdown.
-- No explanation.
+- Use ONLY section names provided.
+- Use ONLY subsection names provided.
+- Never invent a section.
+- Never invent a subsection.
+- Every observation must belong to exactly one section.
+- If a section has subsections, select the best matching subsection.
+- If a section has no subsections, place the note directly under that section.
+- If the inspection note contains multiple observations,
+- split them into separate notes before categorization.
+
+Example:
+
+Input:
+"The curtains are torn and one leg of the bed is broken in bedroom 1"
+
+Output:
+{
+  "Bedroom 1": {
+    "Furniture & Furnishing": [
+      "The curtains are torn.",
+      "One leg of the bed is broken."
+    ]
+  }
+}
 
 Example:
 
@@ -119,9 +137,21 @@ Input:
 
 Output:
 {
-  "Bedroom 1": {
+  "Bedroom 2": {
     "Furniture & Furnishing": [
       "Check all furniture and furnishings and note their condition."
+    ]
+  }
+}
+
+Input:
+"The oven is not heating"
+
+Output:
+{
+  "Kitchen": {
+    "Appliances": [
+      "The oven is not heating."
     ]
   }
 }
@@ -149,7 +179,14 @@ ${text}
 );
 
     let result =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+    data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (!result) {
+        throw new Error(
+          'Gemini returned empty response'
+        );
+      }
+
 
     // Gemini sometimes returns ```json ... ```
     result = result
@@ -160,6 +197,11 @@ ${text}
     return JSON.parse(result);
   } catch (error) {
     console.log('Categorization error:', error);
+    Toast.show({
+      type: 'error',
+      text1: 'Categorization error:',
+      text2: error.message || String(error),
+    });
     return {};
   }
 };

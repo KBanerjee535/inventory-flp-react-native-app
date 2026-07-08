@@ -89,14 +89,14 @@ const LoginScreen = ({navigation}) => {
     if (!valid) return;
           setBtnDis(false);
 
-    const userTypeValue = userType === 'Client' ? 4 : 6;
+    // const userTypeValue = userType === 'Client' ? 4 : 6;
               setBtnDis(true);
 
     try {
       const response = await loginApi({
         email,
         password,
-        user_type: userTypeValue,
+        user_type: 6,
       });
 
       await AsyncStorage.setItem('flpLoginInfo', JSON.stringify(response?.data?.user));

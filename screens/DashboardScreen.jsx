@@ -65,7 +65,7 @@ const DashboardScreen = ({navigation}) => {
   const [selectedDate, setSelectedDate] = useState(dates[0].date);
   const [inventoryList, setInventoryList] = useState();
   const [inventoryDetailsList, setInventoryDetailsList] = useState();
-  const { setUserData, setIsLoggedIn, seletedJobId,setseletedJobId, setseletedJobDetails } = useUserContext();
+  const { setUserData, setIsLoggedIn, seletedJobId,setseletedJobId, setseletedJobDetails, setCategorizedNotes } = useUserContext();
   const [screenLoading, setScreenLoading] = useState(true);
   const [showContent, setShowContent] = useState(false);
 
@@ -185,6 +185,7 @@ const convertToAmPm = (time24) => {
 
  useEffect(() => {
     getInventoryListByClerkId(dates[0].date);
+    setCategorizedNotes(null);
   }, []);
   // Timeline Item Component
   const TimelineItem = ({item, index, timelineData}) => {
@@ -613,7 +614,7 @@ textAlign: 'center', marginTop: 20, fontSize: 16, color: '#555'
      </TouchableOpacity>
     </View>
   );
-}) : <Text style={styles.noDocText}>No supporting document found.</Text>}
+}) : <Text style={{ fontSize: 14, color: '#333' }}>No supporting document found.</Text>}
                
                 </View>
               </View>

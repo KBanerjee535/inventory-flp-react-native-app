@@ -228,6 +228,10 @@ console.log(
     navigation.navigate('ClerkAddBedroomDetails');
   } catch (error) {
     console.log(error);
+    Toast.show({
+      type: 'error',
+      text1: error.message || String(error),
+    });
   } finally {
     setIsAddingText(false);
   }
