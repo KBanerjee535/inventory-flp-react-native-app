@@ -551,32 +551,11 @@ useEffect(() => {
 
           </View>
 
-          {sectionDetails?.length > 0 && <Text style={styles.descriptiontitle}>Features</Text>}
+{sectionDetails?.length > 0 && <Text style={styles.descriptiontitle}>Features</Text>}
 {sectionDetails?.length > 0 &&
   sectionDetails?.map((section) => {
     // Get section title (handle both 'title' and 'name' properties)
     const sectionTitle = section.title || section.name;
-    
-    // Check if this section has a nested structure (dynamic for any section type)
-    const sectionData = categorizedNotes?.[sectionTitle];
-    const isNestedStructure = sectionData && 
-      Array.isArray(sectionData) && 
-      sectionData.length > 0 && 
-      typeof sectionData[0] === 'object' && 
-      !Array.isArray(sectionData[0]);
-    
-    // Helper function to filter notes by section name (for nested structures)
-    const filterNotesBySection = (notes, sectionName) => {
-      if (!Array.isArray(notes)) return [];
-      return notes.filter(note => {
-        if (typeof note === 'string') {
-          const lowerNote = note.toLowerCase();
-          const lowerSection = sectionName.toLowerCase();
-          return lowerNote.includes(lowerSection);
-        }
-        return true;
-      });
-    };
     
     return (
     <View key={section?.id} style={styles.AddedInfocontainer}>
@@ -584,76 +563,13 @@ useEffect(() => {
       {!isDeleted && (
         <Animated.View style={{ transform: [{ scale: descriptionAnim }] }}>
           
-
-          {/* {isEditing ? (
-            <TextInput
-              style={styles.input}
-              // value={description}
-              value={section?.title}
-              onChangeText={setDescription}
-              multiline
-            />
-          ) : ( */}
-          
 <AccordionEntity title={sectionTitle}>
                <>
-                 {/* Check if this is a nested structure (works for any section type) */}
-                 {isNestedStructure ? (
-                   // For nested structure, display categories from the data
-                   sectionData.map((categoryObj, categoryIndex) => {
-                     if (typeof categoryObj === 'object' && categoryObj !== null) {
-                       return Object.keys(categoryObj).map(categoryName => {
-                         const notes = categoryObj[categoryName];
-                         // Filter notes to only show those matching this section name
-                         const filteredNotes = filterNotesBySection(notes, sectionTitle);
-                         const hasNotes = Array.isArray(filteredNotes) && filteredNotes.length > 0;
-                        
-                         return (
-                           <View key={`${categoryIndex}-${categoryName}`} style={{ marginBottom: 10 }}>
-                             <Text
-                               style={{
-                                 fontSize: 16,
-                                 color: '#333',
-                                 fontWeight: '600',
-                                 marginBottom: 4,
-                               }}
-                             >
-                               {categoryName}
-                             </Text>
-                             {hasNotes ? (
-                               <View style={{ marginLeft: 15, marginTop: 4 }}>
-                                 {filteredNotes.map((note, index) => (
-                                   <Text
-                                     key={index}
-                                     style={{
-                                       color: '#666',
-                                     }}
-                                   >
-                                     • {note}
-                                   </Text>
-                                 ))}
-                               </View>
-                             ) : (
-                               <Text
-                                 style={{
-                                   marginLeft: 15,
-                                   marginTop: 4,
-                                   color: '#999',
-                                 }}
-                               >
-                                 No notes
-                               </Text>
-                             )}
-                           </View>
-                         );
-                       });
-                     }
-                     return null;
-                   })
-                 ) : (
-                   // For non-nested or flat structure, use subsubsection items
+                 {/* Always use subsubsection items - simpler approach */}
+                 {section?.subsubSection && section?.subsubSection?.length > 0 ? (
                    section?.subsubSection?.map((item) => {
                      const itemTitle = item.title || item.name;
+                     // Get notes from categorizedNotes using the item title
                      const notes = categorizedNotes?.[sectionTitle]?.[itemTitle] || [];
 
                      return (
@@ -702,9 +618,33 @@ useEffect(() => {
                        </View>
                      );
                    })
-                 )}
-                 {section?.subsubSection?.length === 0 && !isNestedStructure && (
-                   <Text style={{ fontSize: 16, color: '#999' }}>No sub-sections available</Text>
+                 ) : (
+                   // No subsubsections - display notes directly under the main section
+                   (() => {
+                     const notes = categorizedNotes?.[sectionTitle] || [];
+                     // Handle both array and object formats
+                     const notesArray = Array.isArray(notes) ? notes : 
+                       (typeof notes === 'object' && notes !== null ? Object.values(notes).flat() : []);
+                     
+                     return notesArray.length > 0 ? (
+                       <View style={{ marginTop: 4 }}>
+                         {notesArray.map((note, index) => (
+                           <Text
+                             key={index}
+                             style={{
+                               marginLeft: 15,
+                               marginTop: 4,
+                               color: '#666',
+                             }}
+                           >
+                             • {note}
+                           </Text>
+                         ))}
+                       </View>
+                     ) : (
+                       <Text style={{ fontSize: 16, color: '#999' }}>No notes available</Text>
+                     );
+                   })()
                  )}
                </>
              </AccordionEntity>

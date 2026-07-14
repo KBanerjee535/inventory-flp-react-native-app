@@ -280,8 +280,19 @@ const handleTextAppend = async () => {
       });
     }
 
-    // Helper function to check if data is nested structure (works for any section type)
-    const isNestedStructure = (data) => {
+    // Helper function to check if data is nested object structure: { "Room": { "Subsection": ["note"] } }
+    const isNestedObjectStructure = (data) => {
+      if (!data || typeof data !== 'object') return false;
+      const keys = Object.keys(data);
+      return keys.some(key => 
+        typeof data[key] === 'object' && 
+        data[key] !== null &&
+        !Array.isArray(data[key])
+      );
+    };
+
+    // Helper function to check if data is nested array structure: { "Room": [{ "Subsection": ["note"] }] }
+    const isNestedArrayStructure = (data) => {
       if (!data || typeof data !== 'object') return false;
       const keys = Object.keys(data);
       return keys.some(key => 
@@ -294,9 +305,34 @@ const handleTextAppend = async () => {
 
     // Iterate through categorized data and build content array
     if (categorizedData && typeof categorizedData === 'object' && Object.keys(categorizedData).length > 0) {
-      // Check if it's a nested structure
-      if (isNestedStructure(categorizedData)) {
-        // Handle nested structure: { "Section Name": [{ "Category": ["note1"] }] }
+      // Check if it's a nested object structure: { "Room": { "Subsection": ["note"] } }
+      if (isNestedObjectStructure(categorizedData)) {
+        // Handle nested object structure: { "Section Name": { "Category": ["note1"] } }
+        Object.keys(categorizedData).forEach(sectionName => {
+          const sectionCategories = categorizedData[sectionName];
+          
+          if (typeof sectionCategories === 'object' && sectionCategories !== null) {
+            Object.keys(sectionCategories).forEach(categoryName => {
+              const notes = sectionCategories[categoryName];
+              const idMapping = categoryToIdMap[categoryName];
+              
+              // Ensure notes is an array
+              if (Array.isArray(notes)) {
+                notes.forEach(note => {
+                  contentArray.push({
+                    inventory_section_id: SelectedSection?.section_id,
+                    inventory_subsection_id: idMapping?.subSectionId || null,
+                    inventory_sub_subsection_id: idMapping?.subSubSectionId || null,
+                    content: note,
+                    attached_image: null
+                  });
+                });
+              }
+            });
+          }
+        });
+      } else if (isNestedArrayStructure(categorizedData)) {
+        // Handle nested array structure: { "Section Name": [{ "Category": ["note1"] }] }
         Object.keys(categorizedData).forEach(sectionName => {
           const sectionCategories = categorizedData[sectionName];
           

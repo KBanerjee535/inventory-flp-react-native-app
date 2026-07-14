@@ -200,14 +200,14 @@ export const categorizeInspectionNotes = async (
 
 /**
  * Categorize plain text notes using fuzzy string matching
- * Returns nested structure: { "Room Name": [{ "Subsection": ["note"] }] }
+ * Returns nested structure: { "Room Name": { "Subsection": ["note"] } }
  */
 const categorizePlainTextFuzzy = (text, categoryMap, sectionsWithSubsections) => {
   const result = {};
   const lowerText = text.toLowerCase();
   
-  // Step 1: Detect room/section from text (e.g., "kitchen 1", "bedroom 2")
-  const roomMatch = text.match(/(kitchen|bedroom|room)\s*(\d+)/i);
+  // Step 1: Detect room/section from text (e.g., "kitchen 1", "bedroom 2", "bathroom 1")
+  const roomMatch = text.match(/(kitchen|bedroom|room|bathroom)\s*(\d+)/i);
   let detectedRoomTitle = null;
   
   if (roomMatch) {
@@ -235,15 +235,23 @@ const categorizePlainTextFuzzy = (text, categoryMap, sectionsWithSubsections) =>
     const bestSub = subsectionMatches[0];
     const parentSection = bestSub.info.sectionTitle;
     
-    // If we detected a room in the text, check if it exists in categoryMap
-    // Otherwise use the subsection's parent section
+    // If we detected a room in the text, prioritize it as the parent
+    // This ensures "bathroom 1" in text goes under "Bathroom 1" section
+    // even if the subsection is under "Bathroom 2" in the API
     let targetParent = parentSection;
-    if (detectedRoomTitle && categoryMap.has(detectedRoomTitle)) {
+    if (detectedRoomTitle) {
+      // Always use the detected room as the parent if we found one
+      // This handles cases like "window glass is broken of bathroom 1"
+      // where we want the note under "Bathroom 1" even if "Window Glass" is under "Bathroom 2"
       targetParent = detectedRoomTitle;
     }
     
-    if (!result[targetParent]) result[targetParent] = [];
-    result[targetParent].push({ [bestSub.category]: [text.trim()] });
+    // Create nested object structure: { "Room": { "Subsection": ["note"] } }
+    if (!result[targetParent]) result[targetParent] = {};
+    if (!result[targetParent][bestSub.category]) {
+      result[targetParent][bestSub.category] = [];
+    }
+    result[targetParent][bestSub.category].push(text.trim());
     return result;
   }
   
@@ -282,8 +290,12 @@ const categorizePlainTextFuzzy = (text, categoryMap, sectionsWithSubsections) =>
       if (subMatches.length > 0) {
         subMatches.sort((a, b) => b.score - a.score);
         const bestSub = subMatches[0];
-        if (!result[category]) result[category] = [];
-        result[category].push({ [bestSub.category]: [text.trim()] });
+        // Create nested object structure: { "Room": { "Subsection": ["note"] } }
+        if (!result[category]) result[category] = {};
+        if (!result[category][bestSub.category]) {
+          result[category][bestSub.category] = [];
+        }
+        result[category][bestSub.category].push(text.trim());
       } else {
         // No subsection match, use the section itself
         if (!result[category]) result[category] = [];
@@ -424,8 +436,8 @@ const categorizePlainTextAdvancedFuzzy = (text, subsections, sections) => {
     return result;
   }
   
-  // Fallback: try to detect bedroom/kitchen numbers
-  const roomMatch = text.match(/(bedroom|kitchen|room)\s*(\d+)/i);
+  // Fallback: try to detect bedroom/kitchen/bathroom numbers
+  const roomMatch = text.match(/(bedroom|kitchen|room|bathroom)\s*(\d+)/i);
   if (roomMatch) {
     const roomType = roomMatch[1].toLowerCase();
     const roomNum = roomMatch[2];
