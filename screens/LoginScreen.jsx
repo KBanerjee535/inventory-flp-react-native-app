@@ -9,13 +9,12 @@ import {
   Animated,
   KeyboardAvoidingView,
   ScrollView,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 import React, {useState,useRef} from 'react';
 import PrevPageArrow from '../assets/images/BackArrow.svg';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import axios from 'axios';
-import { loginApi } from '../services/apiService';
 import { useUserContext } from '../context/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -37,8 +36,6 @@ const LoginScreen = ({navigation}) => {
     input1: '#6D7D93',
     input2: '#6D7D93',
   });
-
-
 
 
 
@@ -92,24 +89,51 @@ const LoginScreen = ({navigation}) => {
     // const userTypeValue = userType === 'Client' ? 4 : 6;
               setBtnDis(true);
 
+  const values = {
+    email: email,
+    password: password, 
+    user_type: 6, // Assuming '6' is the user type for Clerk
+  };
+
     try {
-      const response = await loginApi({
-        email,
-        password,
-        user_type: 6,
-      });
+      // const response = await loginApi({
+      //   email,
+      //   password,
+      //   user_type: 6,
+      // });
 
-      await AsyncStorage.setItem('flpLoginInfo', JSON.stringify(response?.data?.user));
-      setUserData(response?.data?.user);
+      
+
+      const response = await fetch(
+  'https://peru-hummingbird-321491.hostingersite.com/flproperty-v3/api/users/login',
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(values),
+  }
+);
+
+console.log("Login response status:", response);
+  const data = await response.json();
+
+  console.log("Response:", data);
+  if (data) {
+      await AsyncStorage.setItem('flpLoginInfo', JSON.stringify(data.user));
+      setUserData(data.user);
       setIsLoggedIn(true);
-      await AsyncStorage.setItem('flpAuthToken', response?.data?.access_token);
+      await AsyncStorage.setItem('flpAuthToken', data.access_token);
                 setBtnDis(false);
+      
 
-      navigation.navigate(userType === 'Client' ? 'ClientTabRoutes' : 'TabRoutes');
+      navigation.navigate('TabRoutes');
+    }
     } catch (error) {
-                setBtnDis(false);
-
-      setPasswordError(error.response?.data?.message || 'Login failed');
+      setBtnDis(false);
+      console.log('Login error:', error);
+      setPasswordError(error || 'Login failed');
     }
   };
 
@@ -140,9 +164,9 @@ const LoginScreen = ({navigation}) => {
           </Text>
 
           <View style={styles.frmBox}>
-            <Text style={styles.Labelinput}>User Type</Text>
+            {/* <Text style={styles.Labelinput}>User Type</Text> */}
 
-            <View style={styles.typeBox}>
+            {/* <View style={styles.typeBox}>
               <TouchableOpacity
                 style={styles.radioButton}
                 onPress={() => setUserType('Clark')}>
@@ -176,7 +200,7 @@ const LoginScreen = ({navigation}) => {
                   color="#393D47"
                 />
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             <Text style={styles.Labelinput}>Email</Text>
             <TextInput

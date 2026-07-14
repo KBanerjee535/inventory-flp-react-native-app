@@ -552,8 +552,33 @@ useEffect(() => {
           </View>
 
           {sectionDetails?.length > 0 && <Text style={styles.descriptiontitle}>Features</Text>}
-          {sectionDetails?.length > 0 &&
-  sectionDetails?.map((section) => (
+{sectionDetails?.length > 0 &&
+  sectionDetails?.map((section) => {
+    // Get section title (handle both 'title' and 'name' properties)
+    const sectionTitle = section.title || section.name;
+    
+    // Check if this section has a nested structure (dynamic for any section type)
+    const sectionData = categorizedNotes?.[sectionTitle];
+    const isNestedStructure = sectionData && 
+      Array.isArray(sectionData) && 
+      sectionData.length > 0 && 
+      typeof sectionData[0] === 'object' && 
+      !Array.isArray(sectionData[0]);
+    
+    // Helper function to filter notes by section name (for nested structures)
+    const filterNotesBySection = (notes, sectionName) => {
+      if (!Array.isArray(notes)) return [];
+      return notes.filter(note => {
+        if (typeof note === 'string') {
+          const lowerNote = note.toLowerCase();
+          const lowerSection = sectionName.toLowerCase();
+          return lowerNote.includes(lowerSection);
+        }
+        return true;
+      });
+    };
+    
+    return (
     <View key={section?.id} style={styles.AddedInfocontainer}>
       
       {!isDeleted && (
@@ -570,63 +595,119 @@ useEffect(() => {
             />
           ) : ( */}
           
-            <AccordionEntity title={section?.title}>
-              <>
-                {section?.subsubSection?.map((item) => {
-  const notes =
-    categorizedNotes?.[section.title]?.[item.title] || [];
+<AccordionEntity title={sectionTitle}>
+               <>
+                 {/* Check if this is a nested structure (works for any section type) */}
+                 {isNestedStructure ? (
+                   // For nested structure, display categories from the data
+                   sectionData.map((categoryObj, categoryIndex) => {
+                     if (typeof categoryObj === 'object' && categoryObj !== null) {
+                       return Object.keys(categoryObj).map(categoryName => {
+                         const notes = categoryObj[categoryName];
+                         // Filter notes to only show those matching this section name
+                         const filteredNotes = filterNotesBySection(notes, sectionTitle);
+                         const hasNotes = Array.isArray(filteredNotes) && filteredNotes.length > 0;
+                        
+                         return (
+                           <View key={`${categoryIndex}-${categoryName}`} style={{ marginBottom: 10 }}>
+                             <Text
+                               style={{
+                                 fontSize: 16,
+                                 color: '#333',
+                                 fontWeight: '600',
+                                 marginBottom: 4,
+                               }}
+                             >
+                               {categoryName}
+                             </Text>
+                             {hasNotes ? (
+                               <View style={{ marginLeft: 15, marginTop: 4 }}>
+                                 {filteredNotes.map((note, index) => (
+                                   <Text
+                                     key={index}
+                                     style={{
+                                       color: '#666',
+                                     }}
+                                   >
+                                     • {note}
+                                   </Text>
+                                 ))}
+                               </View>
+                             ) : (
+                               <Text
+                                 style={{
+                                   marginLeft: 15,
+                                   marginTop: 4,
+                                   color: '#999',
+                                 }}
+                               >
+                                 No notes
+                               </Text>
+                             )}
+                           </View>
+                         );
+                       });
+                     }
+                     return null;
+                   })
+                 ) : (
+                   // For non-nested or flat structure, use subsubsection items
+                   section?.subsubSection?.map((item) => {
+                     const itemTitle = item.title || item.name;
+                     const notes = categorizedNotes?.[sectionTitle]?.[itemTitle] || [];
 
-  return (
-    <View
-      key={item.id}
-      style={{
-        marginBottom: 10,
-        paddingBottom: 10,
-        marginTop: 4,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 16,
-          color: '#333',
-          fontWeight: '600',
-        }}
-      >
-        {item.title}
-      </Text>
+                     return (
+                       <View
+                         key={item.id}
+                         style={{
+                           marginBottom: 10,
+                           paddingBottom: 10,
+                           marginTop: 4,
+                         }}
+                       >
+                         <Text
+                           style={{
+                             fontSize: 16,
+                             color: '#333',
+                             fontWeight: '600',
+                           }}
+                         >
+                           {itemTitle}
+                         </Text>
 
-      {notes.length > 0 ? (
-        notes.map((note, index) => (
-          <Text
-            key={index}
-            style={{
-              marginLeft: 15,
-              marginTop: 4,
-              color: '#666',
-            }}
-          >
-            • {note}
-          </Text>
-        ))
-      ) : (
-        <Text
-          style={{
-            marginLeft: 15,
-            marginTop: 4,
-            color: '#999',
-          }}
-        >
-          No notes
-        </Text>
-      )}
-    </View>
-  );
-})}
-                {section?.subsubSection?.length === 0 && (
-                  <Text style={{ fontSize: 16, color: '#999' }}>No sub-sections available</Text>
-                )}
-              </>
-            </AccordionEntity>
+                         {notes.length > 0 ? (
+                           notes.map((note, index) => (
+                             <Text
+                               key={index}
+                               style={{
+                                 marginLeft: 15,
+                                 marginTop: 4,
+                                 color: '#666',
+                               }}
+                             >
+                               • {note}
+                             </Text>
+                           ))
+                         ) : (
+                           <Text
+                             style={{
+                               marginLeft: 15,
+                               marginTop: 4,
+                               color: '#999',
+                             }}
+                           >
+                             No notes
+                           </Text>
+                         )}
+                       </View>
+                     );
+                   })
+                 )}
+                 {section?.subsubSection?.length === 0 && !isNestedStructure && (
+                   <Text style={{ fontSize: 16, color: '#999' }}>No sub-sections available</Text>
+                 )}
+               </>
+             </AccordionEntity>
           {/* )} */}
           
           {/* <View style={styles.buttonRow}>
@@ -671,190 +752,10 @@ useEffect(() => {
         )}
       </View> */}
     </View>
-  ))}
-        {/* Audio Section */}
-        {/* {sectionDetails?.audio ? (
-        <View style={styles.Addedaduiocontainer}>
-          <Text style={styles.descriptiontitle}>Recorded Audio</Text>
-
-          <FlatList
-            data={recordedAudios}
-            keyExtractor={(item) => item.id.toString()}
-            nestedScrollEnabled={true}
-            renderItem={({ item }) => (
-              <Animated.View style={[styles.audioItem]}>
-                <View style={styles.audioItemLft}>
-                  <TouchableOpacity
-                    style={styles.playIconaudio}
-                    onPress={() => togglePlayPause(item.id, item.url)}
-                  >
-                    <Icon
-                      name={playingId === item.id ? 'controller-paus' : 'controller-play'}
-                      size={28}
-                      color="#393D47"
-                    />
-                  </TouchableOpacity>
-
-                  <View style={styles.audioinfo}>
-                    <Text style={styles.audioname}>{item.name}</Text>
-                    <Text style={styles.audioduration}>{item.duration}</Text>
-                  </View>
-                </View>
-
-                <TouchableOpacity
-                  onPress={() => deleteAudio(item.id)}
-                  style={styles.deleteIconaudio}
-                >
-                  <Trash name="trash-outline" size={20} color="#393D47" />
-                </TouchableOpacity>
-              </Animated.View>
-            )}
-          />
-        </View>
-      ) : null} */}
-
-          {/* <View style={styles.OtherGap}>
-            <Text style={styles.subtitel}>Other sections</Text>
-<View style={styles.newcontainer}>
-  {sectionItems?.map((item) => {
-    const isDescriptionPresent = !!item.description; // Check if description exists
-    const isTextEntered = !!textValues[item.id]?.trim(); // Check if user typed something
-
-    return (
-      <React.Fragment key={item.id}>
-        <View style={styles.section}>
-          <Text style={styles.label}>{item.name}</Text>
-          <Switch
-            value={audioToggles[item.id] || false}
-            onValueChange={() => handleToggle(item.id)}
-            trackColor={{ false: '#ccc', true: '#007AFF' }}
-            thumbColor={audioToggles[item.id] ? '#0056b3' : '#f4f3f4'}
-          />
-        </View>
-
-        {audioToggles[item.id] ? (
-          <TouchableOpacity style={styles.recordButton}>
-            <Text style={styles.recordText}>Record/Listen Audio</Text>
-            <WhiteArrow />
-          </TouchableOpacity>
-        ) : (
-          <View style={styles.textBoxGroup}>
-            <TextInput
-              style={[
-                styles.input,
-                focusedInput === item.id && styles.inputFocused,
-              ]}
-              placeholder="Type"
-              multiline
-              value={textValues[item.id] !== undefined ? textValues[item.id] : item.description || ''}
-
-              onChangeText={(text) =>
-                setTextValues((prev) => ({ ...prev, [item.id]: text }))
-              }
-              onFocus={() => setFocusedInput(item.id)}
-              onBlur={() => setFocusedInput(null)}
-            />
-
-            {isDescriptionPresent ? (
-              // Show EDIT if description exists
-              <TouchableOpacity
-                onPress={() => handleSaveText(item.id)}
-                style={{ width: '100%', borderRadius: 12 }}>
-                <LinearGradient
-                  colors={['#393D47', '#393D47']}
-                  style={styles.NextBtn}>
-                  <Text style={styles.NextBtnTxt}>Edit</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            ) : (
-              // Show SAVE if description does not exist
-              <TouchableOpacity
-                disabled={!isTextEntered}
-                onPress={() => handleSaveText(item.id)}
-                style={{
-                  width: '100%',
-                  borderRadius: 12,
-                  opacity: isTextEntered ? 1 : 0.5,
-                }}>
-                <LinearGradient
-                  colors={['#393D47', '#393D47']}
-                  style={styles.NextBtn}>
-                  <Text style={styles.NextBtnTxt}>Save</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
-      </React.Fragment>
     );
   })}
-</View>
 
-
-
-
-          </View> */}
-
-          {/* <View style={styles.newGap}>
-            <Text style={styles.subtitel}>Supporting Photo(s)</Text>
-            <View style={styles.BtnGap}>
-              <TouchableOpacity style={styles.StartBtn2} onPress={() => pickSupportingMedia('camera')}>
-                <CameraIcon width={50} height={50} />
-                <Text style={styles.StartBtnTxt}>Camera</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.StartBtn2} onPress={() => pickSupportingMedia('gallery')}>
-                <GalleryIcon width={50} height={50} />
-                <Text style={styles.StartBtnTxt}>Gallery</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-<Text style={styles.subtitel}>Supporting Media (Photos/Videos)</Text>
-
-
- <View style={styles.mediaItemMain}>
-
-        {serverSupportingMedia?.map((item, index) => (
-          <View key={`server-${item.id}`} style={styles.mediaItem}>
-            <Image 
-              source={{ uri: item.image_with_path }} 
-              style={styles.supportingImage} 
-            />
-            <TouchableOpacity
-              onPress={() => deleteServerImage(item.id)}
-              style={styles.deleteIcon}
-            >
-              <Trash name="trash" size={20} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        ))}
-
-         {supportingMedia.map((item, index) => (
-      <View key={index} style={styles.mediaItem}>
-        {item.mime.startsWith('image/') ? (
-          <Image 
-            source={{ uri: item.path }} 
-            style={styles.supportingImage} 
-          />
-        ) : (
-          <Video
-            source={{ uri: item.path }}
-            style={styles.supportingImage}
-            muted
-            resizeMode="cover"
-            repeat
-          />
-        )}
-        <TouchableOpacity
-          onPress={() => removeSupportingMedia(index)}
-          style={styles.deleteIcon}
-        >
-          <Trash name="trash" size={20} color="#fff" />
-        </TouchableOpacity>
-      </View>
-    ))}
-  </View>  */}
+          
 
        {supportingMedia.length > 0 && (
   <TouchableOpacity 

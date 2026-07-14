@@ -41,40 +41,6 @@ import AddPlus from "../assets/images/AddPlus.svg";
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 // import { punctuateTextWithAI } from "../utils/punctuateTextModel";
 
-const staticItems = [
-  {
-    id: 2,
-    icon: <ItemIcon2 width={24} height={24} />,
-    text: "Cleaning Summary",
-    screen: "ClerkCleaningSummary",
-  },
-  {
-    id: 1,
-    icon: <ItemIcon1 width={24} height={24} />,
-    text: "Schedule of Conditions",
-    screen: "ClerkCleaningSummaryList",
-  },
-
-  {
-    id: 3,
-    icon: <ItemIcon3 width={24} height={24} />,
-    text: "Keys",
-    screen: "ClerkKeysList",
-  },
-  {
-    id: 4,
-    icon: <ItemIcon4 width={24} height={24} />,
-    text: "Alarms",
-    screen: "ClerkAlarmList",
-  },
-  {
-    id: 5,
-    icon: <ItemIcon5 width={24} height={24} />,
-    text: "Meters",
-    screen: "ClerkMetersList",
-  },
-];
-
 const ClerkInspectionScreen = ({ navigation }) => {
   const {
     setUserData,
@@ -87,9 +53,7 @@ const ClerkInspectionScreen = ({ navigation }) => {
   const [screenLoading, setScreenLoading] = useState(false);
   const [SectionListByInventoryId, setSectionListByInventoryId] = useState([]);
   const [showTooltip, setShowTooltip] = useState(false);
-  const [fadeAnims, setFadeAnims] = useState(
-    staticItems.map(() => new Animated.Value(0))
-  );
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newSectionName, setNewSectionName] = useState("");
   const [isDisabled, setIsDisabled] = useState(true);
@@ -207,20 +171,6 @@ const ClerkInspectionScreen = ({ navigation }) => {
     getAllRequiredSectionsExistOrNot();
   }, []);
 
-  useEffect(() => {
-    // Recalculate fadeAnims when API data changes
-  }, [SectionListByInventoryId]);
-
-  useEffect(() => {
-    fadeAnims.forEach((anim, index) => {
-      Animated.timing(anim, {
-        toValue: 1,
-        duration: 400,
-        delay: index * 200,
-        useNativeDriver: true,
-      }).start();
-    });
-  }, [fadeAnims]);
 
   // useEffect(() => {
   //   // Bind Voice Events
@@ -439,14 +389,12 @@ const ClerkInspectionScreen = ({ navigation }) => {
 {SectionListByInventoryId?.map((section, index) => {
   const layoutKey = `dynamic-entity-row-${section.id}`;
   
-  // Calculate dynamic animation index offsets safely outside the style object
-  const targetAnimIndex = staticItems.length + index;
-  const animationOpacity = fadeAnims && fadeAnims[targetAnimIndex] ? fadeAnims[targetAnimIndex] : 1;
+  
 
   return (
     <Animated.View
       key={layoutKey}
-      style={{ opacity: animationOpacity }}
+      
     >
       <TouchableOpacity
         style={styles.ListItem}

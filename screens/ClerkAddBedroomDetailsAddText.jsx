@@ -22,11 +22,12 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { useUserContext } from '../context/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-simple-toast';
+import { categorizeInspectionNotes } from '../utils/punctuateTextModel';
 
 const ClerkAddBedroomDetailsAddText = ({navigation}) => {
    const [isFocused, setIsFocused] = useState(false);
-   const {sectionDetails, setsectionDetails} = useUserContext();
-   const [description, setDescription] = useState('');
+    const {sectionDetails, setsectionDetails, setCategorizedNotes} = useUserContext();
+    const [description, setDescription] = useState('');
   const [images, setImages] = useState([]);
 
 const handleSaveText = async () => {
@@ -36,6 +37,10 @@ const handleSaveText = async () => {
   }
 
   try {
+    // Categorize the description text using fuzzy matching
+    const categorized = await categorizeInspectionNotes(description, sectionDetails);
+    setCategorizedNotes(categorized);
+    
     let fd = new FormData();
      fd.append("section_id",sectionDetails?.id);
      fd.append("description",description);

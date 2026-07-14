@@ -21,16 +21,17 @@ import Tick from 'react-native-vector-icons/FontAwesome';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import RNFS from 'react-native-fs'; // File system for storage paths
 import { useUserContext } from '../context/UserContext';
-import {SectionUpdateAudioApi} from '../services/apiService';
+import {SectionUpdateAudioApi, sectionDetailsBySectionIdAPI} from '../services/apiService';
 import Voice from '@react-native-voice/voice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { punctuateTextWithAI, categorizeInspectionNotes } from "../utils/punctuateTextModel";
+import Toast from 'react-native-simple-toast';
 
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 const ClerkAddBedroomDetailsAddAudio = ({navigation}) => {
-  const { setRecordingPath ,recordingPath, sectionDetails, setCategorizedNotes } = useUserContext();
+  const { setRecordingPath ,recordingPath, sectionDetails, setCategorizedNotes, SelectedSection, setsectionDetails } = useUserContext();
   const [screenLoading, setScreenLoading] = useState(false);
 
   const [isRecording, setIsRecording] = useState(false);
@@ -42,6 +43,28 @@ const ClerkAddBedroomDetailsAddAudio = ({navigation}) => {
   const committedTextRef = useRef('');    // text from all completed sessions
 const restartTimeoutRef = useRef(null);
 const [voiceError, setVoiceError] = useState('');
+
+  // Load section details when component mounts
+  useEffect(() => {
+    const loadSectionDetails = async () => {
+      if (SelectedSection?.section_id && (!sectionDetails || sectionDetails.length === 0)) {
+        try {
+          setScreenLoading(true);
+          const fd = new FormData();
+          fd.append("section_id", SelectedSection?.section_id);
+          const response = await sectionDetailsBySectionIdAPI(fd);
+          if (response.data.status) {
+            setsectionDetails(response.data.data);
+          }
+        } catch (error) {
+          console.log('Error loading section details:', error);
+        } finally {
+          setScreenLoading(false);
+        }
+      }
+    };
+    loadSectionDetails();
+  }, [SelectedSection]);
 
 const cancelPendingRestart = () => {
   if (restartTimeoutRef.current) {
@@ -151,7 +174,6 @@ useEffect(() => {
   }
 };
 }, []);
-
   // UI Control Functions
   const recognitionRunningRef = useRef(false);
   const startRecording = async () => {
@@ -195,7 +217,9 @@ useEffect(() => {
 }; 
 
 const handleTextAppend = async () => {
-  if (!recognizedText.trim()) return;
+  if (!recognizedText.trim()) {
+    return;
+  }
 
   setIsAddingText(true);
 
@@ -205,33 +229,148 @@ const handleTextAppend = async () => {
     );
 
     console.log('Section Details:', sectionDetails);
-console.log('Recognized Text:', cleanedText);
+    console.log('SelectedSection:', SelectedSection);
+    console.log('Recognized Text:', cleanedText);
 
-const categorizedData =
-  await categorizeInspectionNotes(
-    cleanedText,
-    sectionDetails
-  );
+    // Ensure sectionDetails is an array before passing to categorizeInspectionNotes
+    const validSectionDetails = Array.isArray(sectionDetails) ? sectionDetails : [];
+    
+    if (validSectionDetails.length === 0) {
+      Toast.show('No section details available. Please try again.');
+      setIsAddingText(false);
+      return;
+    }
+    
+    // Categorize the text using fuzzy matching
+    const categorizedData = await categorizeInspectionNotes(
+      cleanedText,
+      validSectionDetails
+    );
 
-console.log(
-  'Categorized Data:',
-  JSON.stringify(categorizedData, null, 2)
-);
+    console.log('Categorized Data Result:', categorizedData);
+    
+    // Transform categorizedData into formattedData structure
+    const contentArray = [];
+    
+    // Create a map of all category names (section titles and subsubsection titles) to their IDs
+    const categoryToIdMap = {};
+    if (validSectionDetails && validSectionDetails.length > 0) {
+      validSectionDetails.forEach(section => {
+        // Map main section title (handle both 'title' and 'name' properties)
+        const sectionTitle = section.title || section.name;
+        categoryToIdMap[sectionTitle] = {
+          type: 'section',
+          sectionId: SelectedSection?.section_id,
+          subSectionId: section.id,
+          subSubSectionId: null
+        };
+        
+        // Map subsubsection titles if they exist
+        if (section.subsubSection && Array.isArray(section.subsubSection) && section.subsubSection.length > 0) {
+          section.subsubSection.forEach(sub => {
+            const subTitle = sub.title || sub.name;
+            categoryToIdMap[subTitle] = {
+              type: 'subsubsection',
+              sectionId: SelectedSection?.section_id,
+              subSectionId: section.id,
+              subSubSectionId: sub.id
+            };
+          });
+        }
+      });
+    }
 
-    setCategorizedNotes(prev => ({
-      ...prev,
-      ...categorizedData,
-    }));
+    // Helper function to check if data is nested structure (works for any section type)
+    const isNestedStructure = (data) => {
+      if (!data || typeof data !== 'object') return false;
+      const keys = Object.keys(data);
+      return keys.some(key => 
+        Array.isArray(data[key]) && 
+        data[key].length > 0 &&
+        typeof data[key][0] === 'object' &&
+        !Array.isArray(data[key][0])
+      );
+    };
+
+    // Iterate through categorized data and build content array
+    if (categorizedData && typeof categorizedData === 'object' && Object.keys(categorizedData).length > 0) {
+      // Check if it's a nested structure
+      if (isNestedStructure(categorizedData)) {
+        // Handle nested structure: { "Section Name": [{ "Category": ["note1"] }] }
+        Object.keys(categorizedData).forEach(sectionName => {
+          const sectionCategories = categorizedData[sectionName];
+          
+          if (Array.isArray(sectionCategories)) {
+            sectionCategories.forEach(categoryObj => {
+              if (typeof categoryObj === 'object' && categoryObj !== null) {
+                Object.keys(categoryObj).forEach(categoryName => {
+                  const notes = categoryObj[categoryName];
+                  const idMapping = categoryToIdMap[categoryName];
+                  
+                  // Ensure notes is an array
+                  if (Array.isArray(notes)) {
+                    notes.forEach(note => {
+                      contentArray.push({
+                        inventory_section_id: SelectedSection?.section_id,
+                        inventory_subsection_id: idMapping?.subSectionId || null,
+                        inventory_sub_subsection_id: idMapping?.subSubSectionId || null,
+                        content: note,
+                        attached_image: null
+                      });
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      } else {
+        // Handle flat structure: { "Section": ["note1", "note2"] }
+        Object.keys(categorizedData).forEach(categoryName => {
+          const notes = categorizedData[categoryName];
+          const idMapping = categoryToIdMap[categoryName];
+          
+          // Ensure notes is an array
+          if (Array.isArray(notes)) {
+            notes.forEach(note => {
+              contentArray.push({
+                inventory_section_id: SelectedSection?.section_id,
+                inventory_subsection_id: idMapping?.subSectionId || null,
+                inventory_sub_subsection_id: idMapping?.subSubSectionId || null,
+                content: note,
+                attached_image: null
+              });
+            });
+          }
+        });
+      }
+    }
+
+    const formattedData = {
+      inventory_id: SelectedSection?.inventory_id,
+      content: contentArray
+    };
+
+    console.log(
+      'Formatted Data:',
+      JSON.stringify(formattedData, null, 2)
+    );
+
+    // Only update if we have categorized data
+    if (Object.keys(categorizedData).length > 0) {
+      setCategorizedNotes(prev => ({
+        ...prev,
+        ...categorizedData,
+      }));
+    }
 
     setRecognizedText('');
-    
+
     navigation.navigate('ClerkAddBedroomDetails');
   } catch (error) {
-    console.log(error);
-    Toast.show({
-      type: 'error',
-      text1: error.message || String(error),
-    });
+    console.log('handleTextAppend Error:', error);
+
+    Toast.show(error?.message || String(error));
   } finally {
     setIsAddingText(false);
   }
