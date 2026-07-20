@@ -37,7 +37,7 @@ const handleSaveText = async () => {
   }
 
   try {
-    // Categorize the description text using fuzzy matching
+// Categorize the description text using Gemini API
     const categorized = await categorizeInspectionNotes(description, sectionDetails);
     setCategorizedNotes(categorized);
     

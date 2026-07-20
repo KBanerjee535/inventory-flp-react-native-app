@@ -2,6 +2,16 @@ import {API_BASE_URL} from "../app_url";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Create axios instance with default config
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 100000,
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
+});
+
 const getHeader = async (isFormData = false) => {
   let value = JSON.parse(await AsyncStorage.getItem("flpLoginInfo"));
     let flpAuthToken = await AsyncStorage.getItem("flpAuthToken");
@@ -59,7 +69,28 @@ export const signUpVerifyAccountApi = async (values) => {
 };
 
 export const loginApi = async (values) => {
-  return await axios.post(API_BASE_URL + `users/login`, values);
+  console.log('Login API called with:', values);
+  console.log('API URL:', API_BASE_URL + `users/login`);
+  try {
+    const response = await axios.post(API_BASE_URL + `users/login`, values, {
+      timeout: 100000,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    });
+    console.log('Login API response:', response.data);
+    return response;
+  } catch (error) {
+    console.log('Login API error:', error);
+    console.log('Error details:', {
+      message: error.message,
+      code: error.code,
+      config: error.config?.url,
+      status: error.response?.status,
+    });
+    throw error;
+  }
 };
 
 export const getInventoryListByClerkIdApi = async (values) => {

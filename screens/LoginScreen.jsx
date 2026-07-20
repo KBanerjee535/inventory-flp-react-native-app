@@ -9,12 +9,13 @@ import {
   Animated,
   KeyboardAvoidingView,
   ScrollView,
-  Platform,
-  Alert
+  Platform
 } from 'react-native';
 import React, {useState,useRef} from 'react';
 import PrevPageArrow from '../assets/images/BackArrow.svg';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
+import { loginApi } from '../services/apiService';
 import { useUserContext } from '../context/UserContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -36,6 +37,8 @@ const LoginScreen = ({navigation}) => {
     input1: '#6D7D93',
     input2: '#6D7D93',
   });
+
+
 
 
 
@@ -65,6 +68,7 @@ const LoginScreen = ({navigation}) => {
     }).start();
   };
   const handleSubmit = async () => {
+    if (btnDis) return;
 
     let valid = true;
     setEmailError('');
@@ -84,56 +88,57 @@ const LoginScreen = ({navigation}) => {
     }
 
     if (!valid) return;
-          setBtnDis(false);
+    
+    setBtnDis(true);
 
-    // const userTypeValue = userType === 'Client' ? 4 : 6;
-              setBtnDis(true);
-
-  const values = {
-    email: email,
-    password: password, 
-    user_type: 6, // Assuming '6' is the user type for Clerk
-  };
+    const userTypeValue = userType === 'Client' ? 4 : 6;
 
     try {
-      // const response = await loginApi({
-      //   email,
-      //   password,
-      //   user_type: 6,
-      // });
+      const response = await loginApi({
+        email,
+        password,
+        user_type: 6,
+      });
 
-      
+      console.log('Login response:', response.data);
 
-      const response = await fetch(
-  'https://peru-hummingbird-321491.hostingersite.com/flproperty-v3/api/users/login',
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify(values),
-  }
-);
-
-console.log("Login response status:", response);
-  const data = await response.json();
-
-  console.log("Response:", data);
-  if (data) {
-      await AsyncStorage.setItem('flpLoginInfo', JSON.stringify(data.user));
-      setUserData(data.user);
+      await AsyncStorage.setItem('flpLoginInfo', JSON.stringify(response?.data?.user));
+      setUserData(response?.data?.user);
       setIsLoggedIn(true);
-      await AsyncStorage.setItem('flpAuthToken', data.access_token);
-                setBtnDis(false);
-      
+      await AsyncStorage.setItem('flpAuthToken', response?.data?.access_token);
+      setBtnDis(false);
 
-      navigation.navigate('TabRoutes');
-    }
+      navigation.navigate(userType === 'Client' ? 'ClientTabRoutes' : 'TabRoutes');
     } catch (error) {
       setBtnDis(false);
       console.log('Login error:', error);
-      setPasswordError(error || 'Login failed');
+      console.log('Error response:', error.response);
+      console.log('Error request:', error.request);
+      console.log('Error config:', error.config);
+      
+      if (error.response) {
+        setPasswordError(error.response?.data?.message || 'Login failed');
+      } else if (error.request) {
+        setPasswordError('Network error - no response from server. Please check your connection.');
+      } else {
+        setPasswordError(error.message || 'Login failed');
+      }
+    }
+  };
+
+  // Test network connectivity
+  const testConnection = async () => {
+    try {
+      const response = await fetch('https://peru-hummingbird-321491.hostingersite.com/flproperty-v3/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: 'test@test.com', password: 'test', user_type: 6 }),
+      });
+      console.log('Test connection response:', response.status);
+    } catch (error) {
+      console.log('Test connection error:', error);
     }
   };
 
@@ -164,9 +169,9 @@ console.log("Login response status:", response);
           </Text>
 
           <View style={styles.frmBox}>
-            {/* <Text style={styles.Labelinput}>User Type</Text> */}
+            {/* <Text style={styles.Labelinput}>User Type</Text>
 
-            {/* <View style={styles.typeBox}>
+            <View style={styles.typeBox}>
               <TouchableOpacity
                 style={styles.radioButton}
                 onPress={() => setUserType('Clark')}>
@@ -230,11 +235,11 @@ console.log("Login response status:", response);
 
             <Animated.View style={{ transform: [{ scale: buttonScaleAnim }] }}>
 
-            <TouchableOpacity style={styles.NextBtn} onPress={handleSubmit} 
-                onPressIn={handlePressIn}
-                onPressOut={handlePressOut}
-                 disabled={btnDis}>
-                              <Text style={styles.NextBtnTxt}>{btnDis ? 'Please Wait...' : 'Sign In'}</Text>
+            <TouchableOpacity 
+              style={[styles.NextBtn, btnDis && { opacity: 0.7 }]} 
+              onPress={handleSubmit} 
+            >
+              <Text style={styles.NextBtnTxt}>{btnDis ? 'Please Wait...' : 'Sign In'}</Text>
 
             </TouchableOpacity>
             </Animated.View>

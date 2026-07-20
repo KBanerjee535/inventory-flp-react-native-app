@@ -40,6 +40,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ImagePicker from 'react-native-image-crop-picker';
 import { check, request, openSettings, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import AccordionEntity from '../utils/AccordionEntity';
+import { getNotesForSection } from '../utils/punctuateTextModel';
 
 import Toast from 'react-native-simple-toast';
 
@@ -569,8 +570,14 @@ useEffect(() => {
                  {section?.subsubSection && section?.subsubSection?.length > 0 ? (
                    section?.subsubSection?.map((item) => {
                      const itemTitle = item.title || item.name;
-                     // Get notes from categorizedNotes using the item title
-                     const notes = categorizedNotes?.[sectionTitle]?.[itemTitle] || [];
+                     // Get notes from categorizedNotes using the helper function
+                     // Safe check to prevent crash
+                     const notes = (categorizedNotes && typeof categorizedNotes === 'object') 
+                       ? getNotesForSection(categorizedNotes, sectionTitle, itemTitle) 
+                       : [];
+                     
+                     // Debug: Log the data structure
+                     console.log('itemTitle:', itemTitle, 'sectionTitle:', sectionTitle, 'notes:', notes);
 
                      return (
                        <View
@@ -621,14 +628,12 @@ useEffect(() => {
                  ) : (
                    // No subsubsections - display notes directly under the main section
                    (() => {
-                     const notes = categorizedNotes?.[sectionTitle] || [];
-                     // Handle both array and object formats
-                     const notesArray = Array.isArray(notes) ? notes : 
-                       (typeof notes === 'object' && notes !== null ? Object.values(notes).flat() : []);
-                     
-                     return notesArray.length > 0 ? (
+                     // Use helper function to get notes for the section
+                     const notes = getNotesForSection(categorizedNotes, sectionTitle);
+                    
+                     return notes.length > 0 ? (
                        <View style={{ marginTop: 4 }}>
-                         {notesArray.map((note, index) => (
+                         {notes.map((note, index) => (
                            <Text
                              key={index}
                              style={{

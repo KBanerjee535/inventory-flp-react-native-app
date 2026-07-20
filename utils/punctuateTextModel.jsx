@@ -20,11 +20,32 @@ const calculateFuzzyScore = (text, keywords) => {
     }
     // Partial match (keyword contained in text)
     else if (lowerText.includes(lowerKeyword)) {
-      totalScore += keyword.length * 0.7;
+      totalScore += keyword.length * 0.5;
     }
   });
   
   return totalScore;
+};
+
+/**
+ * Check if text contains any of the keywords
+ * More lenient matching for better categorization
+ */
+const containsAnyKeyword = (text, keywords) => {
+  if (!keywords || keywords.length === 0) return false;
+  
+  const lowerText = text.toLowerCase();
+  
+  return keywords.some(keyword => {
+    const lowerKeyword = keyword.toLowerCase();
+    // Check if keyword is in text
+    if (lowerText.includes(lowerKeyword)) {
+      return true;
+    }
+    // Check for word boundary match
+    const regex = new RegExp(`\\b${escapeRegex(lowerKeyword)}\\b`, 'i');
+    return regex.test(text);
+  });
 };
 
 /**
@@ -51,6 +72,21 @@ const extractDynamicKeywords = (title) => {
   const stopWords = ['the', 'and', 'or', 'of', 'for', 'in', 'on', 'at', 'to', 'a', 'an', 'is', 'are', '&', 'with', 'by', 'from'];
   const words = lowerTitle.split(/[\s&]+/).filter(w => w && !stopWords.includes(w) && w.length > 1);
   words.forEach(w => keywords.add(w));
+  
+  // Special keyword mappings for common terms
+  // These help map speech-to-text terms to their corresponding section/subsection titles
+  const specialKeywordMappings = {
+    'furniture fix': ['curtain', 'curtains', 'fix', 'repair', 'broken', 'damage', 'damaged', 'hinge', 'handle', 'door', 'cabinet', 'drawer', 'shelf', 'furniture'],
+    'window': ['window', 'windows', 'glass', 'frame', 'handle', 'lock', 'hinge', 'blind', 'blinds', 'shutter', 'shutters'],
+    'furniture': ['furniture', 'curtain', 'curtains', 'fix', 'repair', 'broken', 'damage', 'damaged', 'hinge', 'handle', 'door', 'cabinet', 'drawer', 'shelf']
+  };
+  
+  // Add special keywords based on title match
+  Object.keys(specialKeywordMappings).forEach(key => {
+    if (lowerTitle.includes(key) || key.includes(lowerTitle)) {
+      specialKeywordMappings[key].forEach(kw => keywords.add(kw));
+    }
+  });
   
   return Array.from(keywords);
 };
@@ -108,8 +144,24 @@ ${text}
 };
 
 /**
+ * Split text into sentences for individual categorization
+ */
+const splitIntoSentences = (text) => {
+  if (!text || typeof text !== 'string') return [];
+  
+  // Split by common sentence delimiters
+  const sentences = text
+    .split(/[.!?]+/)
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+  
+  return sentences;
+};
+
+/**
  * Rule-based categorization of inspection notes using fuzzy string matching
  * Matches text against section/subsection titles and categorizes accordingly
+ * Handles multi-sentence text by splitting and categorizing each sentence
  */
 export const categorizeInspectionNotes = async (
   text,
@@ -185,9 +237,48 @@ export const categorizeInspectionNotes = async (
       }
     }
 
-    // If plain text, categorize using fuzzy matching
+    // If plain text, split into sentences and categorize each one
     if (typeof text === "string" || !parsedInput) {
-      return categorizePlainTextFuzzy(text, categoryMap, sectionsWithSubsections);
+      const sentences = splitIntoSentences(text);
+      const allCategorized = {};
+      
+      // If no sentences, treat the whole text as one
+      if (sentences.length === 0) {
+        return categorizePlainTextFuzzy(text, categoryMap, sectionsWithSubsections);
+      }
+      
+      // Categorize each sentence and merge results
+      for (const sentence of sentences) {
+        const categorized = categorizePlainTextFuzzy(sentence, categoryMap, sectionsWithSubsections);
+        
+        // Merge the categorized results
+        Object.keys(categorized).forEach(sectionName => {
+          if (!allCategorized[sectionName]) {
+            allCategorized[sectionName] = {};
+          }
+          
+          const sectionData = categorized[sectionName];
+          if (typeof sectionData === 'object' && !Array.isArray(sectionData)) {
+            // Nested structure: { "Subsection": ["note"] }
+            Object.keys(sectionData).forEach(subName => {
+              if (!allCategorized[sectionName][subName]) {
+                allCategorized[sectionName][subName] = [];
+              }
+              if (Array.isArray(sectionData[subName])) {
+                allCategorized[sectionName][subName].push(...sectionData[subName]);
+              }
+            });
+          } else if (Array.isArray(sectionData)) {
+            // Flat structure: ["note1", "note2"]
+            if (!allCategorized[sectionName].__flat__) {
+              allCategorized[sectionName].__flat__ = [];
+            }
+            allCategorized[sectionName].__flat__.push(...sectionData);
+          }
+        });
+      }
+      
+      return allCategorized;
     }
 
     return {};
@@ -226,6 +317,9 @@ const categorizePlainTextFuzzy = (text, categoryMap, sectionsWithSubsections) =>
       }
     }
   });
+  
+  // Debug: Log subsection matches
+  console.log('Text:', text, 'Subsection matches:', subsectionMatches.map(m => ({ category: m.category, score: m.score })));
   
   // Sort subsection matches by score (highest first)
   subsectionMatches.sort((a, b) => b.score - a.score);
@@ -402,6 +496,16 @@ export const categorizeInspectionNotesAdvanced = async (
 const categorizePlainTextAdvancedFuzzy = (text, subsections, sections) => {
   const result = {};
   
+  // Step 1: Detect room/section from text (e.g., "kitchen 1", "bedroom 2", "bathroom 1")
+  const roomMatch = text.match(/(kitchen|bedroom|room|bathroom)\s*(\d+)/i);
+  let detectedRoomTitle = null;
+  
+  if (roomMatch) {
+    const roomType = roomMatch[1].toLowerCase();
+    const roomNum = roomMatch[2];
+    detectedRoomTitle = `${roomType.charAt(0).toUpperCase() + roomType.slice(1)} ${roomNum}`;
+  }
+  
   // First, try to match subsections (higher priority)
   const subsectionMatches = [];
   subsections.forEach(sub => {
@@ -414,8 +518,21 @@ const categorizePlainTextAdvancedFuzzy = (text, subsections, sections) => {
   if (subsectionMatches.length > 0) {
     subsectionMatches.sort((a, b) => b.score - a.score);
     const bestMatch = subsectionMatches[0];
-    if (!result[bestMatch.title]) result[bestMatch.title] = [];
-    result[bestMatch.title].push(text.trim());
+    
+    // If we detected a room in the text, prioritize it as the parent
+    // This ensures "bathroom 1" in text goes under "Bathroom 1" section
+    // even if the subsection is under "Bathroom 2" in the API
+    let targetParent = bestMatch.sectionTitle;
+    if (detectedRoomTitle) {
+      targetParent = detectedRoomTitle;
+    }
+    
+    // Create nested object structure: { "Room": { "Subsection": ["note"] } }
+    if (!result[targetParent]) result[targetParent] = {};
+    if (!result[targetParent][bestMatch.title]) {
+      result[targetParent][bestMatch.title] = [];
+    }
+    result[targetParent][bestMatch.title].push(text.trim());
     return result;
   }
   
@@ -437,22 +554,20 @@ const categorizePlainTextAdvancedFuzzy = (text, subsections, sections) => {
   }
   
   // Fallback: try to detect bedroom/kitchen/bathroom numbers
-  const roomMatch = text.match(/(bedroom|kitchen|room|bathroom)\s*(\d+)/i);
-  if (roomMatch) {
-    const roomType = roomMatch[1].toLowerCase();
-    const roomNum = roomMatch[2];
-    const roomCategory = `${roomType.charAt(0).toUpperCase() + roomType.slice(1)} ${roomNum}`;
-    
+  if (roomMatch && detectedRoomTitle) {
     // Check if this room exists in subsections
-    const roomSubsection = subsections.find(s => s.sectionTitle.toLowerCase() === roomCategory.toLowerCase());
+    const roomSubsection = subsections.find(s => s.sectionTitle.toLowerCase() === detectedRoomTitle.toLowerCase());
     if (roomSubsection) {
-      if (!result[roomSubsection.title]) result[roomSubsection.title] = [];
-      result[roomSubsection.title].push(text.trim());
+      if (!result[roomSubsection.sectionTitle]) result[roomSubsection.sectionTitle] = {};
+      if (!result[roomSubsection.sectionTitle][roomSubsection.title]) {
+        result[roomSubsection.sectionTitle][roomSubsection.title] = [];
+      }
+      result[roomSubsection.sectionTitle][roomSubsection.title].push(text.trim());
       return result;
     }
     
     // Check if this room exists as a section
-    const roomSection = sections.find(s => s.title.toLowerCase() === roomCategory.toLowerCase());
+    const roomSection = sections.find(s => s.title.toLowerCase() === detectedRoomTitle.toLowerCase());
     if (roomSection) {
       if (!result[roomSection.title]) result[roomSection.title] = [];
       result[roomSection.title].push(text.trim());
@@ -464,8 +579,11 @@ const categorizePlainTextAdvancedFuzzy = (text, subsections, sections) => {
   if (subsections.length > 0) {
     // Put in first subsection
     const firstSub = subsections[0];
-    if (!result[firstSub.title]) result[firstSub.title] = [];
-    result[firstSub.title].push(text.trim());
+    if (!result[firstSub.sectionTitle]) result[firstSub.sectionTitle] = {};
+    if (!result[firstSub.sectionTitle][firstSub.title]) {
+      result[firstSub.sectionTitle][firstSub.title] = [];
+    }
+    result[firstSub.sectionTitle][firstSub.title].push(text.trim());
   } else if (sections.length > 0) {
     const firstSection = sections[0];
     if (!result[firstSection.title]) result[firstSection.title] = [];
@@ -473,4 +591,86 @@ const categorizePlainTextAdvancedFuzzy = (text, subsections, sections) => {
   }
   
   return result;
+};
+
+/**
+ * Helper function to get notes for a specific section and subsection
+ * This is used by the display component to fetch notes dynamically
+ * Handles both formats:
+ * - { "Room": { "Subsection": ["note"] } } - nested object format
+ * - { "Room": ["note"] } - flat array format (for sections without subsubsections)
+ */
+export const getNotesForSection = (categorizedNotes, sectionTitle, subsectionTitle = null) => {
+  try {
+    if (!categorizedNotes || !sectionTitle) return [];
+    
+    // Try exact match first
+    let sectionData = categorizedNotes[sectionTitle];
+    
+    // If no exact match, try case-insensitive match
+    if (!sectionData) {
+      const sectionKey = Object.keys(categorizedNotes).find(
+        key => key.toLowerCase() === sectionTitle.toLowerCase()
+      );
+      if (sectionKey) {
+        sectionData = categorizedNotes[sectionKey];
+      }
+    }
+    
+    if (!sectionData) return [];
+    
+    if (subsectionTitle) {
+      // Get notes for specific subsection
+      // If sectionData is an array, it means this section has no subsections
+      // Return empty array since we're looking for a subsection
+      if (Array.isArray(sectionData)) {
+        return [];
+      }
+      
+      // Handle nested object format: { "Subsection": ["note"] }
+      // sectionData should be an object with subsection names as keys
+      if (typeof sectionData !== 'object' || sectionData === null) {
+        return [];
+      }
+      
+      let subsectionData = sectionData[subsectionTitle];
+      
+      // If no exact match, try case-insensitive match
+      if (!subsectionData) {
+        const subsectionKey = Object.keys(sectionData).find(
+          key => key.toLowerCase() === subsectionTitle.toLowerCase()
+        );
+        if (subsectionKey) {
+          subsectionData = sectionData[subsectionKey];
+        }
+      }
+      
+      if (Array.isArray(subsectionData)) {
+        return subsectionData;
+      }
+      return [];
+    }
+    
+    // Get all notes for the section
+    // Handle flat array format: ["note1", "note2"]
+    if (Array.isArray(sectionData)) {
+      return sectionData;
+    }
+    
+    // Handle nested object format: { "Subsection": ["note"] }
+    if (typeof sectionData === 'object' && sectionData !== null) {
+      const allNotes = [];
+      Object.keys(sectionData).forEach(key => {
+        if (Array.isArray(sectionData[key])) {
+          allNotes.push(...sectionData[key]);
+        }
+      });
+      return allNotes;
+    }
+    
+    return [];
+  } catch (error) {
+    console.log('getNotesForSection error:', error);
+    return [];
+  }
 };
