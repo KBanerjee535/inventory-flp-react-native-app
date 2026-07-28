@@ -21,10 +21,10 @@ import Tick from 'react-native-vector-icons/FontAwesome';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import RNFS from 'react-native-fs'; // File system for storage paths
 import { useUserContext } from '../context/UserContext';
-import {SectionUpdateAudioApi, sectionDetailsBySectionIdAPI} from '../services/apiService';
+import {SectionUpdateAudioApi, sectionDetailsBySectionIdAPI, submitInventoryContentApi} from '../services/apiService';
 import Voice from '@react-native-voice/voice';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { punctuateTextWithAI, categorizeInspectionNotes } from "../utils/punctuateTextModel";
+import { punctuateTextWithAI, categorizeInspectionNotes, parsePropertyNoteToContent } from "../utils/punctuateTextModel";
 import Toast from 'react-native-simple-toast';
 
 
@@ -282,31 +282,68 @@ const handleTextAppend = async () => {
     
     console.log('categoryToIdMap:', categoryToIdMap);
 
-// Transform categorizedData into formattedData structure
-    // Format: { "Room": { "Subsection": ["note"] } }
+// Transform categorizedData into the new structured format
+    // New format:
+    // {
+    //   "inventory_id": "...",
+    //   "content": [
+    //     {
+    //       "inventory_section_id": "...",
+    //       "inventory_subsection_id": "...",
+    //       "inventory_sub_subsection_id": "...",
+    //       "content": {
+    //         "bed": { "items": "White painted", "condition": "legs are broken" },
+    //         "cabinet": { "items": "Wooden build", "condition": "handle is missing" }
+    //       },
+    //       "attached_image": null
+    //     }
+    //   ]
+    // }
     const contentArray = [];
     
     if (categorizedData && typeof categorizedData === 'object' && Object.keys(categorizedData).length > 0) {
+      // Track content objects grouped by section + subsection key
+      const groupedContent = {}; // key: "sectionId_subsectionId_subSubSectionId" -> { mergedContent, idMapping }
+      
       Object.keys(categorizedData).forEach(sectionName => {
         try {
           const sectionCategories = categorizedData[sectionName];
           
-          // Object format: { "Subsection": ["note1"] }
+          // Object format: { "Subsection": ["note1", "note2"] }
           if (typeof sectionCategories === 'object' && sectionCategories !== null && !Array.isArray(sectionCategories)) {
             Object.keys(sectionCategories).forEach(categoryName => {
               try {
                 const notes = sectionCategories[categoryName];
                 const idMapping = categoryToIdMap[categoryName];
                 
-                // Ensure notes is an array
+                if (!idMapping) {
+                  console.log('No id mapping found for category:', categoryName);
+                  return;
+                }
+                
+                // Build a unique key for this (section, subsection) combination
+                const groupKey = `${idMapping.sectionId}_${idMapping.subSectionId || 'null'}_${idMapping.subSubSectionId || 'null'}`;
+                
+                if (!groupedContent[groupKey]) {
+                  groupedContent[groupKey] = {
+                    inventory_section_id: idMapping.sectionId,
+                    inventory_subsection_id: idMapping.subSectionId || null,
+                    inventory_sub_subsection_id: idMapping.subSubSectionId || null,
+                    mergedContent: {},
+                    attached_image: null
+                  };
+                }
+                
+                // Ensure notes is an array and parse each note
                 if (Array.isArray(notes)) {
                   notes.forEach(note => {
-                    contentArray.push({
-                      inventory_section_id: SelectedSection?.section_id,
-                      inventory_subsection_id: idMapping?.subSectionId || null,
-                      inventory_sub_subsection_id: idMapping?.subSubSectionId || null,
-                      content: note,
-                      attached_image: null
+                    // Parse the note into { itemName: { items, condition } }
+                    // Pass the category name as subsection title for context
+                    const parsedContent = parsePropertyNoteToContent(note, categoryName);
+                    
+                    // Merge the parsed content into the group's mergedContent
+                    Object.keys(parsedContent).forEach(itemKey => {
+                      groupedContent[groupKey].mergedContent[itemKey] = parsedContent[itemKey];
                     });
                   });
                 }
@@ -319,6 +356,18 @@ const handleTextAppend = async () => {
           console.log('Error processing section:', sectionName, e);
         }
       });
+      
+      // Convert grouped content back to array
+      Object.keys(groupedContent).forEach(key => {
+        const group = groupedContent[key];
+        contentArray.push({
+          inventory_section_id: group.inventory_section_id,
+          inventory_subsection_id: group.inventory_subsection_id,
+          inventory_sub_subsection_id: group.inventory_sub_subsection_id,
+          content: group.mergedContent,
+          attached_image: group.attached_image
+        });
+      });
     }
 
     const formattedData = {
@@ -330,6 +379,31 @@ const handleTextAppend = async () => {
       'Formatted Data:',
       JSON.stringify(formattedData, null, 2)
     );
+
+    // Submit the formatted data to the API
+    if (contentArray.length > 0) {
+      try {
+        setScreenLoading(true);
+        const response = await submitInventoryContentApi(formattedData);
+        console.log('Submit API Response:', response.data);
+        
+        if (response.data.status) {
+          Toast.show('Data submitted successfully!', Toast.SHORT);
+        } else {
+          Toast.show(response.data.message || 'Failed to submit data.', Toast.SHORT);
+        }
+      } catch (apiError) {
+        console.log('Submit API Error:', apiError.response?.data || apiError.message);
+        Toast.show(
+          apiError.response?.data?.message || 'Failed to submit data. Please try again.',
+          Toast.SHORT
+        );
+      } finally {
+        setScreenLoading(false);
+      }
+    } else {
+      Toast.show('No content to submit.', Toast.SHORT);
+    }
 
     // Store the categorized data for display
     if (Object.keys(categorizedData).length > 0) {

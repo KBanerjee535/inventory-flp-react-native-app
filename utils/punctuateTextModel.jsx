@@ -594,6 +594,183 @@ const categorizePlainTextAdvancedFuzzy = (text, subsections, sections) => {
 };
 
 /**
+ * Common property item keywords for rule-based extraction
+ */
+const PROPERTY_ITEM_KEYWORDS = [
+  // Bedroom items
+  'bed', 'bed frame', 'mattress', 'headboard', 'pillow', 'duvet', 'blanket',
+  // Furniture
+  'cabinet', 'wardrobe', 'cupboard', 'chest', 'drawer', 'dresser', 'vanity',
+  'table', 'desk', 'chair', 'stool', 'bench', 'sofa', 'couch', 'settee',
+  'shelf', 'bookshelf', 'rack', 'stand', 'ottoman', 'armoire',
+  // Fixtures
+  'curtain', 'blind', 'shutter', 'light', 'lamp', 'mirror', 'rug', 'carpet',
+  'clock', 'picture', 'painting', 'vase', 'lamp shade',
+  // Kitchen
+  'fridge', 'refrigerator', 'freezer', 'oven', 'cooker', 'stove', 'hob',
+  'microwave', 'dishwasher', 'washing machine', 'dryer', 'kettle', 'toaster',
+  'sink', 'tap', 'faucet', 'worktop', 'countertop', 'cupboard',
+  // Bathroom
+  'toilet', 'bath', 'bathtub', 'shower', 'shower head', 'basin', 'sink',
+  'vanity unit', 'cabinet', 'towel rail', 'radiator', 'extractor fan',
+  // Windows & Doors
+  'window', 'door', 'lock', 'handle', 'hinge', 'frame', 'glass', 'pane',
+  'key', 'deadbolt', 'latch',
+  // Walls & Floors
+  'wall', 'ceiling', 'floor', 'tile', 'grout', 'skirting', 'cornice',
+  'paint', 'plaster', 'wallpaper',
+  // General
+  'counter', 'worktop', 'surface', 'switch', 'socket', 'plug', 'outlet',
+  'thermostat', 'heater', 'radiator', 'smoke alarm', 'carbon monoxide detector'
+];
+
+/**
+ * Condition indicator keywords to split items description from condition
+ */
+const CONDITION_KEYWORDS = [
+  'broken', 'damaged', 'missing', 'cracked', 'stained', 'scratched', 'dented',
+  'worn', 'torn', 'ripped', 'faded', 'rusty', 'corroded', 'mouldy', 'moldy',
+  'mildew', 'dirty', 'stained', 'discolored', 'discoloured', 'warped', 'bent',
+  'buckled', 'loose', 'stuck', 'jammed', 'leaking', 'leak', 'dripping', 'drip',
+  'blocked', 'clogged', 'faulty', 'defective', 'not working', 'malfunctioning',
+  'inoperative', 'chipped', 'gouged', 'pitted', 'peeling', 'flaking', 'bubbling',
+  'sagging', 'drooping', 'separating', 'gapping', 'uneven', 'not level',
+  'crack', 'chip', 'dent', 'scratch', 'stain', 'hole', 'tear', 'rip', 'split',
+  'handle is', 'hinge is', 'lock is', 'glass is', 'frame is',
+  'leg is', 'legs are', 'drawer is', 'door is', 'surface is',
+  'needs', 'require', 'requires', 'needs repair', 'needs replacement',
+  'in poor condition', 'in bad condition', 'poor condition',
+  'damage', 'deterioration', 'corrosion', 'wear and tear'
+];
+
+/**
+ * Rule-based parsing of property inspection notes into item/condition format
+ * 
+ * Parses a note like "White painted bed, legs are broken" into:
+ * { "bed": { "items": "White painted", "condition": "legs are broken" } }
+ * 
+ * @param {string} note - The inspection note text
+ * @param {string} subsectionTitle - The subsection/category title for context
+ * @returns {Object} - { itemName: { items, condition } }
+ */
+export const parsePropertyNoteToContent = (note, subsectionTitle = '') => {
+  if (!note || typeof note !== 'string') return {};
+  
+  const lowerNote = note.toLowerCase().trim();
+  let itemName = null;
+  let descriptionPart = note.trim();
+  let conditionPart = '';
+  
+  // Strategy 1: Find known item keyword in the note
+  // Sort by length descending to match multi-word items first (e.g., "bed frame" before "bed")
+  const sortedKeywords = [...PROPERTY_ITEM_KEYWORDS].sort((a, b) => b.length - a.length);
+  
+  for (const keyword of sortedKeywords) {
+    const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+    if (regex.test(note)) {
+      itemName = keyword;
+      break;
+    }
+  }
+  
+  // Strategy 2: If no item keyword found, try to extract from the subsection title
+  if (!itemName && subsectionTitle) {
+    const lowerSubsection = subsectionTitle.toLowerCase();
+    for (const keyword of sortedKeywords) {
+      const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+      if (regex.test(lowerSubsection)) {
+        itemName = keyword;
+        break;
+      }
+    }
+  }
+  
+  // Strategy 3: Use first word or two as item name as fallback
+  if (!itemName) {
+    const words = note.trim().split(/\s+/);
+    if (words.length >= 2) {
+      // Try first two words as item name
+      itemName = words[0] + ' ' + words[1];
+    } else if (words.length === 1) {
+      itemName = words[0];
+    } else {
+      itemName = 'item';
+    }
+    // Check if this guessed item name contains condition indicators
+    const guessedLower = itemName.toLowerCase();
+    if (CONDITION_KEYWORDS.some(kw => guessedLower.includes(kw))) {
+      itemName = 'item';
+    }
+  }
+  
+  // Extract description and condition from the note
+  // Remove the item name from the beginning of the note to get description
+  let remainingText = note.trim();
+  const itemRegex = new RegExp(`^${itemName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*[,:-]?\\s*`, 'i');
+  remainingText = remainingText.replace(itemRegex, '').trim();
+  
+  // If removing the item name didn't leave anything, try removing from anywhere
+  if (!remainingText) {
+    remainingText = note.trim();
+    // Remove item name wherever it appears
+    const removeItemRegex = new RegExp(itemName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    remainingText = remainingText.replace(removeItemRegex, '').trim();
+    remainingText = remainingText.replace(/^[,:-]\s*/, '').trim();
+    remainingText = remainingText.replace(/[,:-]\s*$/, '').trim();
+  }
+  
+  // Now split remaining text into items (description) and condition
+  if (remainingText) {
+    // Find condition indicator keywords
+    let conditionStartIndex = -1;
+    let matchedKeyword = '';
+    
+    for (const kw of CONDITION_KEYWORDS) {
+      const idx = remainingText.toLowerCase().indexOf(kw.toLowerCase());
+      if (idx !== -1 && (conditionStartIndex === -1 || idx < conditionStartIndex)) {
+        conditionStartIndex = idx;
+        matchedKeyword = kw;
+      }
+    }
+    
+    if (conditionStartIndex > 0) {
+      // Split: description before condition keyword
+      descriptionPart = remainingText.substring(0, conditionStartIndex).trim();
+      // Clean up trailing comma, colon, dash, "and", "but"
+      descriptionPart = descriptionPart.replace(/[,:\-;]\s*$/, '').trim();
+      descriptionPart = descriptionPart.replace(/\s+(and|but|however)$/i, '').trim();
+      
+      conditionPart = remainingText.substring(conditionStartIndex).trim();
+    } else {
+      // No condition found, put everything in items
+      descriptionPart = remainingText;
+      conditionPart = '';
+    }
+  }
+  
+  // Clean up description - remove leading/trailing punctuation and whitespace
+  descriptionPart = descriptionPart.replace(/^[,\s]+/, '').replace(/[,\s]+$/, '').trim();
+  conditionPart = conditionPart.replace(/^[,\s]+/, '').replace(/[,\s]+$/, '').trim();
+  
+  // Capitalize first letter of each part
+  if (descriptionPart) {
+    descriptionPart = descriptionPart.charAt(0).toUpperCase() + descriptionPart.slice(1);
+  }
+  if (conditionPart) {
+    conditionPart = conditionPart.charAt(0).toUpperCase() + conditionPart.slice(1);
+  }
+  
+  // Create the result object
+  const itemKey = itemName.toLowerCase().replace(/\s+/g, '_');
+  return {
+    [itemKey]: {
+      items: descriptionPart || note.trim(),
+      condition: conditionPart || ''
+    }
+  };
+};
+
+/**
  * Helper function to get notes for a specific section and subsection
  * This is used by the display component to fetch notes dynamically
  * Handles both formats:

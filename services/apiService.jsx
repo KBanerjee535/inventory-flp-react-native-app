@@ -325,3 +325,7 @@ export const fetchNotificationApi = async () => {
 export const confirmAppointmentApi = async (values) => {
   return await axios.post(API_BASE_URL + `patient/confirm-appointment`, values, await getHeader(true));
 };
+
+export const submitInventoryContentApi = async (values) => {
+  return await axios.post(API_BASE_URL + `inventory/submitInventoryContent`, values, await getHeader(false));
+};
