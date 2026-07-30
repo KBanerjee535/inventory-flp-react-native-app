@@ -44,9 +44,7 @@ const ClerkAddBedroomDetailsAddAudio = ({navigation}) => {
 const restartTimeoutRef = useRef(null);
 const [voiceError, setVoiceError] = useState('');
 
-// Load section details when component mounts
-  useEffect(() => {
-    const loadSectionDetails = async () => {
+const loadSectionDetails = async () => {
       if (SelectedSection?.section_id && (!sectionDetails || (Array.isArray(sectionDetails) && sectionDetails.length === 0))) {
         try {
           setScreenLoading(true);
@@ -64,8 +62,11 @@ const [voiceError, setVoiceError] = useState('');
         }
       }
     };
+// Load section details when component mounts
+  useEffect(() => {
+    
     loadSectionDetails();
-  }, [SelectedSection]);
+  }, []);
 
 const cancelPendingRestart = () => {
   if (restartTimeoutRef.current) {
@@ -282,18 +283,17 @@ const handleTextAppend = async () => {
     
     console.log('categoryToIdMap:', categoryToIdMap);
 
-// Transform categorizedData into the new structured format
-    // New format:
+// Transform categorizedData into the API payload structure
+    // API expects:
     // {
     //   "inventory_id": "...",
     //   "content": [
     //     {
-    //       "inventory_section_id": "...",
-    //       "inventory_subsection_id": "...",
-    //       "inventory_sub_subsection_id": "...",
+    //       "inventory_section_id": <room section id>,
+    //       "inventory_subsection_id": <room id (e.g., bathroom 1 id)>,
+    //       "inventory_sub_subsection_id": <subsection id (e.g., window, furniture)>,
     //       "content": {
-    //         "bed": { "items": "White painted", "condition": "legs are broken" },
-    //         "cabinet": { "items": "Wooden build", "condition": "handle is missing" }
+    //         "subsection_name": { "items": "detected_item", "condition": "condition description" }
     //       },
     //       "attached_image": null
     //     }
@@ -302,9 +302,6 @@ const handleTextAppend = async () => {
     const contentArray = [];
     
     if (categorizedData && typeof categorizedData === 'object' && Object.keys(categorizedData).length > 0) {
-      // Track content objects grouped by section + subsection key
-      const groupedContent = {}; // key: "sectionId_subsectionId_subSubSectionId" -> { mergedContent, idMapping }
-      
       Object.keys(categorizedData).forEach(sectionName => {
         try {
           const sectionCategories = categorizedData[sectionName];
@@ -321,29 +318,42 @@ const handleTextAppend = async () => {
                   return;
                 }
                 
-                // Build a unique key for this (section, subsection) combination
-                const groupKey = `${idMapping.sectionId}_${idMapping.subSectionId || 'null'}_${idMapping.subSubSectionId || 'null'}`;
-                
-                if (!groupedContent[groupKey]) {
-                  groupedContent[groupKey] = {
-                    inventory_section_id: idMapping.sectionId,
-                    inventory_subsection_id: idMapping.subSectionId || null,
-                    inventory_sub_subsection_id: idMapping.subSubSectionId || null,
-                    mergedContent: {},
-                    attached_image: null
-                  };
-                }
-                
-                // Ensure notes is an array and parse each note
+                // Ensure notes is an array and create one entry per note
                 if (Array.isArray(notes)) {
                   notes.forEach(note => {
-                    // Parse the note into { itemName: { items, condition } }
-                    // Pass the category name as subsection title for context
+                    // Parse the note into { itemKey: { items, condition } }
                     const parsedContent = parsePropertyNoteToContent(note, categoryName);
                     
-                    // Merge the parsed content into the group's mergedContent
-                    Object.keys(parsedContent).forEach(itemKey => {
-                      groupedContent[groupKey].mergedContent[itemKey] = parsedContent[itemKey];
+                    // Extract the detected item key and data
+                    const itemKeys = Object.keys(parsedContent);
+                    let itemsValue = '';
+                    let conditionValue = '';
+                    
+                    if (itemKeys.length > 0) {
+                      const detectedItemKey = itemKeys[0]; // e.g., "window", "curtain", "floor"
+                      const itemData = parsedContent[detectedItemKey];
+                      
+                      // items = the detected item name (capitalized)
+                      itemsValue = detectedItemKey
+                        .split('_')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                      
+                      // condition = the condition part extracted from parsing
+                      conditionValue = itemData.condition || '';
+                    }
+                    
+                    contentArray.push({
+                      inventory_section_id: idMapping.sectionId,
+                      inventory_subsection_id: idMapping.subSectionId || null,
+                      inventory_sub_subsection_id: idMapping.subSubSectionId || null,
+                      content: {
+                        [categoryName]: {
+                          items: itemsValue || note.trim(),
+                          condition: conditionValue || note.trim()
+                        }
+                      },
+                      attached_image: null
                     });
                   });
                 }
@@ -355,18 +365,6 @@ const handleTextAppend = async () => {
         } catch (e) {
           console.log('Error processing section:', sectionName, e);
         }
-      });
-      
-      // Convert grouped content back to array
-      Object.keys(groupedContent).forEach(key => {
-        const group = groupedContent[key];
-        contentArray.push({
-          inventory_section_id: group.inventory_section_id,
-          inventory_subsection_id: group.inventory_subsection_id,
-          inventory_sub_subsection_id: group.inventory_sub_subsection_id,
-          content: group.mergedContent,
-          attached_image: group.attached_image
-        });
       });
     }
 

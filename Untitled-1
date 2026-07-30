@@ -1,0 +1,122 @@
+{
+  "inventory_id": "<inventory_id>",
+  "content": [
+    {
+      "inventory_section_id": <id>,
+      "inventory_subsection_id":<id>",
+      "inventory_sub_subsection_id": "<id>",
+      "content": { 
+        "bed": { "items" : "White painted", "condition": "legs are broken" },
+        "cabinet":{"items": Wooden build", "condition": "handle is missing" }
+      },
+      "attached_image": "<image if any>"
+    },
+    {
+      "inventory_section_id": <id>,
+      "inventory_subsection_id":<id>",
+      "inventory_sub_subsection_id": "<id>",x
+      "content": { 
+        "bed": { "items" : "White painted", "condition": "legs are broken" },
+        "cabinet":{"items": Wooden build", "condition": "handle is missing" }
+      },
+      "attached_image": "<image if any>"
+    },
+    {
+      "inventory_section_id": <id>,
+      "inventory_subsection_id":<id>",
+      "inventory_sub_subsection_id": "<id>",
+      "content": { 
+        "bed": { "items" : "White painted", "condition": "legs are broken" },
+        "cabinet":{"items": Wooden build", "condition": "handle is missing" }
+      },
+      "attached_image": "<image if any>"
+    }
+  ]
+}
+
+"Array to string conversion (Connection: mysql, SQL: insert into `inventory_contents` (`inventory_section_id`, `inventory_subsection_id`, `inventory_sub_subsection_id`, `type`, `text_content`, `audio_path`, `updated_at`, `created_at`) values (8, 4, 15, text, ?, ?, 2026-07-28 11:50:31, 2026-07-28 11:50:31))"
+
+
+Formatted Data: {
+  "inventory_id": 68,
+  "content": [
+    {
+      "inventory_section_id": 8,
+      "inventory_subsection_id": 4,
+      "inventory_sub_subsection_id": 16,
+      "content": {
+        "window": {
+          "items": "Glass is broken of bathroom 1",
+          "condition": ""
+        }
+      },
+      "attached_image": null
+    },
+    {
+      "inventory_section_id": 8,
+      "inventory_subsection_id": 4,
+      "inventory_sub_subsection_id": 15,
+      "content": {
+        "curtain": {
+          "items": "Need to fix of bathroom 1",
+          "condition": ""
+        }
+      },
+      "attached_image": null
+    },
+    {
+      "inventory_section_id": 8,
+      "inventory_subsection_id": 4,
+      "inventory_sub_subsection_id": 13,
+      "content": {
+        "floor": {
+          "items": "Room floor tiles are not clean of bathroom 2",
+          "condition": ""
+        }
+      },
+      "attached_image": null
+    }
+  ]
+}
+
+Formatted Data: {
+  "inventory_id": 68,
+  "content": [
+    {
+      "inventory_section_id": 8,
+      "inventory_subsection_id": <bathroom 1 id>,
+      "inventory_sub_subsection_id": <window id>,
+      "content": {
+        "window": {
+          "items": "Glass",
+          "condition": "This is broken"
+        }
+      },
+      "attached_image": null
+    },
+    {
+      "inventory_section_id": 8,
+      "inventory_subsection_id": <bathroom 1 id>,
+      "inventory_sub_subsection_id": <Furniture & Furnishing id>,
+      "content": {
+        "Furniture & Furnishing": {
+          "items": "curtain",
+          "condition": "Need to fix"
+        }
+      },
+      "attached_image": null
+    },
+    {
+      "inventory_section_id": 8,
+      "inventory_subsection_id": <bathroom 2 id>,
+      "inventory_sub_subsection_id": <Rooom Items id>,
+      "content": {
+        "Room Items": {
+          "items": "Floor",
+          "condition": "tiles are not clean"
+        }
+      },
+      "attached_image": null
+    }
+  ]
+}

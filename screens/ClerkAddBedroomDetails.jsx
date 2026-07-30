@@ -66,60 +66,6 @@ const [isSaved, setIsSaved] = useState({}); // track save state for each item
 
   const [serverSupportingMedia, setServerSupportingMedia] = useState([]);
 
-//   const fetchSupportingImages = async () => {
-//   try {
-//     const fd = new FormData();
-//     fd.append('section_id', SelectedSection?.section_id);
-    
-//     const response = await GetSupportingImageBySectionIdApi(fd);
-    
-//     if (response.data.status) {
-//       setServerSupportingMedia(response.data.data);
-//       console.log('Supporting images fetched successfully:', response.data.data);
-//     }
-//   } catch (error) {
-//     console.error('Error fetching supporting images:', error);
-//   }
-// };
-
-// const deleteServerImage = async (imageId) => {
-//   Alert.alert(
-//     'Delete Image',
-//     'Are you sure you want to delete this image?',
-//     [
-//       {
-//         text: 'Cancel',
-//         style: 'cancel',
-//       },
-//       {
-//         text: 'Delete',
-//         onPress: async () => {
-//           try {
-//             const fd = new FormData();
-//             fd.append('image_id', imageId);
-            
-//             setScreenLoading(true);
-//             const response = await SectionDeleteSupportingImageByIdApi(fd);
-            
-//             if (response.data.status) {
-//               Toast.show('Image deleted successfully!', Toast.SHORT);
-//               // fetchSupportingImages(); // Refresh the list after deletion
-//             } else {
-//               Toast.show(response.data.message || 'Failed to delete image', Toast.SHORT);
-//             }
-//           } catch (error) {
-//             console.error('Error deleting image:', error);
-//             Toast.show('Error deleting image', Toast.SHORT);
-//           } finally {
-//             setScreenLoading(false);
-//           }
-//         },
-//       },
-//     ],
-//     { cancelable: true }
-//   );
-// };
-
   const handleToggle = (id) => {
     setAudioToggles((prev) => ({
       ...prev,
@@ -127,217 +73,12 @@ const [isSaved, setIsSaved] = useState({}); // track save state for each item
     }));
   };
 
-
-
-  // const [audioimages, setaudioImages] = useState([
-  //   {
-  //     id: 1,
-  //     uri: require('../assets/images/image1.jpg'),
-  //     scaleAnim: new Animated.Value(1),
-  //   },
-  //   {
-  //     id: 2,
-  //     uri: require('../assets/images/image2.jpg'),
-  //     scaleAnim: new Animated.Value(1),
-  //   },
-  // ]);
-// const requestCameraPermission = async () => {
-//   const permission = Platform.select({
-//     ios: PERMISSIONS.IOS.CAMERA,
-//     android: PERMISSIONS.ANDROID.CAMERA,
-//   });
-
-//   const result = await check(permission);
-
-//   if (result === RESULTS.GRANTED) {
-//     return true;
-//   }
-
-//   if (result === RESULTS.BLOCKED) {
-//     Alert.alert(
-//       'Permission Blocked',
-//       'Camera permission is blocked. Please enable it from settings.',
-//       [
-//         { text: 'Cancel', style: 'cancel' },
-//         { text: 'Open Settings', onPress: openSettings }
-//       ]
-//     );
-//     return false;
-//   }
-
-//   const requestResult = await request(permission);
-
-//   if (requestResult === RESULTS.GRANTED) {
-//     return true;
-//   } else {
-//     Alert.alert('Permission Denied', 'Camera permission is required.');
-//     return false;
-//   }
-// };
-
-  // Zoom-out animation for deleting images
-// const handleDeleteImage = async () => {
-//     try {
-//       let fd = new FormData();
-//      fd.append("section_id",SelectedSection?.id);
-// //alert(JSON.stringify(fd))
-//     let response = await SectionDeleteImageBySectionIdApi(fd);
-
-//         getSectionDetails();
-//                 // Remove from local state after successful delete
-      
-//     } catch (error) {
-//      //alert();
-    
-//     }
-  
-// };
-// const pickSupportingMedia = async (type) => {
-//   try {
-//     if (supportingMedia.length >= 4) {
-//       Alert.alert('Limit Reached', 'You can only upload up to 4 media files.');
-//       return;
-//     }
-
-//     let media = null;
-
-//     if (type === 'camera') {
-//       const hasPermission = await requestCameraPermission();
-//       if (!hasPermission) {
-//         Alert.alert('Permission Denied', 'Camera permission is required.');
-//         return;
-//       }
-
-//       media = await ImagePicker.openCamera({
-//         mediaType: 'any',
-//       });
-//     } else if (type === 'gallery') {
-//       media = await ImagePicker.openPicker({
-//         mediaType: 'any',
-//         multiple: true,
-//       });
-//     }
-
-//     if (!media) return;
-
-//     const mediaArray = Array.isArray(media) ? media : [media];
-
-//     const remainingSlots = 4 - supportingMedia.length;
-
-//     const selectedMedia = mediaArray.slice(0, remainingSlots);
-
-//     setSupportingMedia(prev => [...prev, ...selectedMedia]);
-//     console.log(selectedMedia);
-
-//   } catch (error) {
-//     console.log('Media picking cancelled or error:', error);
-//     Alert.alert('Error', 'Media selection failed. Please try again.');
-//   }
-// };
-
-// const uploadMediaFiles = async () => {
-//   try {
-//     const fd = new FormData();
-//     fd.append('section_id', sectionDetails?.id);
-//     fd.append('inventory_id', sectionDetails?.inventory_id);
-
-//     console.log(supportingMedia);
-
-//     supportingMedia.forEach((file, index) => {
-//       const fileType = file.mime || 'image/jpeg';
-//       const fileName = file.filename || `file_${index}.${fileType.includes('video') ? 'mp4' : 'jpg'}`;
-
-//       fd.append('image[]', {
-//         uri: file.path.startsWith('file://') ? file.path : `file://${file.path}`,
-//         type: fileType,
-//         name: fileName,
-//       });
-//     });
-
-//     const response = await SectionAddSupportingImageApi(fd); // Make sure this uses axios or fetch with correct headers
-//     console.log('Upload response:', response.data);
-//     if( response.data.status){ 
-//       setSupportingMedia([]); // Clear after successful upload {
-//       Toast.show('Media uploaded successfully!', Toast.SHORT);
-//       // fetchSupportingImages(); // Refresh the list after upload
-//     } else {
-//       Toast.show(response.data.message || 'Failed to upload media.', Toast.SHORT);
-
-//     }
-    
-//   } catch (error) {
-//     console.error('Upload error:', error.response?.data || error.message);
-//   }
-// };
-
-
-// const removeSupportingMedia = (index) => {
-//   const updatedMedia = [...supportingMedia];
-//   updatedMedia.splice(index, 1);
-//   setSupportingMedia(updatedMedia);
-// };
-
-
-//   const [recordedAudios, setRecordedAudios] = useState([
-//     {
-//       id: 1,
-//       name: 'Section_Audio.mp3',
-//       duration: '00:05:33',
-//       scaleAnim: new Animated.Value(1),
-//     },
-//   ]);
-//   const [playingId, setPlayingId] = useState(null);
-//   const [showAudioSection, setShowAudioSection] = useState(true);
   const [screenLoading, setScreenLoading] = useState(false);
-
-//   const togglePlayPause = id => {
-//     setPlayingId(playingId === id ? null : id);
-//   };
-
-// const deleteAudio = async (id) => {
-//   const audioToDelete = recordedAudios.find(audio => audio.id === id);
-//   if (!audioToDelete) return;
-
-//   try {
-//     setScreenLoading(true);
-
-//       // 🔹 Call API to delete audio from the backend
-//  let fd = new FormData();
-//      fd.append("section_id",SelectedSection?.section_id);
-//     let response = await SectionDeleteAudioBySectionIdApi(fd);
-
-//       if (response.status === 200) {
-//          // 🔹 Animate zoom-out effect before deletion
-//     Animated.timing(audioToDelete.scaleAnim, {
-//       toValue: 0,
-//       duration: 300,
-//       useNativeDriver: true,
-//     }).start(async () => {
-//        setScreenLoading(false);
-
-//         console.log('Audio deleted successfully:', response.data);
-//     getSectionDetails();
-//         // 🔹 Remove audio from UI after successful deletion
-//         const updatedAudios = recordedAudios.filter(audio => audio.id !== id);
-//         setRecordedAudios(updatedAudios);
-//          });
-//       } else {
-//          setScreenLoading(false);
-
-//        // console.warn('Failed to delete audio:', response.data);
-//       }
-   
-//   } catch (error) {
-//      setScreenLoading(false);
-
-//     console.error('Error deleting audio:', error);
-//   }
-// };
 
   const deleteSection = async() => {
 
 let fd = new FormData();
-    fd.append("section_id", SelectedSection?.section_id);
+    fd.append("section_id", SelectedSection?.id);
  let response = await DeleteSectionSectionIdApi(fd);
     const apiData = response.data;
 
@@ -347,44 +88,13 @@ navigation.navigate('ClerkInspection')
 }
   };
 
-
-
-// const handleDeleteText = async () => {
-//   try {
-//  setScreenLoading(true);
-//  let fd = new FormData();
-//      fd.append("section_id",SelectedSection?.id);
-//      fd.append("description",'');
-
-//     let response = await SectionUpdateTextBySectionIdApi(fd);
-//     if (response.status === 200) {
-//       Animated.timing(descriptionAnim, {
-//         toValue: 0,
-//         duration: 300,
-//         useNativeDriver: true,
-//       }).start(() => {
-//         setIsDeleted(true);
-//         setsectionDetails(prev => ({ ...prev, description: null })); // Clear from state
-//         Toast.show('Text deleted successfully!', Toast.SHORT);
-//         setScreenLoading(false);
-//       });
-//     } else {
-//       setScreenLoading(false);
-//       Toast.show('Failed to delete text. Please try again.', Toast.SHORT);
-//     }
-//   } catch (error) {
-//     console.error('Error deleting text:', error);
-//     Toast.show('An error occurred. Please try again.', Toast.SHORT);
-//   }
-// };
-
-
 const fetchSectionItemList = async () => {
   try {
 
     setScreenLoading(true);
     let fd = new FormData();
     fd.append("section_id", SelectedSection?.section_id);
+    fd.append("inventory_id", SelectedSection?.inventory_id);
   
     let response = await SectionItemListBySectionIdAPI(fd);
     const apiData = response.data;
@@ -412,6 +122,7 @@ const getSectionDetails = async () => {
     setScreenLoading(true);
     let fd = new FormData();
     fd.append("section_id", SelectedSection?.section_id);
+    fd.append("inventory_id", SelectedSection?.inventory_id);
   
     let response = await sectionDetailsBySectionIdAPI(fd);
     const apiData = response.data;
@@ -581,7 +292,7 @@ useEffect(() => {
 
                      return (
                        <View
-                         key={item.id}
+                         key={item.subsub_section_id}
                          style={{
                            marginBottom: 10,
                            paddingBottom: 10,
