@@ -270,7 +270,7 @@ useEffect(() => {
     const sectionTitle = section.title || section.name;
     
     return (
-    <View key={section?.id} style={styles.AddedInfocontainer}>
+    <View key={section?.section_id} style={styles.AddedInfocontainer}>
       
       {!isDeleted && (
         <Animated.View style={{ transform: [{ scale: descriptionAnim }] }}>
@@ -279,20 +279,18 @@ useEffect(() => {
                <>
                  {/* Always use subsubsection items - simpler approach */}
                  {section?.subsubSection && section?.subsubSection?.length > 0 ? (
-                   section?.subsubSection?.map((item) => {
+                   section?.subsubSection?.map((item, index) => {
                      const itemTitle = item.title || item.name;
                      // Get notes from categorizedNotes using the helper function
                      // Safe check to prevent crash
-                     const notes = (categorizedNotes && typeof categorizedNotes === 'object') 
-                       ? getNotesForSection(categorizedNotes, sectionTitle, itemTitle) 
-                       : [];
-                     
-                     // Debug: Log the data structure
-                     console.log('itemTitle:', itemTitle, 'sectionTitle:', sectionTitle, 'notes:', notes);
+                    //  const notes = (categorizedNotes && typeof categorizedNotes === 'object') 
+                    //    ? getNotesForSection(categorizedNotes, sectionTitle, itemTitle) 
+                    //    : [];
+                    const note = item?.content ? Object.values(item?.content)[0] : null;
 
                      return (
                        <View
-                         key={item.subsub_section_id}
+                         key={index}
                          style={{
                            marginBottom: 10,
                            paddingBottom: 10,
@@ -309,8 +307,9 @@ useEffect(() => {
                            {itemTitle}
                          </Text>
 
-                         {notes.length > 0 ? (
-                           notes.map((note, index) => (
+                         {/* {notes.length > 0 ? (
+                           notes.map((note, index) => ( */}
+                          {note ? (
                              <Text
                                key={index}
                                style={{
@@ -319,9 +318,9 @@ useEffect(() => {
                                  color: '#666',
                                }}
                              >
-                               • {note}
+                               • {note.items} - {note.condition}
                              </Text>
-                           ))
+                           
                          ) : (
                            <Text
                              style={{

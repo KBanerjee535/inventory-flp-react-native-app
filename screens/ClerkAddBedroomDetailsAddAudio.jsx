@@ -262,8 +262,8 @@ const handleTextAppend = async () => {
       const sectionTitle = section.title || section.name;
       categoryToIdMap[sectionTitle] = {
         type: 'section',
-        sectionId: SelectedSection?.section_id,
-        subSectionId: section.id,
+        inventorySectionId: SelectedSection?.id,
+        subSectionId: section.sub_section_id,
         subSubSectionId: null
       };
       
@@ -273,9 +273,9 @@ const handleTextAppend = async () => {
           const subTitle = sub.title || sub.name;
           categoryToIdMap[subTitle] = {
             type: 'subsubsection',
-            sectionId: SelectedSection?.section_id,
-            subSectionId: section.id,
-            subSubSectionId: sub.id
+            inventorySectionId: SelectedSection?.id,
+            subSectionId: section.sub_section_id,
+            subSubSectionId: sub.subsub_section_id
           };
         });
       }
@@ -344,7 +344,7 @@ const handleTextAppend = async () => {
                     }
                     
                     contentArray.push({
-                      inventory_section_id: idMapping.sectionId,
+                      inventory_section_id: idMapping.inventorySectionId,
                       inventory_subsection_id: idMapping.subSectionId || null,
                       inventory_sub_subsection_id: idMapping.subSubSectionId || null,
                       content: {
@@ -370,6 +370,7 @@ const handleTextAppend = async () => {
 
     const formattedData = {
       inventory_id: SelectedSection?.inventory_id,
+      section_id: SelectedSection?.section_id,
       content: contentArray
     };
 
