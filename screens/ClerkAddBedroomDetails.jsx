@@ -339,20 +339,21 @@ useEffect(() => {
                    // No subsubsections - display notes directly under the main section
                    (() => {
                      // Use helper function to get notes for the section
-                     const notes = getNotesForSection(categorizedNotes, sectionTitle);
+                     const sectionNotes = JSON.parse(section?.subsubSection?.content);
+                     console.log('sectionNotes: ', sectionNotes);
                     
-                     return notes.length > 0 ? (
+                     return sectionNotes ? (
                        <View style={{ marginTop: 4 }}>
-                         {notes.map((note, index) => (
+                         {Object.entries(sectionNotes).map(([title, value]) => (
                            <Text
-                             key={index}
+                             key={section?.sub_section_id + title}
                              style={{
                                marginLeft: 15,
                                marginTop: 4,
                                color: '#666',
                              }}
                            >
-                             • {note}
+                             • {value.items} - {value.condition}
                            </Text>
                          ))}
                        </View>

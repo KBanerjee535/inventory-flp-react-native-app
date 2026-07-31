@@ -306,23 +306,127 @@ const handleTextAppend = async () => {
         try {
           const sectionCategories = categorizedData[sectionName];
           
-          // Object format: { "Subsection": ["note1", "note2"] }
-          if (typeof sectionCategories === 'object' && sectionCategories !== null && !Array.isArray(sectionCategories)) {
-            Object.keys(sectionCategories).forEach(categoryName => {
+            // Object format: { "Subsection": ["note1", "note2"] }
+            // or { "__flat__": ["note1", "note2"], "Subsection": ["note2"] }
+            // where __flat__ contains notes that didn't match any specific subsubsection
+            if (typeof sectionCategories === 'object' && sectionCategories !== null && !Array.isArray(sectionCategories)) {
+              Object.keys(sectionCategories).forEach(categoryName => {
+                try {
+                  const notes = sectionCategories[categoryName];
+                  
+                  // Handle the __flat__ key - notes that didn't match any specific subsubsection
+                  // These should be placed under the subsection item (the section itself)
+                  if (categoryName === '__flat__') {
+                    const idMapping = categoryToIdMap[sectionName];
+                    
+                    if (!idMapping) {
+                      console.log('No id mapping found for section:', sectionName);
+                      return;
+                    }
+                    
+                    if (Array.isArray(notes)) {
+                      notes.forEach(note => {
+                        if (typeof note === 'string' && note.trim()) {
+                          const parsedContent = parsePropertyNoteToContent(note, sectionName);
+                          const itemKeys = Object.keys(parsedContent);
+                          let itemsValue = '';
+                          let conditionValue = '';
+                          
+                          if (itemKeys.length > 0) {
+                            const detectedItemKey = itemKeys[0];
+                            const itemData = parsedContent[detectedItemKey];
+                            itemsValue = detectedItemKey
+                              .split('_')
+                              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                              .join(' ');
+                            conditionValue = itemData.condition || '';
+                          }
+                          
+                          contentArray.push({
+                            inventory_section_id: idMapping.inventorySectionId,
+                            inventory_subsection_id: idMapping.subSectionId || null,
+                            inventory_sub_subsection_id: null, // No subsubsection available
+                            content: {
+                              [sectionName]: {
+                                items: itemsValue || note.trim(),
+                                condition: conditionValue || note.trim()
+                              }
+                            },
+                            attached_image: null
+                          });
+                        }
+                      });
+                    }
+                    return;
+                  }
+                  
+                  const idMapping = categoryToIdMap[categoryName];
+                  
+                  if (!idMapping) {
+                    console.log('No id mapping found for category:', categoryName);
+                    return;
+                  }
+                  
+                  // Ensure notes is an array and create one entry per note
+                  if (Array.isArray(notes)) {
+                    notes.forEach(note => {
+                      // Parse the note into { itemKey: { items, condition } }
+                      const parsedContent = parsePropertyNoteToContent(note, categoryName);
+                      
+                      // Extract the detected item key and data
+                      const itemKeys = Object.keys(parsedContent);
+                      let itemsValue = '';
+                      let conditionValue = '';
+                      
+                      if (itemKeys.length > 0) {
+                        const detectedItemKey = itemKeys[0]; // e.g., "window", "curtain", "floor"
+                        const itemData = parsedContent[detectedItemKey];
+                        
+                        // items = the detected item name (capitalized)
+                        itemsValue = detectedItemKey
+                          .split('_')
+                          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                          .join(' ');
+                        
+                        // condition = the condition part extracted from parsing
+                        conditionValue = itemData.condition || '';
+                      }
+                      
+                      contentArray.push({
+                        inventory_section_id: idMapping.inventorySectionId,
+                        inventory_subsection_id: idMapping.subSectionId || null,
+                        inventory_sub_subsection_id: idMapping.subSubSectionId || null,
+                        content: {
+                          [categoryName]: {
+                            items: itemsValue || note.trim(),
+                            condition: conditionValue || note.trim()
+                          }
+                        },
+                        attached_image: null
+                      });
+                    });
+                  }
+                } catch (e) {
+                  console.log('Error processing category:', categoryName, e);
+                }
+              });
+            } else if (Array.isArray(sectionCategories)) {
+              // Flat array format: { "SectionName": ["note1", "note2"] }
+              // Used when no subsubsection is available - place notes under subsection item
+              // This handles the edge case where categorizeInspectionNotes returns flat array
+              // (e.g., when sentences.length === 0, or input is already JSON)
               try {
-                const notes = sectionCategories[categoryName];
-                const idMapping = categoryToIdMap[categoryName];
+                const idMapping = categoryToIdMap[sectionName];
                 
                 if (!idMapping) {
-                  console.log('No id mapping found for category:', categoryName);
+                  console.log('No id mapping found for section:', sectionName);
                   return;
                 }
                 
-                // Ensure notes is an array and create one entry per note
-                if (Array.isArray(notes)) {
-                  notes.forEach(note => {
+                sectionCategories.forEach(note => {
+                  if (typeof note === 'string' && note.trim()) {
                     // Parse the note into { itemKey: { items, condition } }
-                    const parsedContent = parsePropertyNoteToContent(note, categoryName);
+                    const parsedContent = parsePropertyNoteToContent(note, sectionName);
                     
                     // Extract the detected item key and data
                     const itemKeys = Object.keys(parsedContent);
@@ -330,7 +434,7 @@ const handleTextAppend = async () => {
                     let conditionValue = '';
                     
                     if (itemKeys.length > 0) {
-                      const detectedItemKey = itemKeys[0]; // e.g., "window", "curtain", "floor"
+                      const detectedItemKey = itemKeys[0];
                       const itemData = parsedContent[detectedItemKey];
                       
                       // items = the detected item name (capitalized)
@@ -346,22 +450,21 @@ const handleTextAppend = async () => {
                     contentArray.push({
                       inventory_section_id: idMapping.inventorySectionId,
                       inventory_subsection_id: idMapping.subSectionId || null,
-                      inventory_sub_subsection_id: idMapping.subSubSectionId || null,
+                      inventory_sub_subsection_id: null, // No subsubsection available
                       content: {
-                        [categoryName]: {
+                        [sectionName]: {
                           items: itemsValue || note.trim(),
                           condition: conditionValue || note.trim()
                         }
                       },
                       attached_image: null
                     });
-                  });
-                }
+                  }
+                });
               } catch (e) {
-                console.log('Error processing category:', categoryName, e);
+                console.log('Error processing section (flat array):', sectionName, e);
               }
-            });
-          }
+            }
         } catch (e) {
           console.log('Error processing section:', sectionName, e);
         }
