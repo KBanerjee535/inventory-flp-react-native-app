@@ -34,7 +34,6 @@
   ]
 }
 
-"Array to string conversion (Connection: mysql, SQL: insert into `inventory_contents` (`inventory_section_id`, `inventory_subsection_id`, `inventory_sub_subsection_id`, `type`, `text_content`, `audio_path`, `updated_at`, `created_at`) values (8, 4, 15, text, ?, ?, 2026-07-28 11:50:31, 2026-07-28 11:50:31))"
 
 
 Formatted Data: {

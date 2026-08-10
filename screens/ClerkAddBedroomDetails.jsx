@@ -238,17 +238,6 @@ useEffect(() => {
           <Text style={styles.subtitel}>Select data recording option</Text>
 
         <View style={styles.BtnGap}>
-
-        {/* <TouchableOpacity
-  style={[styles.StartBtn, (sectionDetails?.description || sectionDetails?.audio) ? styles.disabledBtn : {}]}
-  onPress={() => 
-    (sectionDetails?.description || sectionDetails?.audio) ? null : navigation.navigate('ClerkAddBedroomDetailsAddText')
-  }
-  disabled={!!(sectionDetails?.description || sectionDetails?.audio)}>
-  <TextIcon />
-  <Text style={styles.StartBtnTxt}>Text</Text>
-</TouchableOpacity> */}
-
 <TouchableOpacity
   style={[styles.StartBtn, (sectionDetails?.description || sectionDetails?.audio) ? styles.disabledBtn : {}]}
   onPress={() => 
@@ -258,9 +247,6 @@ useEffect(() => {
   <AudioIcon />
   <Text style={styles.StartBtnTxt}>Speech</Text>
 </TouchableOpacity>
-
-
-
           </View>
 
 {sectionDetails?.length > 0 && <Text style={styles.descriptiontitle}>Features</Text>}
@@ -275,18 +261,14 @@ useEffect(() => {
       {!isDeleted && (
         <Animated.View style={{ transform: [{ scale: descriptionAnim }] }}>
           
-<AccordionEntity title={sectionTitle}>
+          <AccordionEntity title={sectionTitle}>
                <>
                  {/* Always use subsubsection items - simpler approach */}
                  {section?.subsubSection && section?.subsubSection?.length > 0 ? (
                    section?.subsubSection?.map((item, index) => {
                      const itemTitle = item.title || item.name;
-                     // Get notes from categorizedNotes using the helper function
-                     // Safe check to prevent crash
-                    //  const notes = (categorizedNotes && typeof categorizedNotes === 'object') 
-                    //    ? getNotesForSection(categorizedNotes, sectionTitle, itemTitle) 
-                    //    : [];
-                    const note = item?.content ? Object.values(item?.content)[0] : null;
+                     
+                     const note = item?.content ? Object.values(item?.content)[0] : null;
 
                      return (
                        <View
