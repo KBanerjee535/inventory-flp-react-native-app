@@ -274,7 +274,16 @@ const ClerkInspectionScreen = ({ navigation }) => {
             </Text>
           )} */}
         </View>
-        <Arrow name="chevron-forward-outline" size={28} color="#393D47" />
+        <View style={styles.ListItemRight}>
+          {section.color ? (
+            <View style={styles.colorDotOuter}>
+              <View style={[styles.colorDot, { backgroundColor: section.color }]}>
+                <View style={styles.colorDotHighlight} />
+              </View>
+            </View>
+          ) : null}
+          <Arrow name="chevron-forward-outline" size={28} color="#393D47" />
+        </View>
       </TouchableOpacity>
     </Animated.View>
   );
@@ -451,7 +460,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   ListItem: {
-    backgroundColor: "#fff",
+    backgroundColor: "#dca162",
     borderRadius: 8,
     padding: 20,
     marginBottom: 8,
@@ -464,12 +473,47 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     gap: 15,
+    flex: 1, // Ensure it takes up available space
   },
   ListItemTxt: {
-    color: "#393D47",
+    color: "#ffffff",
     fontFamily: "BeVietnamPro-Regular",
     fontSize: 15,
     fontWeight: "400",
+  },
+  colorDotOuter: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+  colorDot: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.4,
+    shadowRadius: 5,
+    elevation: 6,
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+  },
+  colorDotHighlight: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "rgba(255, 255, 255, 0.45)",
+    position: "absolute",
+    top: 3,
+    left: 3,
+  },
+  ListItemRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
   },
 
   tooltipContainer: {

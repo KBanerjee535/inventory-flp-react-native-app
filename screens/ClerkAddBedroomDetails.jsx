@@ -265,14 +265,14 @@ useEffect(() => {
                <>
                  {/* Always use subsubsection items - simpler approach */}
                  {section?.subsubSection && section?.subsubSection?.length > 0 ? (
-                   section?.subsubSection?.map((item, index) => {
+                   section?.subsubSection?.map((item) => {
                      const itemTitle = item.title || item.name;
                      
                      const note = item?.content ? Object.values(item?.content)[0] : null;
 
                      return (
                        <View
-                         key={index}
+                         key={item?.subsub_section_id}
                          style={{
                            marginBottom: 10,
                            paddingBottom: 10,
@@ -293,7 +293,7 @@ useEffect(() => {
                            notes.map((note, index) => ( */}
                           {note ? (
                              <Text
-                               key={index}
+                               key={note?.items}
                                style={{
                                  marginLeft: 15,
                                  marginTop: 4,

@@ -126,7 +126,6 @@ export const ScheduleConditionsUpdateTextApi = async (values) => {
 };
 
 
-
 export const ScheduleConditionsUpdateAudioApi = async (values) => {
   return await axios.post(API_BASE_URL + `clerk/ScheduleConditionsUpdateAudio`, values, await getHeader(true));
 };

@@ -1,5 +1,6 @@
 import { GOOGLE_GEMINI_FREE_KEY } from '../app_url';
 import Toast from 'react-native-simple-toast';
+import { CATEGORIZATION_RULES } from './categorizationRules.jsx';
 
 /**
  * Calculate string similarity score using fuzzy matching
@@ -340,12 +341,42 @@ const categorizePlainTextFuzzy = (text, categoryMap, sectionsWithSubsections) =>
       targetParent = detectedRoomTitle;
     }
     
+    // Check if the parent section has rules defined; if so, let the rules
+    // decide the subcategory (takes priority over fuzzy matching)
+    const ruleBasedSub = findBestSubcategoryByRules(parentSection, text, categoryMap);
+    const chosenSub = ruleBasedSub || bestSub;
+    
+    // Determine the subcategory display name / key
+    // - ruleBasedSub is { title, info }  -> use chosenSub.title
+    // - bestSub is { category, score, info } -> use chosenSub.category
+    const subKey = chosenSub.title || chosenSub.category || bestSub.category;
+    
     // Create nested object structure: { "Room": { "Subsection": ["note"] } }
     if (!result[targetParent]) result[targetParent] = {};
-    if (!result[targetParent][bestSub.category]) {
-      result[targetParent][bestSub.category] = [];
+    if (!result[targetParent][subKey]) {
+      result[targetParent][subKey] = [];
     }
-    result[targetParent][bestSub.category].push(text.trim());
+    result[targetParent][subKey].push(text.trim());
+    return result;
+  }
+  
+  // Step 3b: If no subsection matches, try global categorization rules
+  // This handles cases like "smoke alarm" where the text keywords match
+  // a rule category (e.g., "fixtures & fittings") but the subsubsection
+  // title itself doesn't contain those keywords
+  const globalRuleMatch = findBestSubcategoryByGlobalRules(text, categoryMap);
+  if (globalRuleMatch) {
+    const { parentCategory, categoryInfo } = globalRuleMatch;
+    // parentCategory is the subsubsection title (e.g., "Fixtures & Fittings")
+    // categoryInfo.sectionTitle is the actual section title (e.g., "Bedroom 1")
+    // We need to nest under the section so the API payload builder can find
+    // the correct inventory_subsection_id and inventory_sub_subsection_id
+    const actualParent = categoryInfo?.sectionTitle || parentCategory;
+    if (!result[actualParent]) result[actualParent] = {};
+    if (!result[actualParent][parentCategory]) {
+      result[actualParent][parentCategory] = [];
+    }
+    result[actualParent][parentCategory].push(text.trim());
     return result;
   }
   
@@ -369,31 +400,43 @@ const categorizePlainTextFuzzy = (text, categoryMap, sectionsWithSubsections) =>
     
     // Check if this section has subsections
     if (sectionsWithSubsections.has(category.toLowerCase())) {
-      // Find the best matching subsection under this section
-      const subMatches = [];
-      categoryMap.forEach((subInfo, subCategory) => {
-        if (subInfo.type === 'subsubsection' && 
-            subInfo.sectionTitle.toLowerCase() === category.toLowerCase()) {
-          const subMatchScore = calculateFuzzyScore(text, subInfo.keywords);
-          if (subMatchScore > 0) {
-            subMatches.push({ category: subCategory, score: subMatchScore, info: subInfo });
-          }
-        }
-      });
+      // First try rule-based subcategory selection (takes priority)
+      const ruleBasedSub = findBestSubcategoryByRules(category, text, categoryMap);
       
-      if (subMatches.length > 0) {
-        subMatches.sort((a, b) => b.score - a.score);
-        const bestSub = subMatches[0];
-        // Create nested object structure: { "Room": { "Subsection": ["note"] } }
+      if (ruleBasedSub) {
+        // Rule matched - use it directly
         if (!result[category]) result[category] = {};
-        if (!result[category][bestSub.category]) {
-          result[category][bestSub.category] = [];
+        if (!result[category][ruleBasedSub.title]) {
+          result[category][ruleBasedSub.title] = [];
         }
-        result[category][bestSub.category].push(text.trim());
+        result[category][ruleBasedSub.title].push(text.trim());
       } else {
-        // No subsection match, use the section itself
-        if (!result[category]) result[category] = [];
-        result[category].push(text.trim());
+        // Fall back to finding the best matching subsection under this section
+        const subMatches = [];
+        categoryMap.forEach((subInfo, subCategory) => {
+          if (subInfo.type === 'subsubsection' && 
+              subInfo.sectionTitle.toLowerCase() === category.toLowerCase()) {
+            const subMatchScore = calculateFuzzyScore(text, subInfo.keywords);
+            if (subMatchScore > 0) {
+              subMatches.push({ category: subCategory, score: subMatchScore, info: subInfo });
+            }
+          }
+        });
+        
+        if (subMatches.length > 0) {
+          subMatches.sort((a, b) => b.score - a.score);
+          const bestSub = subMatches[0];
+          // Create nested object structure: { "Room": { "Subsection": ["note"] } }
+          if (!result[category]) result[category] = {};
+          if (!result[category][bestSub.category]) {
+            result[category][bestSub.category] = [];
+          }
+          result[category][bestSub.category].push(text.trim());
+        } else {
+          // No subsection match, use the section itself
+          if (!result[category]) result[category] = [];
+          result[category].push(text.trim());
+        }
       }
     } else {
       // No subsections, use the section
@@ -591,6 +634,169 @@ const categorizePlainTextAdvancedFuzzy = (text, subsections, sections) => {
   }
   
   return result;
+};
+
+/**
+ * Find the best matching subcategory for a section + text using the rules
+ * defined in the editable CATEGORIZATION_RULES config file.
+ *
+ * Rules take priority over generic fuzzy title matching.
+ *
+ * @param {string} sectionTitle - The main category (section) title, e.g. "Door"
+ * @param {string} text - The speech/observation text to categorize, e.g. "Some low level scuffs seen"
+ * @param {Map} categoryMap - The map of all subsubsections (to resolve subcategory names to their info)
+ * @returns {Object|null} - { title, info } of the best matching subcategory, or null if no rule matched
+ */
+const findBestSubcategoryByRules = (sectionTitle, text, categoryMap) => {
+  if (!sectionTitle || !text) return null;
+
+  const rules = CATEGORIZATION_RULES?.[sectionTitle.toLowerCase()];
+  if (!rules) return null; // No rules defined for this section
+
+  const lowerText = text.toLowerCase();
+  const scoredMatches = [];
+
+  Object.keys(rules).forEach(ruleKey => {
+    if (ruleKey === '_default') return; // Skip default placeholder
+
+    const rule = rules[ruleKey];
+    if (!rule || !Array.isArray(rule.keywords)) return;
+
+    const weight = rule.weight || 1;
+    let score = 0;
+
+    rule.keywords.forEach(keyword => {
+      if (!keyword) return;
+      const lowerKeyword = String(keyword).toLowerCase();
+      const regex = new RegExp(`\\b${escapeRegex(lowerKeyword)}\\b`, 'i');
+      if (regex.test(text)) {
+        score += lowerKeyword.length * 2 * weight; // full word match bonus
+      } else if (lowerText.includes(lowerKeyword)) {
+        score += lowerKeyword.length * weight; // partial/substring match
+      }
+    });
+
+    if (score > 0) {
+      scoredMatches.push({ subcategoryTitle: ruleKey, score });
+    }
+  });
+
+  if (scoredMatches.length === 0) {
+    // No keyword matched - use the configured default if present
+    const defaultSub = rules['_default'];
+    if (defaultSub) {
+      return resolveSubcategoryFromMap(defaultSub, categoryMap);
+    }
+    return null;
+  }
+
+  // Pick the highest scoring subcategory
+  scoredMatches.sort((a, b) => b.score - a.score);
+  return resolveSubcategoryFromMap(scoredMatches[0].subcategoryTitle, categoryMap);
+};
+
+/**
+ * Check ALL categorization rules globally against the text to find a matching
+ * parent category (e.g., "fixtures & fittings") and its best subcategory.
+ *
+ * This handles cases where the text contains keywords defined in the rules
+ * (like "smoke", "alarm", "light") but the subsubsection title itself
+ * (e.g., "Fixtures & Fittings") doesn't contain those keywords.
+ *
+ * @param {string} text - The speech/observation text to categorize
+ * @param {Map} categoryMap - The map of all subsubsections
+ * @returns {Object|null} - { parentCategory, subcategoryTitle, categoryInfo } or null
+ */
+const findBestSubcategoryByGlobalRules = (text, categoryMap) => {
+  if (!text || !categoryMap) return null;
+
+  const lowerText = text.toLowerCase();
+  let bestMatch = null;
+  let bestScore = 0;
+
+  // Iterate over all rule categories (e.g., "fixtures & fittings", "door")
+  Object.keys(CATEGORIZATION_RULES).forEach(ruleCategory => {
+    const rules = CATEGORIZATION_RULES[ruleCategory];
+    if (!rules) return;
+
+    // Find the matching parent category in categoryMap (case-insensitive)
+    let matchedCategoryInfo = null;
+    let matchedCategoryKey = null;
+
+    for (const [key, value] of categoryMap.entries()) {
+      if (key.toLowerCase() === ruleCategory.toLowerCase() && value.type === 'subsubsection') {
+        matchedCategoryInfo = value;
+        matchedCategoryKey = key;
+        break;
+      }
+    }
+
+    if (!matchedCategoryInfo) return; // This rule category doesn't exist in the current data
+
+    // Check each subcategory's keywords against the text
+    Object.keys(rules).forEach(subKey => {
+      if (subKey === '_default') return;
+
+      const rule = rules[subKey];
+      if (!rule || !Array.isArray(rule.keywords)) return;
+
+      const weight = rule.weight || 1;
+      let score = 0;
+
+      rule.keywords.forEach(keyword => {
+        if (!keyword) return;
+        const lowerKeyword = String(keyword).toLowerCase();
+        const regex = new RegExp(`\\b${escapeRegex(lowerKeyword)}\\b`, 'i');
+        if (regex.test(text)) {
+          score += lowerKeyword.length * 2 * weight;
+        } else if (lowerText.includes(lowerKeyword)) {
+          score += lowerKeyword.length * weight;
+        }
+      });
+
+      if (score > 0 && score > bestScore) {
+        bestScore = score;
+        bestMatch = {
+          parentCategory: matchedCategoryKey,
+          subcategoryTitle: subKey,
+          categoryInfo: matchedCategoryInfo,
+          score: score,
+        };
+      }
+    });
+  });
+
+  return bestMatch;
+};
+
+/**
+ * Resolve a subcategory title to its categoryMap entry (case-insensitive).
+ * Returns { title, info } so the actual display title is preserved.
+ */
+const resolveSubcategoryFromMap = (subcategoryTitle, categoryMap) => {
+  if (!subcategoryTitle || !categoryMap) return null;
+  let foundKey = null;
+  let foundValue = null;
+
+  if (categoryMap.has(subcategoryTitle)) {
+    foundKey = subcategoryTitle;
+    foundValue = categoryMap.get(subcategoryTitle);
+  } else {
+    // Case-insensitive lookup
+    for (const [key, value] of categoryMap.entries()) {
+      if (key.toLowerCase() === String(subcategoryTitle).toLowerCase() && value.type === 'subsubsection') {
+        foundKey = key;
+        foundValue = value;
+        break;
+      }
+    }
+  }
+
+  if (!foundValue || !foundKey) return null;
+  return {
+    title: foundKey,
+    info: foundValue,
+  };
 };
 
 /**

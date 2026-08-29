@@ -255,31 +255,36 @@ const handleTextAppend = async () => {
 
     console.log('Categorized Data Result:', categorizedData);
 
-// Create a map of all category names (section titles and subsubsection titles) to their IDs
+    // Create a nested map of sections (subsections/rooms) to their subsubsections and IDs
+    // Structure: { sectionTitle: { subSectionId, subsubSections: { subTitle: subsub_section_id } } }
     const categoryToIdMap = {};
     validSectionDetails.forEach(section => {
-      // Map main section title (handle both 'title' and 'name' properties)
       const sectionTitle = section.title || section.name;
       categoryToIdMap[sectionTitle] = {
         type: 'section',
         inventorySectionId: SelectedSection?.id,
         subSectionId: section.sub_section_id,
-        subSubSectionId: null
+        subsubSections: {}
       };
       
-      // Map subsubsection titles if they exist
+      // Map subsubsection titles under their parent section
       if (section.subsubSection && Array.isArray(section.subsubSection) && section.subsubSection.length > 0) {
         section.subsubSection.forEach(sub => {
           const subTitle = sub.title || sub.name;
-          categoryToIdMap[subTitle] = {
-            type: 'subsubsection',
-            inventorySectionId: SelectedSection?.id,
-            subSectionId: section.sub_section_id,
-            subSubSectionId: sub.subsub_section_id
-          };
+          categoryToIdMap[sectionTitle].subsubSections[subTitle] = sub.subsub_section_id;
         });
       }
     });
+    
+    // Helper to find a section mapping by title (case-insensitive)
+    const findSectionMapping = (title) => {
+      if (!title) return null;
+      if (categoryToIdMap[title]) return categoryToIdMap[title];
+      const key = Object.keys(categoryToIdMap).find(
+        k => k.toLowerCase() === String(title).toLowerCase()
+      );
+      return key ? categoryToIdMap[key] : null;
+    };
     
     console.log('categoryToIdMap:', categoryToIdMap);
 
@@ -310,6 +315,10 @@ const handleTextAppend = async () => {
             // or { "__flat__": ["note1", "note2"], "Subsection": ["note2"] }
             // where __flat__ contains notes that didn't match any specific subsubsection
             if (typeof sectionCategories === 'object' && sectionCategories !== null && !Array.isArray(sectionCategories)) {
+              // Resolve the section (subsection/room) mapping for this detected room
+              // e.g., "Bathroom 1" -> { subSectionId, subsubSections: {...} }
+              const sectionMapping = findSectionMapping(sectionName);
+              
               Object.keys(sectionCategories).forEach(categoryName => {
                 try {
                   const notes = sectionCategories[categoryName];
@@ -317,9 +326,7 @@ const handleTextAppend = async () => {
                   // Handle the __flat__ key - notes that didn't match any specific subsubsection
                   // These should be placed under the subsection item (the section itself)
                   if (categoryName === '__flat__') {
-                    const idMapping = categoryToIdMap[sectionName];
-                    
-                    if (!idMapping) {
+                    if (!sectionMapping) {
                       console.log('No id mapping found for section:', sectionName);
                       return;
                     }
@@ -343,8 +350,8 @@ const handleTextAppend = async () => {
                           }
                           
                           contentArray.push({
-                            inventory_section_id: idMapping.inventorySectionId,
-                            inventory_subsection_id: idMapping.subSectionId || null,
+                            inventory_section_id: sectionMapping.inventorySectionId,
+                            inventory_subsection_id: sectionMapping.subSectionId || null,
                             inventory_sub_subsection_id: null, // No subsubsection available
                             content: {
                               [sectionName]: {
@@ -360,12 +367,14 @@ const handleTextAppend = async () => {
                     return;
                   }
                   
-                  const idMapping = categoryToIdMap[categoryName];
-                  
-                  if (!idMapping) {
+                  if (!sectionMapping) {
                     console.log('No id mapping found for category:', categoryName);
                     return;
                   }
+                  
+                  // Resolve the subsubsection ID for this category under the correct section
+                  // e.g., categoryName = "window" -> subsub_section_id of the window under the detected room
+                  const subSubSectionId = sectionMapping.subsubSections?.[categoryName] ?? null;
                   
                   // Ensure notes is an array and create one entry per note
                   if (Array.isArray(notes)) {
@@ -393,9 +402,9 @@ const handleTextAppend = async () => {
                       }
                       
                       contentArray.push({
-                        inventory_section_id: idMapping.inventorySectionId,
-                        inventory_subsection_id: idMapping.subSectionId || null,
-                        inventory_sub_subsection_id: idMapping.subSubSectionId || null,
+                        inventory_section_id: sectionMapping.inventorySectionId,
+                        inventory_subsection_id: sectionMapping.subSectionId || null,
+                        inventory_sub_subsection_id: subSubSectionId,
                         content: {
                           [categoryName]: {
                             items: itemsValue || note.trim(),
@@ -416,9 +425,9 @@ const handleTextAppend = async () => {
               // This handles the edge case where categorizeInspectionNotes returns flat array
               // (e.g., when sentences.length === 0, or input is already JSON)
               try {
-                const idMapping = categoryToIdMap[sectionName];
+                const sectionMapping = findSectionMapping(sectionName);
                 
-                if (!idMapping) {
+                if (!sectionMapping) {
                   console.log('No id mapping found for section:', sectionName);
                   return;
                 }
@@ -448,8 +457,8 @@ const handleTextAppend = async () => {
                     }
                     
                     contentArray.push({
-                      inventory_section_id: idMapping.inventorySectionId,
-                      inventory_subsection_id: idMapping.subSectionId || null,
+                      inventory_section_id: sectionMapping.inventorySectionId,
+                      inventory_subsection_id: sectionMapping.subSectionId || null,
                       inventory_sub_subsection_id: null, // No subsubsection available
                       content: {
                         [sectionName]: {
