@@ -6,59 +6,82 @@ import {
   TouchableOpacity,
   StyleSheet,
   Animated,
+  ActivityIndicator,
 } from 'react-native';
-import React from 'react';
+import React, {useCallback, useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-simple-toast';
+import {getInventoryListByClerkIdApi} from '../services/apiService';
 
-const tasks = [
-  {
-    id: '1',
-    name: 'The New Rectory',
-    status: 'Snagging',
-  },
-  {
-    id: '2',
-    name: '22 Albert Street',
-    status: 'Snagging',
-  },
-  {
-    id: '3',
-    name: 'Lendess Street Malcolm',
-    status: 'Snagging',
-  },
-  {
-    id: '4',
-    name: 'Park Avenue 22/6',
-    status: 'Snagging',
-  },
-  {
-    id: '5',
-    name: 'Greenwood Plaza',
-    status: 'Snagging',
-  },
-  {
-    id: '6',
-    name: 'Greenwood Plaza',
-    status: 'Snagging',
-  },
+// Resolve property name whether property_details is an object or an array
+const getPropertyName = item => {
+  const propertyDetails = item?.property_details;
+  const details = Array.isArray(propertyDetails)
+    ? propertyDetails?.[0]
+    : propertyDetails;
+  return details?.address_1 || details?.name || 'N/A';
+};
 
-  {
-    id: '7',
-    name: 'Greenwood Plaza',
-    status: 'Snagging',
-  },
-];
+// Keep only snagging reports — the clerk list API returns every report type
+const isSnaggingReport = item =>
+  (item?.report_type || '').toLowerCase().includes('snag');
 
-// Status colors
-const statusColors = {
-  'Check In': '#00BFFF', // Sky Blue
-  'Check Out': '#0000FF', // Blue
-  Snagging: '#FF7C5E', // Orange
-  Midterm: '#FFD700', // Yellow
+// Status colors mapped from the API report_type values
+const getStatusColor = status => {
+  const value = (status || '').toLowerCase().replace(/[\s_]+/g, '-');
+  switch (value) {
+    case 'check-in':
+      return '#00BFFF'; // Sky Blue
+    case 'check-out':
+      return '#0000FF'; // Blue
+    case 'snagging':
+      return '#FF7C5E'; // Orange
+    case 'mid-term':
+    case 'midterm':
+      return '#FFD700'; // Yellow
+    default:
+      return '#666666'; // Default grey for unknown statuses
+  }
 };
 
 const SnaggingWaitingApproval = ({navigation}) => {
+  const [tasks, setTasks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Refetch the snagging list every time the screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      const getSnaggingListByClerkId = async () => {
+        try {
+          setIsLoading(true);
+          const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+          const values = {
+            date_from: today,
+            date_to: today,
+          };
+
+          const response = await getInventoryListByClerkIdApi(values);
+
+          console.log(JSON.stringify(response.data.data));
+          // The clerk list API returns every report type; snagging tabs
+          // should only display snagging reports
+          setTasks((response.data?.data ?? []).filter(isSnaggingReport));
+          setIsLoading(false);
+        } catch (error) {
+          setTasks([]);
+          setIsLoading(false);
+          Toast.show(
+            error.response?.data?.errors ||
+              'Something went wrong, please try again.',
+          );
+        }
+      };
+      getSnaggingListByClerkId();
+    }, []),
+  );
+
   const renderItem = ({item, index}) => {
     const fadeAnim = new Animated.Value(0); // Start opacity from 0
 
@@ -73,18 +96,25 @@ const SnaggingWaitingApproval = ({navigation}) => {
       <Animated.View style={[styles.taskCard, {opacity: fadeAnim}]}>
         <TouchableOpacity
           style={styles.taskCardInner}
-          onPress={() => navigation.navigate('SnaggingTasksDetails')}>
+          onPress={() =>
+            navigation.navigate('SnaggingTasksDetails', {
+              inventory_id: item?.inventory_id, // Pass the tapped inventory id
+              inventoryDetails: item, // Pass the tapped inventory item details
+            })
+          }>
           <View style={styles.taskCardLft}>
-            <Text style={styles.taskName}>{item.name}</Text>
+            <Text style={styles.taskName}>{getPropertyName(item)}</Text>
             {/* Status Indicator */}
             <View style={styles.indicator}>
               <View
                 style={[
                   styles.statusIndicator,
-                  {backgroundColor: statusColors[item.status]},
+                  {backgroundColor: getStatusColor(item?.report_type)},
                 ]}
               />
-              <Text style={styles.indicatorTxt}>{item.status}</Text>
+              <Text style={styles.indicatorTxt}>
+                {item?.report_type ?? 'N/A'}
+              </Text>
             </View>
           </View>
 
@@ -99,12 +129,25 @@ const SnaggingWaitingApproval = ({navigation}) => {
   };
   return (
     <View style={styles.container}>
-      <FlatList
-        data={tasks}
-        keyExtractor={item => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={styles.listContainer}
-      />
+      {isLoading ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : (
+        <FlatList
+          data={tasks}
+          keyExtractor={(item, index) =>
+            item?.inventory_id?.toString() ?? index.toString()
+          }
+          renderItem={renderItem}
+          contentContainerStyle={styles.listContainer}
+          ListEmptyComponent={
+            <Text style={styles.noDataText}>
+              No inventory found for the selected date.
+            </Text>
+          }
+        />
+      )}
     </View>
   );
 };
@@ -197,5 +240,16 @@ const styles = StyleSheet.create({
   },
   taskCardRgt: {
     alignItems: 'flex-end',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
+    color: '#555',
   },
 });

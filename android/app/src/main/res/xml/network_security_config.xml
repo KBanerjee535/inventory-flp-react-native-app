@@ -12,7 +12,12 @@
         <trust-anchors>
             <certificates src="system" />
             <certificates src="user" />
-            <certificates src="@raw/hostinger_cert" />
+            <!-- Let's Encrypt roots: hostinger's hcdn rotated from RapidSSL (expired Oct 10 2026)
+                 to a Let's Encrypt chain (YE1 -> Root YE -> ISRG Root X2 -> ISRG Root X1).
+                 ISRG Root X1/X2 bundled because minSdk 24 (Android 7.0) lacks them in the
+                 system store (X1 only shipped in Android 7.1.1). Valid until 2035/2040. -->
+            <certificates src="@raw/isrg_root_x1" />
+            <certificates src="@raw/isrg_root_x2" />
         </trust-anchors>
     </domain-config>
     <domain-config cleartextTrafficPermitted="true">

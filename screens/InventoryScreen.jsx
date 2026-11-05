@@ -23,10 +23,10 @@ import {useFocusEffect} from '@react-navigation/native';
 // Tabs data
 const tabLabels = [
   'Assigned New Tasks',
-  'Upcoming Tasks',
+  'In-progress Tasks',
   'Completed Tasks',
-  'Waiting for Approval',
-  'Approved',
+  //'Waiting for Approval',
+  //'Approved',
 ];
 
 const InventoryScreen = ({navigation, route}) => {
@@ -107,7 +107,7 @@ const InventoryScreen = ({navigation, route}) => {
 
           {/* Render Content Based on Selected Tab */}
           {/* Tab Content */}
-          <View style={styles.contentContainer}>
+          {/* <View style={styles.contentContainer}>
             {activeTab === 0 ? (
               <ClerkInventoryAssignedTasks navigation={navigation} />
             ) : activeTab === 1 ? (
@@ -118,6 +118,15 @@ const InventoryScreen = ({navigation, route}) => {
               <ClerkInventoryWaitingforapproval navigation={navigation} />
             ) : activeTab === 4 ? (
               <ClerkInventoryApproved navigation={navigation} />
+            ) : null}
+          </View> */}
+          <View style={styles.contentContainer}>
+            {activeTab === 0 ? (
+              <ClerkInventoryAssignedTasks navigation={navigation} />
+            ) : activeTab === 1 ? (
+              <ClerkInventoryUpcomingTasks navigation={navigation} />
+            ) : activeTab === 2 ? (
+              <ClerkInventoryCompletedTasks navigation={navigation} />
             ) : null}
           </View>
         </View>

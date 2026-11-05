@@ -1,4 +1,4 @@
-import { GOOGLE_GEMINI_FREE_KEY } from '../app_url';
+import { GOOGLE_GEMINI_FREE_KEY, GOOGLE_GEMINI_MODEL } from '../app_url';
 import Toast from 'react-native-simple-toast';
 import { CATEGORIZATION_RULES } from './categorizationRules.jsx';
 
@@ -96,7 +96,7 @@ export const punctuateTextWithAI = async (text, retries = 2) => {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_GEMINI_FREE_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${GOOGLE_GEMINI_MODEL}:generateContent?key=${GOOGLE_GEMINI_FREE_KEY}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

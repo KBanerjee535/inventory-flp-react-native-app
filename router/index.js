@@ -30,6 +30,7 @@ import ClerkMetersList from "../screens/ClerkMetersList";
 import ClerkAddBedroomDetails from "../screens/ClerkAddBedroomDetails";
 import ClerkAddBedroomDetailsAddText from "../screens/ClerkAddBedroomDetailsAddText";
 import ClerkAddBedroomDetailsAddAudio from "../screens/ClerkAddBedroomDetailsAddAudio";
+import ClerkAddImageAnalysis from "../screens/ClerkAddImageAnalysis";
 import ClientTaskDetails from "../screens/ClientTaskDetails";
 import ClientWaitingforapprovalfeedbackReportDetails from "../screens/ClientWaitingforapprovalfeedbackReportDetails";
 import ClientWaitingforapprovalfeedbackReportSOC from "../screens/ClientWaitingforapprovalfeedbackReportSOC";
@@ -207,6 +208,10 @@ function Router() {
       <Stack.Screen
         name="ClerkAddBedroomDetailsAddAudio"
         component={ClerkAddBedroomDetailsAddAudio}
+      />
+      <Stack.Screen
+        name="ClerkAddImageAnalysis"
+        component={ClerkAddImageAnalysis}
       />
 
       {/* Client Link */}

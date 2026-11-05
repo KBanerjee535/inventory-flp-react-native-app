@@ -15,6 +15,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import PrevPageArrow from '../assets/images/BackArrow.svg';
 import TextIcon from '../assets/images/TextIcon.svg';
 import AudioIcon from '../assets/images/AudioIcon.svg';
+import ImageIcon from '../assets/images/ImageIcon.svg';
 import Trash from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Entypo';
 
@@ -135,6 +136,15 @@ const ClerkSnagginginspectionrecord = ({navigation}) => {
               }>
               <AudioIcon />
               <Text style={styles.StartBtnTxt}>Audio</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.StartBtn}
+              onPress={() =>
+                navigation.navigate('ClerkAddImageAnalysis', { goBackScreen: 'ClerkSnagginginspectionrecord', contextName: 'Walls and Ceilings' })
+              }>
+              <ImageIcon />
+              <Text style={styles.StartBtnTxt}>Image</Text>
             </TouchableOpacity>
           </View>
 

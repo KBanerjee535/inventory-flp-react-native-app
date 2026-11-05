@@ -86,6 +86,8 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    // Build a single universal APK so it installs on both emulators and real
+    // devices (no ABI split, so only one APK file is produced).
     signingConfigs {
         debug {
             storeFile file('debug.keystore')

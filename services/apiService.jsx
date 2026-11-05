@@ -98,6 +98,11 @@ export const getInventoryListByClerkIdApi = async (values) => {
   return await axios.get(API_BASE_URL + `inventory/inventories/?date_from=${values.date_from}&date_to=${values.date_to}`, await getHeader(true));
 };
 
+export const getInventoryLists = async (values) => {
+  // return await axios.post(API_BASE_URL + `clerk/InventoryListByClerkId`, values, await getHeader(true));
+  return await axios.get(API_BASE_URL + `inventory/inventories/?date_from=${values.date_from}&date_to=${values.date_to}&report_status=${values.report_status}`, await getHeader(true));
+};
+
 export const InventoryListByClientIdApi = async (values) => {
   return await axios.post(API_BASE_URL + `client/InventoryListByClientId`, values, await getHeader(true));
 };
@@ -327,4 +332,13 @@ export const confirmAppointmentApi = async (values) => {
 
 export const submitInventoryContentApi = async (values) => {
   return await axios.post(API_BASE_URL + `inventory/submitInventoryContent`, values, await getHeader(false));
+};
+
+// Image Analysis APIs
+export const SectionAddImageAnalysisApi = async (values) => {
+  return await axios.post(API_BASE_URL + `clerk/SectionAddImageAnalysis`, values, await getHeader(true));
+};
+
+export const ImageAnalysisUpdateTextApi = async (values) => {
+  return await axios.post(API_BASE_URL + `clerk/ImageAnalysisUpdateText`, values, await getHeader(true));
 };

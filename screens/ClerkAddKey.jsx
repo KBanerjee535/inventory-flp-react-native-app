@@ -16,6 +16,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import PrevPageArrow from '../assets/images/BackArrow.svg';
 import TextIcon from '../assets/images/TextIcon.svg';
 import AudioIcon from '../assets/images/AudioIcon.svg';
+import ImageIcon from '../assets/images/ImageIcon.svg';
 import Trash from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Entypo';
 import Toast from 'react-native-simple-toast';
@@ -468,6 +469,17 @@ useEffect(() => {
              >
               <AudioIcon />
               <Text style={styles.StartBtnTxt}>Audio</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.StartBtn, (keysData?.description || keysData?.audio ) ? styles.disabledBtn : {}]}
+              onPress={() => 
+                (keysData?.description || keysData?.audio) ? null : navigation.navigate('ClerkAddImageAnalysis', { goBackScreen: 'ClerkAddKey', contextName: 'Keys' })
+              }
+              disabled={!!(keysData?.description || keysData?.audio )}
+             >
+              <ImageIcon />
+              <Text style={styles.StartBtnTxt}>Image</Text>
             </TouchableOpacity>
           </View>
 

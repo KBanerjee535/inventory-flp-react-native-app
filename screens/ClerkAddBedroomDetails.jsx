@@ -18,6 +18,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import PrevPageArrow from '../assets/images/BackArrow.svg';
 import TextIcon from '../assets/images/TextIcon.svg';
 import AudioIcon from '../assets/images/AudioIcon.svg';
+import ImageIcon from '../assets/images/ImageIcon.svg';
 import Trash from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Entypo';
 import GalleryIcon from '../assets/images/GalleryIcon.svg';
@@ -246,6 +247,16 @@ useEffect(() => {
   disabled={!!(sectionDetails?.description || sectionDetails?.audio)}>
   <AudioIcon />
   <Text style={styles.StartBtnTxt}>Speech</Text>
+</TouchableOpacity>
+
+<TouchableOpacity
+  style={[styles.StartBtn, (sectionDetails?.description || sectionDetails?.audio) ? styles.disabledBtn : {}]}
+  onPress={() => 
+    (sectionDetails?.description || sectionDetails?.audio) ? null : navigation.navigate('ClerkAddImageAnalysis', { goBackScreen: 'ClerkAddBedroomDetails', contextName: sectionDetails?.name || 'Bedroom Details' })
+  }
+  disabled={!!(sectionDetails?.description || sectionDetails?.audio)}>
+  <ImageIcon />
+  <Text style={styles.StartBtnTxt}>Image</Text>
 </TouchableOpacity>
           </View>
 
